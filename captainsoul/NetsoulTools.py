@@ -50,6 +50,9 @@ class NsUserCmdInfo(object):
         self._ip = ip
         self._location = urlunquote(location)
 
+    def __str__(self):
+        return '<%s@%s "%s">' % (self.login, self.ip, self.location)
+
     @property
     def login(self):
         return self._login

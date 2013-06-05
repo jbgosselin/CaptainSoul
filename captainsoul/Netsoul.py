@@ -43,36 +43,42 @@ class NsProtocol(LineOnlyReceiver, object):
             Rea(r'^dotnetSoul_UserCancelledTyping null dst=.*$', self._hooker.cmdCancelTypingHook))
 
     def lineReceived(self, line):
-        logging.info('<<   : "%s"' % line)
+        logging.info('Netsoul : <<   : "%s"' % line)
         if not self._realist.found_match(line):
-            logging.warning('Unknown : "%s"' % line)
+            logging.warning('Netsoul : Unknown line : "%s"' % line)
 
     def connectionLost(self, reason):
+        logging.info('Netsoul : Connection Lost')
         self._hooker.connectionLostHook()
 
     def connectionMade(self):
+        logging.info('Netsoul : Connection Made')
         self._hooker.connectionMadeHook()
 
     def sendLine(self, line):
         super(NsProtocol, self).sendLine(str(line))
-        logging.info('  >> : "%s"' % line)
+        logging.info('Netsoul :   >> : "%s"' % line)
 
     # HOOKS
 
     def _userCmdHook(self, login, ip, loc, cmd):
         if not self._cmd_realist.found_match_cmd(cmd, NsUserCmdInfo(login, ip, loc)):
-            logging.warning('Unknown cmd from %s@%s : "%s"' % (login, ip, cmd))
+            logging.warning('Netsoul : Unknown cmd from %s@%s : "%s"' % (login, ip, cmd))
 
     def _responseHook(self, no):
+        no = int(no)
+        logging.debug('Netsoul : Got response %d' % no)
         if self._response_queue:
-            self._response_queue.popleft()(int(no))
+            self._response_queue.popleft()(no)
         else:
-            logging.warning('No response wanted')
+            logging.warning('Netsoul : No response expected')
 
     def _pingHook(self, t):
+        logging.debug('Netsoul : Got ping %d' % int(t))
         self.sendLine('ping %s' % t)
 
     def _salutHook(self, num, md5_hash, ip, port, timestamp):
+        logging.debug('Netsoul : Got salut %s %s:%s' % (md5_hash, ip, port))
         self._info.hash = md5_hash
         self._info.host = ip
         self._info.port = port
@@ -85,22 +91,27 @@ class NsProtocol(LineOnlyReceiver, object):
         if self._who_queue:
             self._who_queue[0].add(NsWhoEntry(login, ip, loc, state, res))
         else:
-            logging.warning("No who expected")
+            logging.warning("Netsoul : No who expected")
 
     def _cmdWhoEndHook(self, info):
         if self._who_queue:
             self._hooker.cmdWhoHook(self._who_queue.popleft())
         else:
-            logging.warning("No who expected")
+            logging.warning("Netsoul : No who expected")
 
     def _cmdMsgHook(self, info, msg, dest):
-        self._hooker.cmdMsgHook(info, urlunquote(msg), dest.split(','))
+        msg = urlunquote(msg)
+        dest = dest.split(',')
+        logging.debug('Netsoul : Got Msg %s "%s" %s' % (info, msg, dest))
+        self._hooker.cmdMsgHook(info, msg, dest)
 
     def _cmdLoginHook(self, info):
+        logging.debug('Netsoul : Got Login %s' % info)
         self._hooker.cmdLoginHook(info)
         self.sendWho([info.login])
 
     def _cmdLogoutHook(self, info):
+        logging.debug('Netsoul : Got Logout %s' % info)
         self._hooker.cmdLogoutHook(info)
         self.sendWho([info.login])
 
@@ -111,17 +122,24 @@ class NsProtocol(LineOnlyReceiver, object):
             md5_hash = md5('%s-%s/%s%s' % (self._info.hash, self._info.host, self._info.port, Config['password'])).hexdigest()
             self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, urlquote(Config['location']), 'CaptainSoul'))
             self._response_queue.append(self._responseLogHook)
+        else:
+            logging.warning('Netsoul : Salut response unknown %d' % no)
 
     def _responseLogHook(self, no):
         if no == 2:
+            logging.debug('Netsoul : Logged')
             self.sendState('actif')
             self.sendWatch()
             self._hooker.loggedHook()
         elif no == 33:
+            logging.debug('Netsoul : Login failed')
             self._hooker.loginFailedHook()
         elif no == 131:
             # permission denied
+            logging.debug('Netsoul : Login failed')
             self._hooker.loginFailedHook()
+        else:
+            logging.warning('Netsoul : Log response unknown %d' % no)
 
     # COMMANDS
 
