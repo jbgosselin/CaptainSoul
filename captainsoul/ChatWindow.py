@@ -50,8 +50,8 @@ class ChatWindow(Gtk.Window):
             text = self._entry.get_text(self._entry.get_start_iter(), self._entry.get_end_iter(), True)
             if len(text):
                 self._entry.delete(self._entry.get_start_iter(), self._entry.get_end_iter())
-                self._mw.sendMsg(text, [self._login])
                 self._printOn("Me", text)
+                self._mw.sendMsg(text, [self._login])
             return True
 
     def keyPressEventEnd(self, widget):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from gi.repository import Gtk
-from twisted.internet import reactor
+from twisted.internet import reactor, task
 
 from CmdLine import options
 from Netsoul import NsFactory
@@ -18,6 +18,7 @@ from WindowManager import WindowManager
 
 class MainWindow(Gtk.Window):
     _protocol = None
+    _keepConnect = True
 
     def __init__(self):
         super(MainWindow, self).__init__(title="CaptainSoul", border_width=2, icon=Icons.shield.get_pixbuf())
@@ -63,11 +64,13 @@ class MainWindow(Gtk.Window):
 
     def connectEvent(self, *args, **kwargs):
         self._toolbar.connectEvent()
-        self._status.push(0, "Connecting")
+        self._keepConnect = True
+        self._status.push(0, "Connecting...")
         self.createConnection()
 
     def disconnectEvent(self, *args, **kwargs):
         self._toolbar.disconnectEvent()
+        self._keepConnect = False
         self.stopConnection()
 
     def settingsEvent(self, *args, **kwargs):
@@ -139,7 +142,11 @@ class MainWindow(Gtk.Window):
 
     def connectionLostHook(self):
         self._protocol = None
-        self._status.push(0, "Disconnected")
+        if self._keepConnect:
+            self._status.push(0, "Reconnecting...")
+            task.deferLater(reactor, 3, self.connectEvent)
+        else:
+            self._status.push(0, "Disconnected")
 
     def connectionMadeHook(self):
         pass
