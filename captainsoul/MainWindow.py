@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from gi.repository import Gtk
-from twisted.internet import reactor, task
+from twisted.internet import reactor
 
 from CmdLine import options
 from Netsoul import NsFactory
@@ -144,7 +144,7 @@ class MainWindow(Gtk.Window):
         self._protocol = None
         if self._keepConnect:
             self._status.push(0, "Reconnecting...")
-            task.deferLater(reactor, 3, self.connectEvent)
+            reactor.callLater(3, self.connectEvent)
         else:
             self._status.push(0, "Disconnected")
 
