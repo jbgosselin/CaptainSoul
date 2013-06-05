@@ -84,7 +84,6 @@ class MainWindow(Gtk.Window):
 
     def addContactWindowEvent(self, *args, **kwargs):
         AddContactWindow(self).destroy()
-        self.sendWatch()
 
     # Senders
 

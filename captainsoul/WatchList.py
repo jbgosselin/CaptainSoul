@@ -14,6 +14,7 @@ class WatchList(Gtk.TreeView):
         super(WatchList, self).__init__(model=self._listStore)
         self.set_headers_visible(False)
         self._manager = mw._manager
+        self._mw = mw
         self._listStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self.append_column(Gtk.TreeViewColumn("State", Gtk.CellRendererPixbuf(), pixbuf=0))
         self.append_column(Gtk.TreeViewColumn("Login", Gtk.CellRendererText(), text=1))
@@ -49,6 +50,7 @@ class WatchList(Gtk.TreeView):
     def deleteContactEvent(self, widget, login):
         Config['watchlist'].remove(login)
         self.updateWatchlist()
+        self._mw.sendWatch()
 
     def rowActivated(self, tv, path, column):
         self._manager.openWindow(self._listStore.get_value(self._listStore.get_iter(path), 1))
