@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from time import time
 from hashlib import md5
 from urllib import quote as urlquote
@@ -11,7 +12,6 @@ from twisted.protocols.basic import LineOnlyReceiver
 
 from Config import Config
 from NetsoulTools import Rea, ReaList, NsData, NsUserCmdInfo, NsWhoResult, NsWhoEntry
-from CmdLine import options
 
 __all__ = ['NsProtocol', 'NsFactory']
 
@@ -43,10 +43,9 @@ class NsProtocol(LineOnlyReceiver, object):
             Rea(r'^dotnetSoul_UserCancelledTyping null dst=.*$', self._hooker.cmdCancelTypingHook))
 
     def lineReceived(self, line):
-        if options.debug:
-            print "<<< %s" % line
-        if not self._realist.found_match(line) and options.debug:
-            print '{Unknown "%s"}' % line
+        logging.info("<<< : %s" % line)
+        if not self._realist.found_match(line):
+            logging.warning('Unknown : "%s"' % line)
 
     def connectionLost(self, reason):
         self._hooker.connectionLostHook()
@@ -56,20 +55,19 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def sendLine(self, line):
         super(NsProtocol, self).sendLine(str(line))
-        if options.debug:
-            print ">>> %s" % line
+        logging.info(">>> : %s" % line)
 
     # HOOKS
 
     def _userCmdHook(self, login, ip, loc, cmd):
-        if not self._cmd_realist.found_match_cmd(cmd, NsUserCmdInfo(login, ip, loc)) and options.debug:
-            print '{unknown cmd from %s@%s %s "%s"}' % (login, ip, loc, cmd)
+        if not self._cmd_realist.found_match_cmd(cmd, NsUserCmdInfo(login, ip, loc)):
+            logging.warning('Unknown cmd from %s@%s : "%s"' % (login, ip, cmd))
 
     def _responseHook(self, no):
         if self._response_queue:
             self._response_queue.popleft()(int(no))
-        elif options.debug:
-            print '{No response wanted}'
+        else:
+            logging.warning('No response wanted')
 
     def _pingHook(self, t):
         self.sendLine('ping %s' % t)
@@ -86,14 +84,14 @@ class NsProtocol(LineOnlyReceiver, object):
     def _cmdWhoHook(self, info, login, ip, loc, state, res):
         if self._who_queue:
             self._who_queue[0].add(NsWhoEntry(login, ip, loc, state, res))
-        elif options.debug:
-            print "{No who expected}"
+        else:
+            logging.warning("No who expected")
 
     def _cmdWhoEndHook(self, info):
         if self._who_queue:
             self._hooker.cmdWhoHook(self._who_queue.popleft())
-        elif options.debug:
-            print "{No who expected}"
+        else:
+            logging.warning("No who expected")
 
     def _cmdMsgHook(self, info, msg, dest):
         self._hooker.cmdMsgHook(info, urlunquote(msg), dest.split(','))
