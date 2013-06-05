@@ -45,13 +45,18 @@ class ReaList(object):
 
 
 class NsUserCmdInfo(object):
-    def __init__(self, login, ip, location):
+    def __init__(self, no, login, ip, location):
+        self._no = int(no)
         self._login = login
         self._ip = ip
         self._location = urlunquote(location)
 
     def __str__(self):
-        return '<%s@%s "%s">' % (self.login, self.ip, self.location)
+        return '<%d %s@%s "%s">' % (self.no, self.login, self.ip, self.location)
+
+    @property
+    def no(self):
+        return self._no
 
     @property
     def login(self):
@@ -97,12 +102,16 @@ class NsData(object):
 
 
 class NsWhoEntry(object):
-    def __init__(self, login, ip, location, state, res):
+    def __init__(self, no, login, ip, location, state, res):
+        self._no = no
         self._login = login
         self._ip = ip
         self._location = location
         self._state = state
         self._res = res
+
+    def no(self):
+        return self._no
 
     @property
     def login(self):

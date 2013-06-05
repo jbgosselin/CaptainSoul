@@ -154,15 +154,14 @@ class MainWindow(Gtk.Window):
         logging.debug('MainWindow : Connection made')
 
     def cmdStateHook(self, info, state):
-        self._watchlist.setState(info.login, state)
+        self._watchlist.setState(info, state)
         self._manager.changeState(info.login, state)
 
     def cmdLoginHook(self, info):
-        self._manager.changeState(info.login, 'login')
+        pass
 
     def cmdLogoutHook(self, info):
-        self._watchlist.setState(info.login, 'logout')
-        self._manager.changeState(info.login, 'logout')
+        pass
 
     def cmdIsTypingHook(self, info):
         self._manager.startTyping(info.login)
@@ -175,6 +174,6 @@ class MainWindow(Gtk.Window):
         self._manager.showMsg(info.login, msg)
 
     def cmdWhoHook(self, result):
+        self._watchlist.processWho(result)
         for res in result:
-            self._watchlist.setState(res.login, res.state)
             self._manager.changeState(res.login, res.state)

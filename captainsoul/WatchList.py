@@ -6,8 +6,78 @@ from Config import Config
 import Icons
 
 
-class WatchList(Gtk.TreeView):
+class Buddy(object):
+    def __init__(self, no, login, state, ip, location):
+        self._no = no
+        self._login = login
+        self._state = state
+        self._ip = ip
+        self._location = location
+
+    @property
+    def no(self):
+        return self._no
+
+    @property
+    def login(self):
+        return self._login
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, value):
+        self._state = value
+
+    @property
+    def ip(self):
+        return self._ip
+
+    @property
+    def location(self):
+        return self._location
+
+    def atSchool(self):
+        return self._ip.startswith('10.')
+
+
+class LoginList(object):
     _list = {}
+
+    def clean(self):
+        self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in Config['watchlist']}
+
+    def processWho(self, results):
+        self._list = {r.no: Buddy(r.no, r.login, r.state, r.ip, r.location) for r in results if r.login in Config['watchlist']}
+
+    def formatWatchList(self):
+        return [(self.getState(login), login, self.atSchool(login)) for login in Config['watchlist']]
+
+    def getFromLogin(self, login):
+        return [buddy for buddy in self._list.itervalues() if buddy.login == login]
+
+    def getState(self, login):
+        state = 'logout'
+        for buddy in self.getFromLogin(login):
+            if state == 'logout' and buddy.state in ('away', 'lock', 'actif') or state in ('away', 'lock') and buddy.state == 'actif':
+                state = buddy.state
+        return state
+
+    def atSchool(self, login):
+        return any([buddy.atSchool() for buddy in self.getFromLogin(login)])
+
+    def changeState(self, info, state):
+        if info.no in self._list:
+            self._list[info.no].state = state
+
+    def logout(self, info):
+        if info.no in self._list:
+            del self._list[info.no]
+
+
+class WatchList(Gtk.TreeView):
+    _list = LoginList()
 
     def __init__(self, mw):
         self._listStore = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
@@ -20,36 +90,32 @@ class WatchList(Gtk.TreeView):
         self.append_column(Gtk.TreeViewColumn("Login", Gtk.CellRendererText(), text=1))
         self.connect("row-activated", self.rowActivated)
         self.connect("button-press-event", self.buttonPressEvent)
-        self.updateWatchlist()
         self.refreshStore()
 
     def refreshStore(self):
         self._listStore.clear()
-        for contact, state in self._list.iteritems():
+        for state, login, atSchool in self._list.formatWatchList():
             if state == 'actif':
                 pix = Icons.green.get_pixbuf()
             elif state in ('away', 'lock'):
                 pix = Icons.red.get_pixbuf()
             else:
                 pix = Icons.void.get_pixbuf()
-            self._listStore.append([pix, contact])
+            self._listStore.append([pix, login])
 
-    def setState(self, login, state):
-        if login in self._list:
-            self._list[login] = state
-            self.refreshStore()
-
-    def updateWatchlist(self):
-        self._list = {contact: self._list.get(contact, 'logout') for contact in Config['watchlist']}
+    def setState(self, info, state):
+        self._list.changeState(info, state)
         self.refreshStore()
 
     def addContact(self, login):
         Config['watchlist'].add(login)
-        self.updateWatchlist()
+        self._list.clean()
+        self.refreshStore()
 
     def deleteContactEvent(self, widget, login):
         Config['watchlist'].remove(login)
-        self.updateWatchlist()
+        self.clean()
+        self.refreshStore()
         self._mw.sendWatch()
 
     def rowActivated(self, tv, path, column):
@@ -66,3 +132,7 @@ class WatchList(Gtk.TreeView):
                 item.show()
                 self._menu.append(item)
                 self._menu.popup(None, None, None, None, event.button, event.time)
+
+    def processWho(self, results):
+        self._list.processWho(results)
+        self.refreshStore()
