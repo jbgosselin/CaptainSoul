@@ -32,5 +32,4 @@ class SettingsWindow(Gtk.Dialog):
         self._autoButton = Gtk.CheckButton(active=Config['autoConnect'])
         table.attach(self._autoButton, 2, 3, 3, 4)
         self.vbox.pack_start(table, True, True, 0)
-        self.add_button("Apply", Gtk.ResponseType.APPLY)
-        self.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        self.add_buttons("Apply", Gtk.ResponseType.APPLY, "Cancel", Gtk.ResponseType.CANCEL)

@@ -119,7 +119,7 @@ class ConfigFile(object):
 
     def __setitem__(self, key, value):
         if key in self._data:
-            self._data[name]._set(value)
+            self._data[key]._set(value)
         else:
             raise KeyError(key)
 
