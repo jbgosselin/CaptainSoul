@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from gi.repository import Gtk
 from twisted.internet import reactor
 
@@ -132,21 +134,25 @@ class MainWindow(Gtk.Window):
         self._protocol = protocol
 
     def loggedHook(self):
+        logging.debug('MainWindow : Logged')
         self._status.push(0, "Connected")
 
     def loginFailedHook(self):
+        logging.debug('MainWindow : Login failed')
         self.disconnectEvent()
 
     def connectionLostHook(self):
         self._protocol = None
         if self._keepConnect:
+            logging.warning('MainWindow : Connection lost try reconnect')
             self._status.push(0, "Reconnecting...")
             reactor.callLater(3, self.connectEvent)
         else:
+            logging.debug("MainWindow : Connection lost don't try reconnect")
             self._status.push(0, "Disconnected")
 
     def connectionMadeHook(self):
-        pass
+        logging.debug('MainWindow : Connection made')
 
     def cmdStateHook(self, info, state):
         self._watchlist.setState(info.login, state)
