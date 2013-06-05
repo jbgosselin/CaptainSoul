@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 from gi.repository import Gtk
 
 import Icons
@@ -10,10 +8,8 @@ import Icons
 class AddContactWindow(Gtk.Dialog):
     def __init__(self, mw):
         super(AddContactWindow, self).__init__(title="CaptainSoul - Add contact", border_width=2, icon=Icons.shield.get_pixbuf())
-        logging.debug("Create AddContactWindow")
         self._createUi()
         self.show_all()
-        logging.debug("Running AddContactWindow")
         if self.run() == Gtk.ResponseType.OK:
             login = self._entry.get_text().strip()
             if login:
