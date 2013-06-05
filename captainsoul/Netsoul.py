@@ -111,7 +111,7 @@ class NsProtocol(LineOnlyReceiver, object):
     def _responseSalutHook(self, no):
         if no == 2:
             md5_hash = md5('%s-%s/%s%s' % (self._info.hash, self._info.host, self._info.port, Config['password'])).hexdigest()
-            self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, Config['location'], 'CaptainSoul'))
+            self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, urlquote(Config['location']), 'CaptainSoul'))
             self._response_queue.append(self._responseLogHook)
 
     def _responseLogHook(self, no):
