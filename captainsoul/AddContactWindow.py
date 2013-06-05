@@ -14,7 +14,6 @@ class AddContactWindow(Gtk.Dialog):
             login = self._entry.get_text().strip()
             if login:
                 mw._watchlist.addContact(login)
-                mw.sendWatch()
 
     def activateEvent(self, *args, **kwargs):
         self.response(Gtk.ResponseType.OK)
