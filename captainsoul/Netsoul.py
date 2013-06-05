@@ -43,7 +43,7 @@ class NsProtocol(LineOnlyReceiver, object):
             Rea(r'^dotnetSoul_UserCancelledTyping null dst=.*$', self._hooker.cmdCancelTypingHook))
 
     def lineReceived(self, line):
-        logging.info("<<< : %s" % line)
+        logging.info('<<< : "%s"' % line)
         if not self._realist.found_match(line):
             logging.warning('Unknown : "%s"' % line)
 
@@ -55,7 +55,7 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def sendLine(self, line):
         super(NsProtocol, self).sendLine(str(line))
-        logging.info(">>> : %s" % line)
+        logging.info('>>> : "%s"' % line)
 
     # HOOKS
 
