@@ -30,10 +30,10 @@ class NsProtocol(LineOnlyReceiver, object):
             Rea(r'^ping (?P<t>\d+)\s?$', self._pingHook),
             Rea(r'^salut (?P<num>\d+) (?P<md5_hash>[0-9a-fA-F]{32}) (?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
                 ' (?P<port>\d{1,5}) (?P<timestamp>\d+)$', self._salutHook),
-            Rea(r'^user_cmd \d+:\w+:\d+/\d+:(?P<login>.+)@(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+            Rea(r'^user_cmd (?P<no>\d+):\w+:\d+/\d+:(?P<login>.+)@(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
                 ':.+:(?P<loc>.+):.+ \| (?P<cmd>.*)$', self._userCmdHook))
         self._cmd_realist = ReaList(
-            Rea(r'^who \d+ (?P<login>.+) (?P<ip>[\d\.]{7,15}) \d+ \d+ \d+ \d+ .+ (?P<loc>.+) .+ (?P<state>\w+)(:\d+)? (?P<res>.+)$', self._cmdWhoHook),
+            Rea(r'^who (?P<no>\d+) (?P<login>.+) (?P<ip>[\d\.]{7,15}) \d+ \d+ \d+ \d+ .+ (?P<loc>.+) .+ (?P<state>\w+)(:\d+)? (?P<res>.+)$', self._cmdWhoHook),
             Rea(r'^who rep 002 -- cmd end$', self._cmdWhoEndHook),
             Rea(r'^msg (?P<msg>.+) dst=(?P<dest>.*)$', self._cmdMsgHook),
             Rea(r'^state (?P<state>\w+?)(:\d+)?\s?$', self._hooker.cmdStateHook),
@@ -61,8 +61,8 @@ class NsProtocol(LineOnlyReceiver, object):
 
     # HOOKS
 
-    def _userCmdHook(self, login, ip, loc, cmd):
-        if not self._cmd_realist.found_match_cmd(cmd, NsUserCmdInfo(login, ip, loc)):
+    def _userCmdHook(self, no, login, ip, loc, cmd):
+        if not self._cmd_realist.found_match_cmd(cmd, NsUserCmdInfo(no, login, ip, loc)):
             logging.warning('Netsoul : Unknown cmd from %s@%s : "%s"' % (login, ip, cmd))
 
     def _responseHook(self, no):
@@ -87,9 +87,9 @@ class NsProtocol(LineOnlyReceiver, object):
 
     # CMD HOOKS
 
-    def _cmdWhoHook(self, info, login, ip, loc, state, res):
+    def _cmdWhoHook(self, info, no, login, ip, loc, state, res):
         if self._who_queue:
-            self._who_queue[0].add(NsWhoEntry(login, ip, loc, state, res))
+            self._who_queue[0].add(NsWhoEntry(no, login, ip, loc, state, res))
         else:
             logging.warning("Netsoul : No who expected")
 
