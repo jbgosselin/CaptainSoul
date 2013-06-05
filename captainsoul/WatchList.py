@@ -8,7 +8,7 @@ import Icons
 
 class Buddy(object):
     def __init__(self, no, login, state, ip, location):
-        self._no = no
+        self._no = int(no)
         self._login = login
         self._state = state
         self._ip = ip
@@ -41,6 +41,12 @@ class Buddy(object):
     def atSchool(self):
         return self._ip.startswith('10.')
 
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return '<Buddy %d %s %s %s "%s">' % (self.no, self.login, self.state, self.ip, self.location)
+
 
 class LoginList(object):
     _list = {}
@@ -49,7 +55,9 @@ class LoginList(object):
         self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in Config['watchlist']}
 
     def processWho(self, results):
-        self._list = {r.no: Buddy(r.no, r.login, r.state, r.ip, r.location) for r in results if r.login in Config['watchlist']}
+        for r in results:
+            if r.login in Config['watchlist']:
+                self._list[r.no] = Buddy(r.no, r.login, r.state, r.ip, r.location)
 
     def formatWatchList(self):
         return [(self.getState(login), login, self.atSchool(login)) for login in Config['watchlist']]
@@ -111,10 +119,11 @@ class WatchList(Gtk.TreeView):
         Config['watchlist'].add(login)
         self._list.clean()
         self.refreshStore()
+        self._mw.sendWatch()
 
     def deleteContactEvent(self, widget, login):
         Config['watchlist'].remove(login)
-        self.clean()
+        self._list.clean()
         self.refreshStore()
         self._mw.sendWatch()
 
@@ -135,4 +144,8 @@ class WatchList(Gtk.TreeView):
 
     def processWho(self, results):
         self._list.processWho(results)
+        self.refreshStore()
+
+    def logoutHook(self, info):
+        self._list.logout(info)
         self.refreshStore()

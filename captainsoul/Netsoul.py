@@ -63,7 +63,7 @@ class NsProtocol(LineOnlyReceiver, object):
     # HOOKS
 
     def _userCmdHook(self, no, login, ip, loc, cmd):
-        if not self._cmd_realist.found_match_cmd(cmd, NsUserCmdInfo(no, login, ip, loc)):
+        if not self._cmd_realist.found_match_cmd(cmd, NsUserCmdInfo(int(no), login, ip, loc)):
             logging.warning('Netsoul : Unknown cmd from %s@%s : "%s"' % (login, ip, cmd))
 
     def _responseHook(self, no):
@@ -114,7 +114,6 @@ class NsProtocol(LineOnlyReceiver, object):
     def _cmdLogoutHook(self, info):
         logging.debug('Netsoul : Got Logout %s' % info)
         self._hooker.cmdLogoutHook(info)
-        self.sendWho([info.login])
 
     # RESPONSE HOOKS
 

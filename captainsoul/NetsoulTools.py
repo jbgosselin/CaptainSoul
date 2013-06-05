@@ -103,13 +103,14 @@ class NsData(object):
 
 class NsWhoEntry(object):
     def __init__(self, no, login, ip, location, state, res):
-        self._no = no
+        self._no = int(no)
         self._login = login
         self._ip = ip
         self._location = location
         self._state = state
         self._res = res
 
+    @property
     def no(self):
         return self._no
 
@@ -133,6 +134,9 @@ class NsWhoEntry(object):
     def res(self):
         return self._res
 
+    def __repr__(self):
+        return '<NsWhoEntry %d %s %s %s %s %s>' % (self.no, self.login, self.ip, self.location, self.state, self.res)
+
 
 class NsWhoResult(object):
     def __init__(self, logins):
@@ -148,3 +152,6 @@ class NsWhoResult(object):
 
     def __iter__(self):
         return iter(self._list)
+
+    def __repr__(self):
+        return '<NsWhoResult %r>' % self._list
