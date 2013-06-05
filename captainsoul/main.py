@@ -15,7 +15,7 @@ from MainWindow import MainWindow
 
 
 def configLogging():
-    fmt = '%(levelname)s:%(message)s'
+    fmt = '%(levelname)s : %(message)s'
     level = logging.WARNING
     if options.log_debug:
         level = logging.DEBUG
