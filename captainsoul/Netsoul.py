@@ -110,8 +110,8 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _responseSalutHook(self, no):
         if no == 2:
-            md5_hash = md5('%s-%s/%s%s' % (self._info.hash, self._info.host, self._info.port, Config.password)).hexdigest()
-            self.sendLine('ext_user_log %s %s %s %s' % (Config.login, md5_hash, Config.location, 'CaptainSoul'))
+            md5_hash = md5('%s-%s/%s%s' % (self._info.hash, self._info.host, self._info.port, Config['password'])).hexdigest()
+            self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, Config['location'], 'CaptainSoul'))
             self._response_queue.append(self._responseLogHook)
 
     def _responseLogHook(self, no):
@@ -132,8 +132,8 @@ class NsProtocol(LineOnlyReceiver, object):
             self.sendLine('state %s:%d' % (state, time()))
 
     def sendWatch(self):
-        self.sendLine('user_cmd watch_log_user {%s}' % ','.join(Config.watchlist))
-        self.sendWho(Config.watchlist)
+        self.sendLine('user_cmd watch_log_user {%s}' % ','.join(Config['watchlist']))
+        self.sendWho(Config['watchlist'])
 
     def sendMsg(self, msg, dests):
         if msg and dests:

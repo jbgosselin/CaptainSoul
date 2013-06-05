@@ -38,11 +38,11 @@ class WatchList(Gtk.TreeView):
             self.refreshStore()
 
     def updateWatchlist(self):
-        self._list = {contact: self._list.get(contact, 'logout') for contact in Config.watchlist}
+        self._list = {contact: self._list.get(contact, 'logout') for contact in Config['watchlist']}
         self.refreshStore()
 
     def addContact(self, login):
-        Config.watchlist.add(login)
+        Config['watchlist'].add(login)
         self.updateWatchlist()
 
     def rowActivated(self, tv, path, column):
