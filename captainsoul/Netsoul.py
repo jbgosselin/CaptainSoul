@@ -7,6 +7,7 @@ from urllib import quote as urlquote
 from urllib import unquote as urlunquote
 from collections import deque
 
+from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
 
@@ -176,3 +177,7 @@ class NsFactory(ClientFactory):
 
     def buildProtocol(self, addr):
         return NsProtocol(self._hooker)
+
+    def clientConnectionFailed(self, connector, reason):
+        logging.warning('Netsoul : Connection failed reconnecting')
+        reactor.callLater(3, connector.connect)

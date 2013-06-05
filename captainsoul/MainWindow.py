@@ -17,6 +17,8 @@ from AddContactWindow import AddContactWindow
 from Systray import Systray
 from WindowManager import WindowManager
 
+NS_HOST, NS_PORT = 'ns-server.epita.fr', 4242
+
 
 class MainWindow(Gtk.Window):
     _protocol = None
@@ -120,7 +122,7 @@ class MainWindow(Gtk.Window):
     def createConnection(self):
         if self._protocol is not None:
             self.stopConnection()
-        reactor.connectTCP("ns-server.epita.fr", 4242, NsFactory(self))
+        reactor.connectTCP(NS_HOST, NS_PORT, NsFactory(self))
 
     def stopConnection(self):
         if self._protocol is not None:
