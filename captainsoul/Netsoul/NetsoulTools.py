@@ -1,10 +1,36 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urllib import unquote as urlunquote
+import string
 
 
-__all__ = ['Rea', 'ReaList', 'NsUserCmdInfo', 'NsData', 'NsWhoEntry', 'NsWhoResult']
+__all__ = ['Rea', 'ReaList', 'NsUserCmdInfo', 'NsData', 'NsWhoEntry', 'NsWhoResult', 'urlEncode', 'urlDecode']
+
+
+def urlEncode(s):
+    r = u''
+    if not isinstance(s, unicode):
+        s = unicode(s, 'utf8')
+    for c in s:
+        if c not in string.ascii_letters + string.digits:
+            r += u'%%%s' % hex(ord(c)).upper()[2:]
+        else:
+            r += c
+    return r
+
+
+def urlDecode(s):
+    r = u''
+    if not isinstance(s, unicode):
+        s = unicode(s, 'utf8')
+    while s:
+        if s[0] == '%':
+            r += unichr(int(s[1:3], 16))
+            s = s[3:]
+        else:
+            r += s[0]
+            s = s[1:]
+    return r
 
 
 class Rea(object):
@@ -49,7 +75,7 @@ class NsUserCmdInfo(object):
         self._no = int(no)
         self._login = login
         self._ip = ip
-        self._location = urlunquote(location)
+        self._location = urlDecode(location)
 
     def __str__(self):
         return '<%d %s@%s "%s">' % (self.no, self.login, self.ip, self.location)

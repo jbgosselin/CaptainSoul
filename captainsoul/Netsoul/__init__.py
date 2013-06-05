@@ -3,16 +3,14 @@
 import logging
 from time import time
 from hashlib import md5
-from urllib import quote as urlquote
-from urllib import unquote as urlunquote
 from collections import deque
 
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
 
-from Config import Config
-from NetsoulTools import Rea, ReaList, NsData, NsUserCmdInfo, NsWhoResult, NsWhoEntry
+from ..Config import Config
+from NetsoulTools import Rea, ReaList, NsData, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
 
 __all__ = ['NsProtocol', 'NsFactory']
 
@@ -101,7 +99,7 @@ class NsProtocol(LineOnlyReceiver, object):
             logging.warning("Netsoul : No who expected")
 
     def _cmdMsgHook(self, info, msg, dest):
-        msg = urlunquote(msg)
+        msg = urlDecode(msg)
         dest = dest.split(',')
         logging.debug('Netsoul : Got Msg %s "%s" %s' % (info, msg, dest))
         self._hooker.cmdMsgHook(info, msg, dest)
@@ -120,7 +118,7 @@ class NsProtocol(LineOnlyReceiver, object):
     def _responseSalutHook(self, no):
         if no == 2:
             md5_hash = md5('%s-%s/%s%s' % (self._info.hash, self._info.host, self._info.port, Config['password'])).hexdigest()
-            self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, urlquote(Config['location']), 'CaptainSoul'))
+            self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, urlEncode(Config['location']), 'CaptainSoul'))
             self._response_queue.append(self._responseLogHook)
         else:
             logging.warning('Netsoul : Salut response unknown %d' % no)
@@ -153,7 +151,7 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def sendMsg(self, msg, dests):
         if msg and dests:
-            self.sendLine('user_cmd msg_user {%s} msg %s' % (','.join(dests), urlquote(msg)))
+            self.sendLine('user_cmd msg_user {%s} msg %s' % (','.join(dests), urlEncode(msg)))
 
     def sendWho(self, logins):
         if logins:
