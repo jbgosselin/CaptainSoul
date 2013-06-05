@@ -6,7 +6,7 @@ from distutils.core import setup
 
 setup(
     name="CaptainSoul",
-    version="0.1",
+    version="dev",
     description="Netsoul client with twisted and gtk3",
     author="gossel_j",
     author_email="jbgosselin@gmail.com",
