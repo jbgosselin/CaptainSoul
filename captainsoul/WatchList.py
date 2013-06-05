@@ -98,7 +98,7 @@ class WatchList(Gtk.TreeView):
             Gtk.TreeViewColumn("State", Gtk.CellRendererPixbuf(), pixbuf=0),
             Gtk.TreeViewColumn("Login", Gtk.CellRendererText(), text=self._loginColumn),
             Gtk.TreeViewColumn("At school", Gtk.CellRendererPixbuf(), pixbuf=2),
-            Gtk.TreeViewColumn("", Gtk.CellRendererText(), pixbuf=3)
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=3)
         ]
         for column in columns:
             self.append_column(column)
