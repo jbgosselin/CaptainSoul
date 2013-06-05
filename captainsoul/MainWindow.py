@@ -51,15 +51,13 @@ class MainWindow(Gtk.Window):
     # Events
 
     def resizeEvent(self, *args, **kwargs):
-        w, h = self.get_size()
-        Config['mainWidth'] = w
-        Config['mainHeight'] = h
+        Config['mainWidth'], Config['mainHeight'] = self.get_size()
 
     def quitEvent(self, *args, **kwargs):
         reactor.stop()
 
     def deleteEvent(self, *args, **kwargs):
-        self.set_visible(False)
+        self.hide()
         return True
 
     def connectEvent(self, *args, **kwargs):
@@ -78,10 +76,9 @@ class MainWindow(Gtk.Window):
 
     def showHideEvent(self, *args, **kwargs):
         if self.get_visible():
-            self.set_visible(False)
+            self.hide()
         else:
             self.show_all()
-            self.set_visible(True)
 
     def addContactWindowEvent(self, *args, **kwargs):
         AddContactWindow(self).destroy()
