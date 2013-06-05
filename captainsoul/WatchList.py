@@ -86,16 +86,22 @@ class LoginList(object):
 
 class WatchList(Gtk.TreeView):
     _list = LoginList()
+    _loginColumn = 1
 
     def __init__(self, mw):
-        self._listStore = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        self._listStore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
         super(WatchList, self).__init__(model=self._listStore)
-        self.set_headers_visible(False)
         self._manager = mw._manager
         self._mw = mw
-        self._listStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
-        self.append_column(Gtk.TreeViewColumn("State", Gtk.CellRendererPixbuf(), pixbuf=0))
-        self.append_column(Gtk.TreeViewColumn("Login", Gtk.CellRendererText(), text=1))
+        self._listStore.set_sort_column_id(self._loginColumn, Gtk.SortType.ASCENDING)
+        columns = [
+            Gtk.TreeViewColumn("State", Gtk.CellRendererPixbuf(), pixbuf=0),
+            Gtk.TreeViewColumn("Login", Gtk.CellRendererText(), text=self._loginColumn),
+            Gtk.TreeViewColumn("At school", Gtk.CellRendererPixbuf(), pixbuf=2),
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), pixbuf=3)
+        ]
+        for column in columns:
+            self.append_column(column)
         self.connect("row-activated", self.rowActivated)
         self.connect("button-press-event", self.buttonPressEvent)
         self.refreshStore()
@@ -109,7 +115,12 @@ class WatchList(Gtk.TreeView):
                 pix = Icons.red.get_pixbuf()
             else:
                 pix = Icons.void.get_pixbuf()
-            self._listStore.append([pix, login])
+            self._listStore.append([
+                pix,
+                login,
+                Icons.epitech.get_pixbuf() if atSchool else Icons.void.get_pixbuf(),
+                "",
+            ])
 
     def setState(self, info, state):
         self._list.changeState(info, state)
@@ -128,13 +139,13 @@ class WatchList(Gtk.TreeView):
         self._mw.sendWatch()
 
     def rowActivated(self, tv, path, column):
-        self._manager.openWindow(self._listStore.get_value(self._listStore.get_iter(path), 1))
+        self._manager.openWindow(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
 
     def buttonPressEvent(self, wid, event):
         if event.type == Gdk.EventType.BUTTON_PRESS and event.button == Gdk.BUTTON_SECONDARY:
             path = self.get_path_at_pos(event.x, event.y)
             if path is not None:
-                login = self._listStore.get_value(self._listStore.get_iter(path[0]), 1)
+                login = self._listStore.get_value(self._listStore.get_iter(path[0]), self._loginColumn)
                 self._menu = Gtk.Menu()
                 item = Gtk.ImageMenuItem(label=Gtk.STOCK_DELETE, use_stock=True)
                 item.connect("activate", self.deleteContactEvent, login)
