@@ -30,7 +30,7 @@ class NsProtocol(LineOnlyReceiver, object):
             Rea(r'^ping (?P<t>\d+)\s?$', self._pingHook),
             Rea(r'^salut (?P<num>\d+) (?P<md5_hash>[0-9a-fA-F]{32}) (?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
                 ' (?P<port>\d{1,5}) (?P<timestamp>\d+)$', self._salutHook),
-            Rea(r'^user_cmd \d+:\w+:\d/\d:(?P<login>.+)@(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+            Rea(r'^user_cmd \d+:\w+:\d+/\d+:(?P<login>.+)@(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
                 ':.+:(?P<loc>.+):.+ \| (?P<cmd>.*)$', self._userCmdHook))
         self._cmd_realist = ReaList(
             Rea(r'^who \d+ (?P<login>.+) (?P<ip>[\d\.]{7,15}) \d+ \d+ \d+ \d+ .+ (?P<loc>.+) .+ (?P<state>\w+)(:\d+)? (?P<res>.+)$', self._cmdWhoHook),
