@@ -111,17 +111,17 @@ class ConfigFile(object):
     def _atexit(self):
         dump({key: value._toJSON() for key, value in self._data.iteritems()}, file(self._path, 'w'))
 
-    def __getattr__(self, name):
-        if name in self._data:
-            return self._data[name]._get()
+    def __getitem__(self, key):
+        if key in self._data:
+            return self._data[key]._get()
         else:
-            raise AttributeError(name)
+            raise KeyError(key)
 
-    def __setattr__(self, name, value):
-        if name in self._data:
+    def __setitem__(self, key, value):
+        if key in self._data:
             self._data[name]._set(value)
         else:
-            super(ConfigFile, self).__setattr__(name, value)
+            raise KeyError(key)
 
 
 Config = ConfigFile()

@@ -24,10 +24,10 @@ class MainWindow(Gtk.Window):
         super(MainWindow, self).__init__(title="CaptainSoul", border_width=2, icon=Icons.shield.get_pixbuf())
         self._manager = WindowManager(self)
         self._createUi()
-        self.resize(Config.mainWidth, Config.mainHeight)
+        self.resize(Config['mainWidth'], Config['mainHeight'])
         self.connect("delete-event", self.deleteEvent)
         self.connect("configure-event", self.resizeEvent)
-        if Config.autoConnect:
+        if Config['autoConnect']:
             self.connectEvent()
         if not options.tray:
             self.show_all()
@@ -52,8 +52,8 @@ class MainWindow(Gtk.Window):
 
     def resizeEvent(self, *args, **kwargs):
         w, h = self.get_size()
-        Config.mainWidth = w
-        Config.mainHeight = h
+        Config['mainWidth'] = w
+        Config['mainHeight'] = h
 
     def quitEvent(self, *args, **kwargs):
         reactor.stop()
