@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf, Gdk
 
 from Config import Config
 import Icons
@@ -18,6 +18,7 @@ class WatchList(Gtk.TreeView):
         self.append_column(Gtk.TreeViewColumn("State", Gtk.CellRendererPixbuf(), pixbuf=0))
         self.append_column(Gtk.TreeViewColumn("Login", Gtk.CellRendererText(), text=1))
         self.connect("row-activated", self.rowActivated)
+        self.connect("button-press-event", self.buttonPressEvent)
         self.updateWatchlist()
         self.refreshStore()
 
@@ -45,5 +46,21 @@ class WatchList(Gtk.TreeView):
         Config['watchlist'].add(login)
         self.updateWatchlist()
 
+    def deleteContactEvent(self, widget, login):
+        Config['watchlist'].remove(login)
+        self.updateWatchlist()
+
     def rowActivated(self, tv, path, column):
         self._manager.openWindow(self._listStore.get_value(self._listStore.get_iter(path), 1))
+
+    def buttonPressEvent(self, wid, event):
+        if event.type == Gdk.EventType.BUTTON_PRESS and event.button == Gdk.BUTTON_SECONDARY:
+            path = self.get_path_at_pos(event.x, event.y)
+            if path is not None:
+                login = self._listStore.get_value(self._listStore.get_iter(path[0]), 1)
+                self._menu = Gtk.Menu()
+                item = Gtk.ImageMenuItem(label=Gtk.STOCK_DELETE, use_stock=True)
+                item.connect("activate", self.deleteContactEvent, login)
+                item.show()
+                self._menu.append(item)
+                self._menu.popup(None, None, None, None, event.button, event.time)
