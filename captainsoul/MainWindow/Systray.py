@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Notify
 
-import Icons
+from .. import Icons
 
 
 class Systray(Gtk.StatusIcon):

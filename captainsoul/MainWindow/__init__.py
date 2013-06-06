@@ -5,17 +5,17 @@ import logging
 from gi.repository import Gtk
 from twisted.internet import reactor
 
-from CmdLine import options
-from Netsoul import NsFactory
-from Config import Config
-import Icons
+from ..CmdLine import options
+from ..Netsoul import NsFactory
+from ..Config import Config
+from .. import Icons
 
 from WatchList import WatchList
 from ToolBar import ToolBar
-from SettingsWindow import SettingsWindow
-from AddContactWindow import AddContactWindow
+from ..SettingsWindow import SettingsWindow
+from ..AddContactWindow import AddContactWindow
 from Systray import Systray
-from WindowManager import WindowManager
+from ..WindowManager import WindowManager
 
 NS_HOST, NS_PORT = 'ns-server.epita.fr', 4242
 

@@ -2,8 +2,8 @@
 
 from gi.repository import Gtk, GdkPixbuf, Gdk
 
-from Config import Config
-import Icons
+from ..Config import Config
+from .. import Icons
 
 
 class Buddy(object):
