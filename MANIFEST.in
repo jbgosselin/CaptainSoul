@@ -1,2 +1,2 @@
 include cptsoul README.md
-recursive-include captainsoul/Icons *
+recursive-include captainsoul/Icons *.png
