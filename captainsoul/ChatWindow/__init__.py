@@ -25,15 +25,16 @@ class ChatWindow(Gtk.Window):
         box = Gtk.VBox(False, 0)
         self._text = ChatView()
         box.add(self._text)
-        # ENTRY
+        # is typing bar
+        self._status = Gtk.Statusbar()
+        box.pack_start(self._status, False, False, 0)
+        # user entry
         view = Gtk.TextView(editable=True, cursor_visible=True, wrap_mode=Gtk.WrapMode.WORD_CHAR)
         self._entry = view.get_buffer()
         view.set_size_request(100, 30)
         view.connect("key-press-event", self.keyPressEvent)
         self._entry.connect("changed", self.keyPressEventEnd)
         box.pack_start(view, False, False, 0)
-        self._status = Gtk.Statusbar()
-        box.pack_start(self._status, False, False, 0)
         self.add(box)
 
     def deleteEvent(self, widget, reason):
