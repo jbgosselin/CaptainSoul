@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from gi.repository import Gtk, Notify
 from gi._glib._glib import GError
 
@@ -17,4 +19,4 @@ class Systray(Gtk.StatusIcon):
         try:
             notif.show()
         except GError:
-            pass
+            logging.warning('Systray : Notification fail')
