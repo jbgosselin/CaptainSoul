@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from gi.repository import Gtk, Notify
+from gi._glib._glib import GError
 
 from .. import Icons
 
@@ -13,4 +14,7 @@ class Systray(Gtk.StatusIcon):
     def notifyMessage(self, who, msg):
         notif = Notify.Notification.new("New message from %s" % who, msg, 'dialog-information')
         notif.set_timeout(5000)
-        notif.show()
+        try:
+            notif.show()
+        except GError:
+            pass
