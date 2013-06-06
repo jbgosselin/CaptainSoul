@@ -12,7 +12,6 @@ def createPackages():
 
 setup(
     name="CaptainSoul",
-    version="dev",
     description="Netsoul client with twisted and gtk3",
     author="gossel_j",
     author_email="jbgosselin@gmail.com",
