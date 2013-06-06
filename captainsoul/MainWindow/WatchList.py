@@ -145,7 +145,8 @@ class WatchList(Gtk.TreeView):
         self._manager.openWindow(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
 
     def buttonPressEvent(self, wid, event):
-        if event.type == Gdk.EventType.BUTTON_PRESS and event.button == Gdk.BUTTON_SECONDARY:
+        # 3 is right click
+        if event.type == Gdk.EventType.BUTTON_PRESS and event.button == 3:
             path = self.get_path_at_pos(event.x, event.y)
             if path is not None:
                 login = self._listStore.get_value(self._listStore.get_iter(path[0]), self._loginColumn)
