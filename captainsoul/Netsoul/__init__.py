@@ -107,7 +107,6 @@ class NsProtocol(LineOnlyReceiver, object):
     def _cmdLoginHook(self, info):
         logging.debug('Netsoul : Got Login %s' % info)
         self._hooker.cmdLoginHook(info)
-        self.sendWho([info.login])
 
     def _cmdLogoutHook(self, info):
         logging.debug('Netsoul : Got Logout %s' % info)
@@ -145,9 +144,10 @@ class NsProtocol(LineOnlyReceiver, object):
         if state:
             self.sendLine('state %s:%d' % (state, time()))
 
-    def sendWatch(self):
+    def sendWatch(self, sendWho=True):
         self.sendLine('user_cmd watch_log_user {%s}' % ','.join(Config['watchlist']))
-        self.sendWho(Config['watchlist'])
+        if sendWho:
+            self.sendWho(Config['watchlist'])
 
     def sendMsg(self, msg, dests):
         if msg and dests:
