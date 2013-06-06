@@ -4,6 +4,12 @@
 from distutils.core import setup
 
 
+def createPackages():
+    pack = "captainsoul"
+    mods = ["ChatWindow", "Config", "Icons", "MainWindow", "Netsoul"]
+    return [pack] + ["%s.%s" % (pack, mod) for mod in mods]
+
+
 setup(
     name="CaptainSoul",
     version="dev",
@@ -11,7 +17,7 @@ setup(
     author="gossel_j",
     author_email="jbgosselin@gmail.com",
     url="https://github.com/gossel-j/captain-soul",
-    packages=["captainsoul"],
+    packages=createPackages(),
     package_data={"captainsoul": ["Icons/*"]},
     scripts=["cptsoul"]
 )
