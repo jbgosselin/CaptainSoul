@@ -49,31 +49,52 @@ class Manager(GObject.GObject, ClientFactory):
 
     def sendState(self, state):
         if self._protocol is not None:
+            logging.info(u'Manager : Send state %s' % state)
             self._protocol.sendState(state)
+        else:
+            logging.warning(u'Manager : Try send state %s' % state)
 
     def sendWatch(self, sendWho=True):
         if self._protocol is not None:
+            logging.info(u'Manager : Send watch (send who = %s)' % sendWho)
             self._protocol.sendWatch(sendWho)
+        else:
+            logging.warning(u'Manager : Try send watch (send who = %s)' % sendWho)
 
     def sendMsg(self, msg, dests):
         if self._protocol is not None:
+            logging.info(u'Manager : Send msg "%s" to %s' % (msg, dests))
             self._protocol.sendMsg(msg, dests)
+        else:
+            logging.warning(u'Manager : Try send msg "%s" to %s' % (msg, dests))
 
     def sendWho(self, logins):
         if self._protocol is not None:
+            logging.info('Manager : Send who of %s' % logins)
             self._protocol.sendWho(logins)
+        else:
+            logging.warning('Manager : Try send who of %s' % logins)
 
     def sendExit(self):
         if self._protocol is not None:
+            logging.info('Manager : Send exit')
             self._protocol.sendExit()
+        else:
+            logging.warning('Manager : Try send exit')
 
     def sendStartTyping(self, dests):
         if self._protocol is not None:
+            logging.info('Manager : Send start typing to %s' % dests)
             self._protocol.sendStartTyping(dests)
+        else:
+            logging.warning('Manager : Try send start typing to %s' % dests)
 
     def sendCancelTyping(self, dests):
         if self._protocol is not None:
+            logging.info('Manager : Send cancel typing to %s' % dests)
             self._protocol.sendCancelTyping(dests)
+        else:
+            logging.warning('Manager : Try send cancel typing to %s' % dests)
 
     # Actions
 
