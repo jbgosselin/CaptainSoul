@@ -11,11 +11,14 @@ class SettingsWindow(Gtk.Dialog):
         super(SettingsWindow, self).__init__(title="CaptainSoul - Settings", border_width=2, icon=Icons.shield.get_pixbuf())
         self._createUi()
         self.show_all()
-        if self.run() == Gtk.ResponseType.APPLY:
-            Config['login'] = self._loginEntry.get_text()
-            Config['password'] = self._passwordEntry.get_text()
-            Config['location'] = self._locationEntry.get_text()
-            Config['autoConnect'] = self._autoButton.get_active()
+
+    def getAllParams(self):
+        return {
+            'login': self._loginEntry.get_text(),
+            'password': self._passwordEntry.get_text(),
+            'location': self._locationEntry.get_text(),
+            'autoConnect': self._autoButton.get_active()
+        }
 
     def _createUi(self):
         table = Gtk.Table(4, 3, True)

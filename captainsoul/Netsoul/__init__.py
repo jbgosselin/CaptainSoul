@@ -5,14 +5,12 @@ from time import time
 from hashlib import md5
 from collections import deque
 
-from twisted.internet import reactor
-from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineOnlyReceiver
 
 from ..Config import Config
 from NetsoulTools import Rea, ReaList, NsData, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
 
-__all__ = ['NsProtocol', 'NsFactory']
+__all__ = ['NsProtocol']
 
 
 class NsProtocol(LineOnlyReceiver, object):
@@ -20,9 +18,9 @@ class NsProtocol(LineOnlyReceiver, object):
     _response_queue = deque()
     _who_queue = deque()
 
-    def __init__(self, hooker):
-        self._hooker = hooker
-        self._hooker.setProtocol(self)
+    def __init__(self, factory):
+        self.factory = factory
+        self.factory.setProtocol(self)
         self._info = NsData()
         self._realist = ReaList(
             Rea(r'^rep (?P<no>\d+) -- .*$', self._responseHook),
@@ -35,28 +33,26 @@ class NsProtocol(LineOnlyReceiver, object):
             Rea(r'^who (?P<no>\d+) (?P<login>.+) (?P<ip>[\d\.]{7,15}) \d+ \d+ \d+ \d+ .+ (?P<loc>.+) .+ (?P<state>\w+)(:\d+)? (?P<res>.+)$', self._cmdWhoHook),
             Rea(r'^who rep 002 -- cmd end$', self._cmdWhoEndHook),
             Rea(r'^msg (?P<msg>.+) dst=(?P<dest>.*)$', self._cmdMsgHook),
-            Rea(r'^state (?P<state>\w+?)(:\d+)?\s?$', self._hooker.cmdStateHook),
+            Rea(r'^state (?P<state>\w+?)(:\d+)?\s?$', self._cmdStateHook),
             Rea(r'^login\s?$', self._cmdLoginHook),
             Rea(r'^logout\s?$', self._cmdLogoutHook),
-            Rea(r'^dotnetSoul_UserTyping null dst=.*$', self._hooker.cmdIsTypingHook),
-            Rea(r'^dotnetSoul_UserCancelledTyping null dst=.*$', self._hooker.cmdCancelTypingHook))
+            Rea(r'^dotnetSoul_UserTyping null dst=.*$', self._cmdIsTypingHook),
+            Rea(r'^dotnetSoul_UserCancelledTyping null dst=.*$', self._cmdCancelTypingHook))
 
     def lineReceived(self, line):
-        logging.info('Netsoul : <<   : "%s"' % line)
+        logging.debug('Netsoul : <<   : "%s"' % line)
         if not self._realist.found_match(line):
             logging.warning('Netsoul : Unknown line : "%s"' % line)
 
     def connectionLost(self, reason):
-        logging.info('Netsoul : Connection Lost')
-        self._hooker.connectionLostHook()
+        pass
 
     def connectionMade(self):
-        logging.info('Netsoul : Connection Made')
-        self._hooker.connectionMadeHook()
+        self.factory.connectionMadeHook()
 
     def sendLine(self, line):
         super(NsProtocol, self).sendLine(str(line))
-        logging.info('Netsoul :   >> : "%s"' % line)
+        logging.debug('Netsoul :   >> : "%s"' % line)
 
     # HOOKS
 
@@ -66,18 +62,18 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _responseHook(self, no):
         no = int(no)
-        logging.debug('Netsoul : Got response %d' % no)
         if self._response_queue:
+            logging.info('Netsoul : Got response %d' % no)
             self._response_queue.popleft()(no)
         else:
             logging.warning('Netsoul : No response expected')
 
     def _pingHook(self, t):
-        logging.debug('Netsoul : Got ping %d' % int(t))
+        logging.info('Netsoul : Got ping %d' % int(t))
         self.sendLine('ping %s' % t)
 
     def _salutHook(self, num, md5_hash, ip, port, timestamp):
-        logging.debug('Netsoul : Got salut %s %s:%s' % (md5_hash, ip, port))
+        logging.info('Netsoul : Got salut %s %s:%s' % (md5_hash, ip, port))
         self._info.hash = md5_hash
         self._info.host = ip
         self._info.port = port
@@ -94,23 +90,27 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _cmdWhoEndHook(self, info):
         if self._who_queue:
-            self._hooker.cmdWhoHook(self._who_queue.popleft())
+            self.factory.cmdWhoHook(self._who_queue.popleft())
         else:
             logging.warning("Netsoul : No who expected")
 
     def _cmdMsgHook(self, info, msg, dest):
-        msg = urlDecode(msg)
-        dest = dest.split(',')
-        logging.debug('Netsoul : Got Msg %s "%s" %s' % (info, msg, dest))
-        self._hooker.cmdMsgHook(info, msg, dest)
+        self.factory.cmdMsgHook(info, urlDecode(msg), dest.split(','))
 
     def _cmdLoginHook(self, info):
-        logging.debug('Netsoul : Got Login %s' % info)
-        self._hooker.cmdLoginHook(info)
+        self.factory.cmdLoginHook(info)
 
     def _cmdLogoutHook(self, info):
-        logging.debug('Netsoul : Got Logout %s' % info)
-        self._hooker.cmdLogoutHook(info)
+        self.factory.cmdLogoutHook(info)
+
+    def _cmdStateHook(self, info, state):
+        self.factory.cmdStateHook(info, state)
+
+    def _cmdIsTypingHook(self, info):
+        self.factory.cmdIsTypingHook(info)
+
+    def _cmdCancelTypingHook(self, info):
+        self.factory.cmdCancelTypingHook(info)
 
     # RESPONSE HOOKS
 
@@ -124,19 +124,15 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _responseLogHook(self, no):
         if no == 2:
-            logging.debug('Netsoul : Logged')
-            self.sendState('actif')
-            self.sendWatch()
-            self._hooker.loggedHook()
+            self.factory.loggedHook()
         elif no == 33:
-            logging.debug('Netsoul : Login failed')
-            self._hooker.loginFailedHook()
+            self.factory.loginFailedHook()
         elif no == 131:
             # permission denied
-            logging.debug('Netsoul : Login failed')
-            self._hooker.loginFailedHook()
+            self.factory.loginFailedHook()
         else:
             logging.warning('Netsoul : Log response unknown %d' % no)
+            self.factory.loginFailedHook()
 
     # COMMANDS
 
@@ -166,15 +162,3 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def sendCancelTyping(self, dests):
         self.sendLine('user_cmd msg_user {%s} dotnetSoul_UserCancelledTyping null' % ','.join(dests))
-
-
-class NsFactory(ClientFactory):
-    def __init__(self, hooker):
-        self._hooker = hooker
-
-    def buildProtocol(self, addr):
-        return NsProtocol(self._hooker)
-
-    def clientConnectionFailed(self, connector, reason):
-        logging.warning('Netsoul : Connection failed reconnecting')
-        reactor.callLater(3, connector.connect)
