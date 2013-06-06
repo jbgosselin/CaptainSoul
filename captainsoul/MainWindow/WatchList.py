@@ -151,7 +151,8 @@ class WatchList(Gtk.TreeView):
             if path is not None:
                 login = self._listStore.get_value(self._listStore.get_iter(path[0]), self._loginColumn)
                 self._menu = Gtk.Menu()
-                item = Gtk.ImageMenuItem(label=Gtk.STOCK_DELETE, use_stock=True)
+                item = Gtk.ImageMenuItem(label=Gtk.STOCK_DELETE)
+                item.set_use_stock(True)
                 item.connect("activate", self.deleteContactEvent, login)
                 item.show()
                 self._menu.append(item)
