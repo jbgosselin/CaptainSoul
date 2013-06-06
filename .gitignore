@@ -3,6 +3,4 @@
 MANIFEST
 build/
 dist/
-CaptainSoul.egg-info
-temp
-setup.cfg
+myflake.sh
