@@ -93,9 +93,9 @@ class MainWindow(Gtk.Window):
         if self._protocol is not None:
             self._protocol.sendState(state)
 
-    def sendWatch(self):
+    def sendWatch(self, sendWho=True):
         if self._protocol is not None:
-            self._protocol.sendWatch()
+            self._protocol.sendWatch(sendWho)
 
     def sendMsg(self, msg, dests):
         if self._protocol is not None:

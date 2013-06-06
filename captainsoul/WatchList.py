@@ -76,8 +76,11 @@ class LoginList(object):
         return any([buddy.atSchool() for buddy in self.getFromLogin(login)])
 
     def changeState(self, info, state):
-        if info.no in self._list:
-            self._list[info.no].state = state
+        if info.login in Config['watchlist']:
+            if info.no in self._list:
+                self._list[info.no].state = state
+            else:
+                self._list[info.no] = Buddy(info.no, info.login, state, info.ip, info.location)
 
     def logout(self, info):
         if info.no in self._list:
@@ -136,7 +139,7 @@ class WatchList(Gtk.TreeView):
         Config['watchlist'].remove(login)
         self._list.clean()
         self.refreshStore()
-        self._mw.sendWatch()
+        self._mw.sendWatch(False)
 
     def rowActivated(self, tv, path, column):
         self._manager.openWindow(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
