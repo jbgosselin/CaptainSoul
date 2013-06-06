@@ -1,4 +1,3 @@
 #!/bin/sh
 
-./setup.py build
-sudo ./setup.py install
+./setup.py build && sudo ./remove.py && sudo ./setup.py install
