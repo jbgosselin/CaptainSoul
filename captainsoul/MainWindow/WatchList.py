@@ -91,11 +91,10 @@ class WatchList(Gtk.TreeView):
     _list = LoginList()
     _loginColumn = 1
 
-    def __init__(self, mw):
+    def __init__(self, manager):
         self._listStore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
         super(WatchList, self).__init__(model=self._listStore)
-        self._manager = mw._manager
-        self._mw = mw
+        self._manager = manager
         self._listStore.set_sort_column_id(self._loginColumn, Gtk.SortType.ASCENDING)
         columns = [
             Gtk.TreeViewColumn("State", Gtk.CellRendererPixbuf(), pixbuf=0),
@@ -107,6 +106,11 @@ class WatchList(Gtk.TreeView):
             self.append_column(column)
         self.connect("row-activated", self.rowActivated)
         self.connect("button-press-event", self.buttonPressEvent)
+        manager.connect('state', self.stateEvent)
+        manager.connect('contact-added', self.contactAddedEvent)
+        manager.connect('contact-deleted', self.contactDeletedEvent)
+        manager.connect('who', self.whoEvent)
+        manager.connect('logout', self.logoutEvent)
         self.refreshStore()
 
     def refreshStore(self):
@@ -125,24 +129,20 @@ class WatchList(Gtk.TreeView):
                 "",
             ])
 
-    def setState(self, info, state):
+    def stateEvent(self, widget, info, state):
         self._list.changeState(info, state)
         self.refreshStore()
 
-    def addContact(self, login):
-        Config['watchlist'].add(login)
+    def contactAddedEvent(self, widget, login):
         self._list.clean()
         self.refreshStore()
-        self._mw.sendWatch()
 
-    def deleteContactEvent(self, widget, login):
-        Config['watchlist'].remove(login)
+    def contactDeletedEvent(self, widget, login):
         self._list.clean()
         self.refreshStore()
-        self._mw.sendWatch(False)
 
     def rowActivated(self, tv, path, column):
-        self._manager.openWindow(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
+        self._manager.doOpenChat(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
 
     def buttonPressEvent(self, wid, event):
         # 3 is right click
@@ -158,10 +158,13 @@ class WatchList(Gtk.TreeView):
                 self._menu.append(item)
                 self._menu.popup(None, None, None, None, event.button, event.time)
 
-    def processWho(self, results):
+    def deleteContactEvent(self, widget, login):
+        self._manager.doDeleteContact(login)
+
+    def whoEvent(self, widget, results):
         self._list.processWho(results)
         self.refreshStore()
 
-    def logoutHook(self, info):
+    def logoutEvent(self, widget, info):
         self._list.logout(info)
         self.refreshStore()

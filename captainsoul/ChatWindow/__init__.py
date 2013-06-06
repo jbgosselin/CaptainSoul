@@ -9,13 +9,16 @@ from ChatView import ChatView
 class ChatWindow(Gtk.Window):
     _typing = False
 
-    def __init__(self, manager, mw, login, iconify):
+    def __init__(self, manager, login, iconify):
         super(ChatWindow, self).__init__(title="CaptainSoul - %s" % login, border_width=2, icon=Icons.shield.get_pixbuf())
+        self._manager = manager
         self._login = login
-        self._mw = mw
         self._createUi()
         self.connect("delete-event", self.deleteEvent)
-        self.connect("delete-event", manager.closeWindow, login)
+        self.connect("delete-event", manager.closeChatWindowEvent, login)
+        manager.connect('msg', self.msgEvent)
+        manager.connect('is-typing', self.isTypingEvent)
+        manager.connect('cancel-typing', self.cancelTypingEvent)
         self.resize(200, 200)
         if iconify:
             self.iconify()
@@ -39,8 +42,8 @@ class ChatWindow(Gtk.Window):
 
     def deleteEvent(self, widget, reason):
         if self._typing:
-            self._mw.sendCancelTyping([self._login])
             self._typing = False
+            self._manager.sendCancelTyping([self._login])
 
     def keyPressEvent(self, widget, event):
         if event.keyval == Gdk.KEY_Return:
@@ -48,26 +51,29 @@ class ChatWindow(Gtk.Window):
             if len(text):
                 self._entry.delete(self._entry.get_start_iter(), self._entry.get_end_iter())
                 self._text.addMyMsg(text)
-                self._mw.sendMsg(text, [self._login])
+                self._manager.sendMsg(text, [self._login])
             return True
 
     def keyPressEventEnd(self, widget):
         l = len(self._entry.get_text(self._entry.get_start_iter(), self._entry.get_end_iter(), True))
         if not self._typing and l >= 5:
-            self._mw.sendStartTyping([self._login])
+            self._manager.sendStartTyping([self._login])
             self._typing = True
         elif self._typing and l < 5:
-            self._mw.sendCancelTyping([self._login])
+            self._manager.sendCancelTyping([self._login])
             self._typing = False
 
     def addMsg(self, msg):
         self._text.addOtherMsg(msg, self._login)
 
-    def changeState(self, state):
-        pass
+    def msgEvent(self, widget, info, msg, dests):
+        if info.login == self._login:
+            self.addMsg(msg)
 
-    def startTyping(self):
-        self._status.push(0, "Is typing...")
+    def isTypingEvent(self, widget, info):
+        if info.login == self._login:
+            self._status.push(0, "Is typing...")
 
-    def cancelTyping(self):
-        self._status.remove_all(0)
+    def cancelTypingEvent(self, widget, info):
+        if info.login == self._login:
+            self._status.remove_all(0)

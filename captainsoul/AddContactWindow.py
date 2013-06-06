@@ -6,17 +6,16 @@ import Icons
 
 
 class AddContactWindow(Gtk.Dialog):
-    def __init__(self, mw):
+    def __init__(self):
         super(AddContactWindow, self).__init__(title="CaptainSoul - Add contact", border_width=2, icon=Icons.shield.get_pixbuf())
         self._createUi()
         self.show_all()
-        if self.run() == Gtk.ResponseType.OK:
-            login = self._entry.get_text().strip()
-            if login:
-                mw._watchlist.addContact(login)
 
     def activateEvent(self, *args, **kwargs):
         self.response(Gtk.ResponseType.OK)
+
+    def getLogin(self):
+        return self._entry.get_text().strip()
 
     def _createUi(self):
         self._entry = Gtk.Entry()
