@@ -13,9 +13,7 @@ from ToolBar import ToolBar
 class MainWindow(gtk.Window):
     def __init__(self, manager):
         super(MainWindow, self).__init__()
-        self.set_title("CaptainSoul")
-        self.set_border_width(2)
-        self.set_icon(Icons.shield.get_pixbuf())
+        self.set_properties(title="CaptainSoul", border_width=2, icon=Icons.shield.get_pixbuf())
         self._createUi(manager)
         self.resize(Config['mainWidth'], Config['mainHeight'])
         self.connect("delete-event", self.deleteEvent)
