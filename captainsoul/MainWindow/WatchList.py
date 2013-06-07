@@ -147,16 +147,17 @@ class WatchList(gtk.TreeView):
     def buttonPressEvent(self, wid, event):
         # 3 is right click
         if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
-            path = self.get_path_at_pos(event.x, event.y)
+            path = self.get_path_at_pos(int(event.x), int(event.y))
             if path is not None:
                 login = self._listStore.get_value(self._listStore.get_iter(path[0]), self._loginColumn)
                 self._menu = gtk.Menu()
-                item = gtk.ImageMenuItem(label=gtk.STOCK_DELETE)
+                item = gtk.ImageMenuItem()
+                item.set_label(gtk.STOCK_DELETE)
                 item.set_use_stock(True)
                 item.connect("activate", self.deleteContactEvent, login)
                 item.show()
                 self._menu.append(item)
-                self._menu.popup(None, None, None, None, event.button, event.time)
+                self._menu.popup(None, None, None, event.button, event.time)
 
     def deleteContactEvent(self, widget, login):
         self._manager.doDeleteContact(login)
