@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk
+import gtk
 
 from ..CmdLine import options
 from ..Config import Config
@@ -9,12 +9,13 @@ from .. import Icons
 from WatchList import WatchList
 from ToolBar import ToolBar
 
-NS_HOST, NS_PORT = 'ns-server.epita.fr', 4242
 
-
-class MainWindow(Gtk.Window):
+class MainWindow(gtk.Window):
     def __init__(self, manager):
-        super(MainWindow, self).__init__(title="CaptainSoul", border_width=2, icon=Icons.shield.get_pixbuf())
+        super(MainWindow, self).__init__()
+        self.set_title("CaptainSoul")
+        self.set_border_width(2)
+        self.set_icon(Icons.shield.get_pixbuf())
         self._createUi(manager)
         self.resize(Config['mainWidth'], Config['mainHeight'])
         self.connect("delete-event", self.deleteEvent)
@@ -27,16 +28,16 @@ class MainWindow(Gtk.Window):
             self.show_all()
 
     def _createUi(self, manager):
-        box = Gtk.VBox(False, 0)
+        box = gtk.VBox(False, 0)
         self._toolbar = ToolBar(manager)
         box.pack_start(self._toolbar, False, False, 0)
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll = gtk.ScrolledWindow()
+        scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scroll.set_size_request(160, 50)
         self._watchlist = WatchList(manager)
         scroll.add_with_viewport(self._watchlist)
         box.pack_start(scroll, True, True, 0)
-        self._status = Gtk.Statusbar()
+        self._status = gtk.Statusbar()
         box.pack_start(self._status, False, False, 0)
         self._status.push(0, "Welcome")
         self.add(box)

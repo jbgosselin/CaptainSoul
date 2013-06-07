@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk
+import gtk
 
 import Icons
 
 
-class AddContactWindow(Gtk.Dialog):
+class AddContactWindow(gtk.Dialog):
     def __init__(self):
-        super(AddContactWindow, self).__init__(title="CaptainSoul - Add contact", border_width=2, icon=Icons.shield.get_pixbuf())
+        super(AddContactWindow, self).__init__(title="CaptainSoul - Add contact")
+        self.set_border_width(2)
+        self.set_icon(Icons.shield.get_pixbuf())
         self._createUi()
         self.show_all()
 
     def activateEvent(self, *args, **kwargs):
-        self.response(Gtk.ResponseType.OK)
+        self.response(gtk.RESPONSE_OK)
 
     def getLogin(self):
         return self._entry.get_text().strip()
 
     def _createUi(self):
-        self._entry = Gtk.Entry()
+        self._entry = gtk.Entry()
         self._entry.connect("activate", self.activateEvent)
         self.vbox.pack_start(self._entry, True, True, 0)
-        self.add_button("Ok", Gtk.ResponseType.OK)
-        self.add_button("Cancel", Gtk.ResponseType.CANCEL)
+        self.add_button("Ok", gtk.RESPONSE_OK)
+        self.add_button("Cancel", gtk.RESPONSE_CANCEL)

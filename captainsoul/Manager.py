@@ -2,7 +2,8 @@
 
 import logging
 
-from gi.repository import GObject, Gtk
+import gtk
+import gobject
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 
@@ -16,30 +17,30 @@ from AddContactWindow import AddContactWindow
 from ChatWindow import ChatWindow
 
 
-class Manager(GObject.GObject, ClientFactory):
+class Manager(gobject.GObject, ClientFactory):
     __gsignals__ = {
-        'reconnecting': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
-        'connecting': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
-        'disconnected': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
-        'connected': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
-        'logged': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
-        'login-failed': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, []),
-        'login': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_PYOBJECT]),
-        'logout': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_PYOBJECT]),
-        'msg': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_PYOBJECT, GObject.TYPE_STRING, GObject.TYPE_PYOBJECT]),
-        'who': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_PYOBJECT]),
-        'state': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_PYOBJECT, GObject.TYPE_STRING]),
-        'is-typing': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_PYOBJECT]),
-        'cancel-typing': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_PYOBJECT]),
-        'contact-added': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_STRING]),
-        'contact-deleted': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE, [GObject.TYPE_STRING]),
+        'reconnecting': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        'connecting': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        'disconnected': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        'connected': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        'logged': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        'login-failed': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
+        'login': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT]),
+        'logout': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT]),
+        'msg': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT, gobject.TYPE_STRING, gobject.TYPE_PYOBJECT]),
+        'who': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT]),
+        'state': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT, gobject.TYPE_STRING]),
+        'is-typing': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT]),
+        'cancel-typing': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT]),
+        'contact-added': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
+        'contact-deleted': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
     }
     _protocol = None
     _tryReconnecting = False
     _chatWindows = {}
 
     def __init__(self):
-        GObject.GObject.__init__(self)
+        gobject.GObject.__init__(self)
         self._mainwindow = MainWindow(self)
         self._systray = Systray(self, self._mainwindow)
         if Config['autoConnect']:
@@ -151,7 +152,7 @@ class Manager(GObject.GObject, ClientFactory):
 
     def openAddContactWindowEvent(self, *args, **kwargs):
         win = AddContactWindow()
-        if win.run() == Gtk.ResponseType.OK:
+        if win.run() == gtk.RESPONSE_OK:
             login = win.getLogin()
             win.destroy()
             self.doAddContact(login)
@@ -160,7 +161,7 @@ class Manager(GObject.GObject, ClientFactory):
 
     def openSettingsWindowEvent(self, *args, **kwargs):
         win = SettingsWindow()
-        if win.run() == Gtk.ResponseType.APPLY:
+        if win.run() == gtk.RESPONSE_APPLY:
             for key, value in win.getAllParams().iteritems():
                 Config[key] = value
         win.destroy()

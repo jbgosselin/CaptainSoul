@@ -1,17 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from twisted.internet import gtk3reactor
-gtk3reactor.install()
+from twisted.internet import gtk2reactor
+gtk2reactor.install()
 from twisted.internet import reactor
 
-from gi.repository import Notify
-Notify.init("CaptainSoul")
-
-import logging
-
 from CmdLine import options
-
-from Manager import Manager
+import logging
 
 
 def configLogging():
@@ -22,10 +16,18 @@ def configLogging():
     elif options.log_info:
         level = logging.INFO
     logging.basicConfig(level=level, format=fmt)
+configLogging()
+
+try:
+    import pynotify
+    pynotify.init("CaptainSoul")
+except ImportError:
+    logging.warning('Init : pynotify is not installed')
+
+from Manager import Manager
 
 
 def main():
-    configLogging()
     manager = Manager()
     id(manager)
     reactor.run()

@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk, Gdk
+import gtk
 
 from .. import Icons
 from ChatView import ChatView
 
 
-class ChatWindow(Gtk.Window):
+class ChatWindow(gtk.Window):
     _typing = False
 
     def __init__(self, manager, login, iconify):
-        super(ChatWindow, self).__init__(title="CaptainSoul - %s" % login, border_width=2, icon=Icons.shield.get_pixbuf())
+        super(ChatWindow, self).__init__()
+        self.set_title("CaptainSoul - %s" % login)
+        self.set_border_width(2)
+        self.set_icon(Icons.shield.get_pixbuf())
         self._manager = manager
         self._login = login
         self._createUi()
@@ -25,14 +28,17 @@ class ChatWindow(Gtk.Window):
         self.show_all()
 
     def _createUi(self):
-        box = Gtk.VBox(False, 0)
+        box = gtk.VBox(False, 0)
         self._text = ChatView()
         box.add(self._text)
         # is typing bar
-        self._status = Gtk.Statusbar()
+        self._status = gtk.Statusbar()
         box.pack_start(self._status, False, False, 0)
         # user entry
-        view = Gtk.TextView(editable=True, cursor_visible=True, wrap_mode=Gtk.WrapMode.WORD_CHAR)
+        view = gtk.TextView()
+        view.set_editable(True)
+        view.set_cursor_visible(True)
+        view.set_wrap_mode(gtk.WRAP_WORD_CHAR)
         self._entry = view.get_buffer()
         view.set_size_request(100, 30)
         view.connect("key-press-event", self.keyPressEvent)
@@ -46,7 +52,7 @@ class ChatWindow(Gtk.Window):
             self._manager.sendCancelTyping([self._login])
 
     def keyPressEvent(self, widget, event):
-        if event.keyval == Gdk.KEY_Return:
+        if gtk.gdk.keyval_name(event.keyval) == 'Return':
             text = self._entry.get_text(self._entry.get_start_iter(), self._entry.get_end_iter(), True)
             if len(text):
                 self._entry.delete(self._entry.get_start_iter(), self._entry.get_end_iter())
