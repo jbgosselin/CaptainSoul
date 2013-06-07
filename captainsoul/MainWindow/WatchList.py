@@ -46,7 +46,7 @@ class Buddy(object):
 
 class LoginList(object):
     def __init__(self):
-        self._list = {}        
+        self._list = {}
 
     def clean(self):
         self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in Config['watchlist']}
@@ -91,6 +91,7 @@ class WatchList(gtk.TreeView):
         self._listStore = gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str)
         super(WatchList, self).__init__(model=self._listStore)
         self._manager, self._list = manager, LoginList()
+        self.set_rules_hint(True)
         self._listStore.set_sort_column_id(self._loginColumn, gtk.SORT_ASCENDING)
         columns = [
             gtk.TreeViewColumn("State", gtk.CellRendererPixbuf(), pixbuf=0),
