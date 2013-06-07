@@ -11,9 +11,7 @@ class ChatWindow(gtk.Window):
 
     def __init__(self, manager, login, iconify):
         super(ChatWindow, self).__init__()
-        self.set_title("CaptainSoul - %s" % login)
-        self.set_border_width(2)
-        self.set_icon(Icons.shield.get_pixbuf())
+        self.set_properties(title="CaptainSoul - %s" % login, border_width=2, icon=Icons.shield.get_pixbuf())
         self._manager = manager
         self._login = login
         self._createUi()
@@ -36,9 +34,7 @@ class ChatWindow(gtk.Window):
         box.pack_start(self._status, False, False, 0)
         # user entry
         view = gtk.TextView()
-        view.set_editable(True)
-        view.set_cursor_visible(True)
-        view.set_wrap_mode(gtk.WRAP_WORD_CHAR)
+        view.set_properties(editable=True, cursor_visible=True, wrap_mode=gtk.WRAP_WORD_CHAR)
         self._entry = view.get_buffer()
         view.set_size_request(100, 30)
         view.connect("key-press-event", self.keyPressEvent)
