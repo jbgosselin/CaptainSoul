@@ -8,7 +8,7 @@ import Icons
 class AddContactWindow(gtk.Dialog):
     def __init__(self):
         super(AddContactWindow, self).__init__(title="CaptainSoul - Add contact")
-        self.set_properties(border_width=2, icon=Icons.shield.get_pixbuf())
+        self.set_properties(icon=Icons.shield.get_pixbuf(), resizable=False)
         self._createUi()
         self.show_all()
 
@@ -22,5 +22,4 @@ class AddContactWindow(gtk.Dialog):
         self._entry = gtk.Entry()
         self._entry.connect("activate", self.activateEvent)
         self.vbox.pack_start(self._entry, True, True, 0)
-        self.add_button("Ok", gtk.RESPONSE_OK)
-        self.add_button("Cancel", gtk.RESPONSE_CANCEL)
+        self.add_buttons("Add", gtk.RESPONSE_OK, "Cancel", gtk.RESPONSE_CANCEL)
