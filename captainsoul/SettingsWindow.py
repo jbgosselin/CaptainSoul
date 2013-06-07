@@ -1,38 +1,48 @@
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk
+import gtk
 
 from Config import Config
 import Icons
 
 
-class SettingsWindow(Gtk.Dialog):
+class SettingsWindow(gtk.Dialog):
     def __init__(self):
-        super(SettingsWindow, self).__init__(title="CaptainSoul - Settings", border_width=2, icon=Icons.shield.get_pixbuf())
+        super(SettingsWindow, self).__init__(title="CaptainSoul - Settings")
+        self.set_border_width(2)
+        self.set_icon(Icons.shield.get_pixbuf())
         self._createUi()
         self.show_all()
 
     def getAllParams(self):
         return {
-            'login': self._loginEntry.get_text(),
-            'password': self._passwordEntry.get_text(),
-            'location': self._locationEntry.get_text(),
+            'login': self._entries['login'].get_text(),
+            'password': self._entries['password'].get_text(),
+            'location': self._entries['location'].get_text(),
             'autoConnect': self._autoButton.get_active()
         }
 
     def _createUi(self):
-        table = Gtk.Table(4, 3, True)
-        table.attach(Gtk.Label("Login:"), 0, 1, 0, 1)
-        self._loginEntry = Gtk.Entry(text=Config['login'])
-        table.attach(self._loginEntry, 1, 3, 0, 1)
-        table.attach(Gtk.Label("Password:"), 0, 1, 1, 2)
-        self._passwordEntry = Gtk.Entry(text=Config['password'], visibility=False)
-        table.attach(self._passwordEntry, 1, 3, 1, 2)
-        table.attach(Gtk.Label("Location:"), 0, 1, 2, 3)
-        self._locationEntry = Gtk.Entry(text=Config['location'])
-        table.attach(self._locationEntry, 1, 3, 2, 3)
-        table.attach(Gtk.Label("Auto-connect:"), 0, 2, 3, 4)
-        self._autoButton = Gtk.CheckButton(active=Config['autoConnect'])
+        # create entries
+        self._entries = {key: gtk.Entry() for key in ['login', 'password', 'location']}
+        for key, entry in self._entries.iteritems():
+            entry.set_text(Config[key])
+        self._entries['password'].set_visibility(False)
+        # create table and populate it
+        table = gtk.Table(4, 3, True)
+        # login
+        table.attach(gtk.Label("Login:"), 0, 1, 0, 1)
+        table.attach(self._entries['login'], 1, 3, 0, 1)
+        # password
+        table.attach(gtk.Label("Password:"), 0, 1, 1, 2)
+        table.attach(self._entries['password'], 1, 3, 1, 2)
+        # location
+        table.attach(gtk.Label("Location:"), 0, 1, 2, 3)
+        table.attach(self._entries['location'], 1, 3, 2, 3)
+        # autoConnect
+        table.attach(gtk.Label("Auto-connect:"), 0, 2, 3, 4)
+        self._autoButton = gtk.CheckButton()
+        self._autoButton.set_active(Config['autoConnect'])
         table.attach(self._autoButton, 2, 3, 3, 4)
         self.vbox.pack_start(table, True, True, 0)
-        self.add_buttons("Apply", Gtk.ResponseType.APPLY, "Cancel", Gtk.ResponseType.CANCEL)
+        self.add_buttons("Apply", gtk.RESPONSE_APPLY, "Cancel", gtk.RESPONSE_CANCEL)

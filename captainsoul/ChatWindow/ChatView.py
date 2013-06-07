@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk, Pango
+import gtk
+import pango
 
 
-class ChatView(Gtk.ScrolledWindow):
+class ChatView(gtk.ScrolledWindow):
     def __init__(self):
-        super(ChatView, self).__init__(border_width=0)
-        self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self._box = Gtk.VBox(False, 0)
-        self.add(self._box)
+        super(ChatView, self).__init__()
+        self.set_border_width(0)
+        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self._box = gtk.VBox(False, 0)
+        self.add_with_viewport(self._box)
         self.show_all()
 
     def addMsg(self, msg, xalign):
-        label = Gtk.Label(label=msg, wrap=True, wrap_mode=Pango.WrapMode.WORD_CHAR, selectable=True, justify=Gtk.Justification.LEFT, yalign=0, xalign=xalign)
+        label = gtk.Label(msg)
+        label.set_properties(wrap=True, wrap_mode=pango.WRAP_WORD_CHAR, selectable=True, justify=gtk.JUSTIFY_LEFT, yalign=0, xalign=xalign)
         self._box.pack_start(label, False, False, 0)
         label.show()
 

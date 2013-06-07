@@ -2,11 +2,11 @@
 
 from os.path import abspath, join, dirname
 
-from gi.repository import Gtk
+import gtk
 
 
 def _createImage(name):
-    image = Gtk.Image()
+    image = gtk.Image()
     image.set_from_file(join(dirname(abspath(__file__)), name))
     return image
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gtk, GdkPixbuf, Gdk
+import gtk
 
 from ..Config import Config
 from .. import Icons
@@ -87,20 +87,20 @@ class LoginList(object):
             del self._list[info.no]
 
 
-class WatchList(Gtk.TreeView):
+class WatchList(gtk.TreeView):
     _list = LoginList()
     _loginColumn = 1
 
     def __init__(self, manager):
-        self._listStore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, GdkPixbuf.Pixbuf, str)
+        self._listStore = gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str)
         super(WatchList, self).__init__(model=self._listStore)
         self._manager = manager
-        self._listStore.set_sort_column_id(self._loginColumn, Gtk.SortType.ASCENDING)
+        self._listStore.set_sort_column_id(self._loginColumn, gtk.SORT_ASCENDING)
         columns = [
-            Gtk.TreeViewColumn("State", Gtk.CellRendererPixbuf(), pixbuf=0),
-            Gtk.TreeViewColumn("Login", Gtk.CellRendererText(), text=self._loginColumn),
-            Gtk.TreeViewColumn("At school", Gtk.CellRendererPixbuf(), pixbuf=2),
-            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=3)
+            gtk.TreeViewColumn("State", gtk.CellRendererPixbuf(), pixbuf=0),
+            gtk.TreeViewColumn("Login", gtk.CellRendererText(), text=self._loginColumn),
+            gtk.TreeViewColumn("At school", gtk.CellRendererPixbuf(), pixbuf=2),
+            gtk.TreeViewColumn("", gtk.CellRendererText(), text=3)
         ]
         for column in columns:
             self.append_column(column)
@@ -146,12 +146,12 @@ class WatchList(Gtk.TreeView):
 
     def buttonPressEvent(self, wid, event):
         # 3 is right click
-        if event.type == Gdk.EventType.BUTTON_PRESS and event.button == 3:
+        if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
             path = self.get_path_at_pos(event.x, event.y)
             if path is not None:
                 login = self._listStore.get_value(self._listStore.get_iter(path[0]), self._loginColumn)
-                self._menu = Gtk.Menu()
-                item = Gtk.ImageMenuItem(label=Gtk.STOCK_DELETE)
+                self._menu = gtk.Menu()
+                item = gtk.ImageMenuItem(label=gtk.STOCK_DELETE)
                 item.set_use_stock(True)
                 item.connect("activate", self.deleteContactEvent, login)
                 item.show()
