@@ -41,10 +41,14 @@ class Manager(gobject.GObject, ClientFactory):
 
     def __init__(self):
         gobject.GObject.__init__(self)
+        reactor.addSystemEventTrigger('before', 'shutdown', self.beforeShutdown)
         self._mainwindow = MainWindow(self)
         self._systray = Systray(self, self._mainwindow)
         if Config['autoConnect']:
             self.doConnectSocket()
+
+    def beforeShutdown(self):
+        self._tryReconnecting = False
 
     # Senders
 
@@ -142,7 +146,6 @@ class Manager(gobject.GObject, ClientFactory):
         self.doDisconnectSocket()
 
     def quitEvent(self, *args, **kwargs):
-        self._tryReconnecting = False
         reactor.stop()
 
     def closeChatWindowEvent(self, widget, event, login):

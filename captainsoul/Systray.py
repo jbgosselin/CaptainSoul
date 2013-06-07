@@ -32,7 +32,7 @@ class Systray(gtk.StatusIcon):
             try:
                 notif.show()
             except GError:
-                logging.warning('Systray : Notification fail')        
+                logging.warning('Systray : Notification fail')
 
     def msgEvent(self, widget, info, msg, dests):
         self.doNotify("CaptainSoul - New message from %s" % info.login, msg, 'dialog-information', 5000)
