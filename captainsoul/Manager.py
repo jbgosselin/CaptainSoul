@@ -142,6 +142,7 @@ class Manager(gobject.GObject, ClientFactory):
         self.doDisconnectSocket()
 
     def quitEvent(self, *args, **kwargs):
+        self._tryReconnecting = False
         reactor.stop()
 
     def closeChatWindowEvent(self, widget, event, login):
