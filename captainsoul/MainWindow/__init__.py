@@ -8,6 +8,7 @@ from .. import Icons
 
 from WatchList import WatchList
 from ToolBar import ToolBar
+from MainStatus import MainStatus
 
 
 class MainWindow(gtk.Window):
@@ -18,26 +19,18 @@ class MainWindow(gtk.Window):
         self.resize(Config['mainWidth'], Config['mainHeight'])
         self.connect("delete-event", self.deleteEvent)
         self.connect("configure-event", self.resizeEvent)
-        manager.connect('logged', self.loggedEvent)
-        manager.connect('reconnecting', self.reconnectingEvent)
-        manager.connect('disconnected', self.disconnectedEvent)
-        manager.connect('connecting', self.connectingEvent)
         if not options.tray:
             self.show_all()
 
     def _createUi(self, manager):
         box = gtk.VBox(False, 0)
-        self._toolbar = ToolBar(manager)
-        box.pack_start(self._toolbar, False, False, 0)
+        box.pack_start(ToolBar(manager), False, False, 0)
         scroll = gtk.ScrolledWindow()
         scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         scroll.set_size_request(160, 50)
-        self._watchlist = WatchList(manager)
-        scroll.add_with_viewport(self._watchlist)
+        scroll.add_with_viewport(WatchList(manager))
         box.pack_start(scroll, True, True, 0)
-        self._status = gtk.Statusbar()
-        box.pack_start(self._status, False, False, 0)
-        self._status.push(0, "Welcome")
+        box.pack_start(MainStatus(manager), False, False, 0)
         self.add(box)
 
     # Events
@@ -49,20 +42,8 @@ class MainWindow(gtk.Window):
         self.hide()
         return True
 
-    def connectingEvent(self, *args, **kwargs):
-        self._status.push(0, "Connecting...")
-
     def showHideEvent(self, *args, **kwargs):
         if self.get_visible():
             self.hide()
         else:
             self.show_all()
-
-    def loggedEvent(self, widget):
-        self._status.push(0, "Connected")
-
-    def reconnectingEvent(self, widget):
-        self._status.push(0, "Reconnecting...")
-
-    def disconnectedEvent(self, widget):
-        self._status.push(0, "Disconnected")
