@@ -103,6 +103,7 @@ class WatchList(gtk.TreeView):
             self.append_column(column)
         self.connect("row-activated", self.rowActivated)
         self.connect("button-press-event", self.buttonPressEvent)
+        self.connect('show', self.showEvent)
         manager.connect('state', self.stateEvent)
         manager.connect('contact-added', self.contactAddedEvent)
         manager.connect('contact-deleted', self.contactDeletedEvent)
@@ -155,6 +156,9 @@ class WatchList(gtk.TreeView):
                 item.show()
                 self._menu.append(item)
                 self._menu.popup(None, None, None, event.button, event.time)
+
+    def showEvent(self, widget):
+        self.grab_focus()
 
     def deleteContactEvent(self, widget, login):
         self._manager.doDeleteContact(login)
