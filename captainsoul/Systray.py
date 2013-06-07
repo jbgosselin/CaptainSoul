@@ -13,10 +13,9 @@ import Icons
 
 
 class Systray(gtk.StatusIcon):
-    _reconnecting = False
-
     def __init__(self, manager, mw):
         super(Systray, self).__init__()
+        self._reconnecting = False
         self.set_from_pixbuf(Icons.shield.get_pixbuf())
         self.set_tooltip_text("CaptainSoul")
         self.set_visible(True)

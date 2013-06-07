@@ -2,8 +2,9 @@
 
 import os
 import platform
-import atexit
 from json import load, dump
+
+from twisted.internet import reactor
 
 from ConfigTypes import nonEmptyStrJSON, boolJSON, intJSON, nonEmptyStrSetJSON
 
@@ -21,14 +22,8 @@ def getPath():
 
 
 class ConfigFile(object):
-    '''
-    Represent the config file
-    Setting the var will alter the config file
-    '''
-    _data = {}
-    _path = getPath()
-
     def __init__(self):
+        self._data, self._path = {}, getPath()
         keys = [
             ('login', nonEmptyStrJSON, "login"),
             ('password', nonEmptyStrJSON, "password"),
@@ -44,7 +39,7 @@ class ConfigFile(object):
         except (IOError, ValueError):
             data = {}
         self._data = {key: klass(data.get(key, default)) for key, klass, default in keys}
-        atexit.register(self._atexit)
+        reactor.addSystemEventTrigger('before', 'shutdown', self._atexit)
 
     def _atexit(self):
         dump({key: value._toJSON() for key, value in self._data.iteritems()}, file(self._path, 'w'))
