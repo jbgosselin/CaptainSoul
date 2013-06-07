@@ -46,7 +46,7 @@ class Buddy(object):
 
 class LoginList(object):
     def __init__(self):
-        _list = {}        
+        self._list = {}        
 
     def clean(self):
         self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in Config['watchlist']}
