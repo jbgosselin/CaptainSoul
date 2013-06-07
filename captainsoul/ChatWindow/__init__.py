@@ -7,13 +7,10 @@ from ChatView import ChatView
 
 
 class ChatWindow(gtk.Window):
-    _typing = False
-
     def __init__(self, manager, login, iconify):
         super(ChatWindow, self).__init__()
         self.set_properties(title="CaptainSoul - %s" % login, border_width=2, icon=Icons.shield.get_pixbuf())
-        self._manager = manager
-        self._login = login
+        self._typing, self._manager, self._login = False, manager, login
         self._createUi()
         self.connect("delete-event", self.deleteEvent)
         self.connect("delete-event", manager.closeChatWindowEvent, login)

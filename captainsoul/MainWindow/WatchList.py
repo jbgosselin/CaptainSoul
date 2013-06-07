@@ -8,11 +8,7 @@ from .. import Icons
 
 class Buddy(object):
     def __init__(self, no, login, state, ip, location):
-        self._no = int(no)
-        self._login = login
-        self._state = state
-        self._ip = ip
-        self._location = location
+        self._no, self._login, self._state, self._ip, self._location = int(no), login, state, ip, location
 
     @property
     def no(self):
@@ -49,7 +45,8 @@ class Buddy(object):
 
 
 class LoginList(object):
-    _list = {}
+    def __init__(self):
+        _list = {}        
 
     def clean(self):
         self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in Config['watchlist']}
@@ -88,13 +85,12 @@ class LoginList(object):
 
 
 class WatchList(gtk.TreeView):
-    _list = LoginList()
     _loginColumn = 1
 
     def __init__(self, manager):
         self._listStore = gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str)
         super(WatchList, self).__init__(model=self._listStore)
-        self._manager = manager
+        self._manager, self._list = manager, LoginList()
         self._listStore.set_sort_column_id(self._loginColumn, gtk.SORT_ASCENDING)
         columns = [
             gtk.TreeViewColumn("State", gtk.CellRendererPixbuf(), pixbuf=0),

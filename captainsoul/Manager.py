@@ -35,19 +35,17 @@ class Manager(gobject.GObject, ClientFactory):
         'contact-added': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
         'contact-deleted': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
     }
-    _protocol = None
-    _tryReconnecting = False
-    _chatWindows = {}
 
     def __init__(self):
         gobject.GObject.__init__(self)
-        reactor.addSystemEventTrigger('before', 'shutdown', self.beforeShutdown)
+        self._protocol, self._tryReconnecting, self._chatWindows = None, False, {}
+        reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         self._mainwindow = MainWindow(self)
         self._systray = Systray(self, self._mainwindow)
         if Config['autoConnect']:
             self.doConnectSocket()
 
-    def beforeShutdown(self):
+    def _beforeShutdown(self):
         self._tryReconnecting = False
 
     # Senders

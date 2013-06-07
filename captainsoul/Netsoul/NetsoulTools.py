@@ -35,8 +35,7 @@ def urlDecode(s):
 
 class Rea(object):
     def __init__(self, regex, f):
-        self._regex = re.compile(regex)
-        self._f = f
+        self._regex, self._f = re.compile(regex), f
 
     def try_call(self, entry):
         m = self._regex.match(entry)
@@ -72,10 +71,7 @@ class ReaList(object):
 
 class NsUserCmdInfo(object):
     def __init__(self, no, login, ip, location):
-        self._no = int(no)
-        self._login = login
-        self._ip = ip
-        self._location = urlDecode(location)
+        self._no, self._login, self._ip, self._location = int(no), login, ip, location
 
     def __str__(self):
         return '<%d %s@%s "%s">' % (self.no, self.login, self.ip, self.location)
@@ -98,9 +94,8 @@ class NsUserCmdInfo(object):
 
 
 class NsData(object):
-    _hash = ''
-    _host = ''
-    _port = 0
+    def __init__(self):
+        self._hash, self._host, self._port = '', '', 0
 
     @property
     def hash(self):
@@ -129,12 +124,7 @@ class NsData(object):
 
 class NsWhoEntry(object):
     def __init__(self, no, login, ip, location, state, res):
-        self._no = int(no)
-        self._login = login
-        self._ip = ip
-        self._location = location
-        self._state = state
-        self._res = res
+        self._no, self._login, self._ip, self._location, self._state, self._res = int(no), login, ip, location, state, res
 
     @property
     def no(self):
@@ -166,8 +156,7 @@ class NsWhoEntry(object):
 
 class NsWhoResult(object):
     def __init__(self, logins):
-        self._logins = logins
-        self._list = []
+        self._logins, self._list = logins, []
 
     @property
     def logins(self):

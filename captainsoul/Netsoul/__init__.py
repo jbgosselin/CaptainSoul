@@ -15,13 +15,11 @@ __all__ = ['NsProtocol']
 
 class NsProtocol(LineOnlyReceiver, object):
     delimiter = '\n'
-    _response_queue = deque()
-    _who_queue = deque()
 
     def __init__(self, factory):
         self.factory = factory
         self.factory.setProtocol(self)
-        self._info = NsData()
+        self._info, self._responseQueue, self._whoQueue = NsData(), deque(), deque()
         self._realist = ReaList(
             Rea(r'^rep (?P<no>\d+) -- .*$', self._responseHook),
             Rea(r'^ping (?P<t>\d+)\s?$', self._pingHook),
@@ -62,9 +60,9 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _responseHook(self, no):
         no = int(no)
-        if self._response_queue:
+        if self._responseQueue:
             logging.info('Netsoul : Got response %d' % no)
-            self._response_queue.popleft()(no)
+            self._responseQueue.popleft()(no)
         else:
             logging.warning('Netsoul : No response expected')
 
@@ -78,19 +76,19 @@ class NsProtocol(LineOnlyReceiver, object):
         self._info.host = ip
         self._info.port = port
         self.sendLine('auth_ag ext_user none none')
-        self._response_queue.append(self._responseSalutHook)
+        self._responseQueue.append(self._responseSalutHook)
 
     # CMD HOOKS
 
     def _cmdWhoHook(self, info, no, login, ip, loc, state, res):
-        if self._who_queue:
-            self._who_queue[0].add(NsWhoEntry(no, login, ip, loc, state, res))
+        if self._whoQueue:
+            self._whoQueue[0].add(NsWhoEntry(no, login, ip, loc, state, res))
         else:
             logging.warning("Netsoul : No who expected")
 
     def _cmdWhoEndHook(self, info):
-        if self._who_queue:
-            self.factory.cmdWhoHook(self._who_queue.popleft())
+        if self._whoQueue:
+            self.factory.cmdWhoHook(self._whoQueue.popleft())
         else:
             logging.warning("Netsoul : No who expected")
 
@@ -118,7 +116,7 @@ class NsProtocol(LineOnlyReceiver, object):
         if no == 2:
             md5_hash = md5('%s-%s/%s%s' % (self._info.hash, self._info.host, self._info.port, Config['password'])).hexdigest()
             self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, urlEncode(Config['location']), 'CaptainSoul'))
-            self._response_queue.append(self._responseLogHook)
+            self._responseQueue.append(self._responseLogHook)
         else:
             logging.warning('Netsoul : Salut response unknown %d' % no)
 
@@ -151,7 +149,7 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def sendWho(self, logins):
         if logins:
-            self._who_queue.append(NsWhoResult(logins))
+            self._whoQueue.append(NsWhoResult(logins))
             self.sendLine('user_cmd who {%s}' % ','.join(logins))
 
     def sendExit(self):
