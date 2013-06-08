@@ -119,9 +119,9 @@ class Manager(gobject.GObject, ClientFactory):
             self._protocol.transport.loseConnection()
             self._protocol = None
 
-    def doOpenChat(self, login):
+    def doOpenChat(self, login, msg=None):
         if login not in self._chatWindows:
-            self._chatWindows[login] = ChatWindow(self, login, False)
+            self._chatWindows[login] = ChatWindow(self, login, False, msg)
         return self._chatWindows[login]
 
     def doDeleteContact(self, login):
@@ -190,8 +190,7 @@ class Manager(gobject.GObject, ClientFactory):
 
     def do_msg(self, info, msg, dests):
         if info.login not in self._chatWindows:
-            win = self.doOpenChat(info.login)
-            win.addMsg(msg)
+            self.doOpenChat(info.login, msg)
 
     # NsProtocol Hooks
 
