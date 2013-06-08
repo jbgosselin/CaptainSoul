@@ -113,15 +113,14 @@ class WatchList(gtk.TreeView):
 
     def refreshStore(self):
         self._listStore.clear()
+        pixs = {
+            'actif': Icons.green.get_pixbuf(),
+            'away': Icons.orange.get_pixbuf(),
+            'lock': Icons.red.get_pixbuf()
+        }
         for state, login, atSchool in self._list.formatWatchList():
-            if state == 'actif':
-                pix = Icons.green.get_pixbuf()
-            elif state in ('away', 'lock'):
-                pix = Icons.red.get_pixbuf()
-            else:
-                pix = Icons.void.get_pixbuf()
             self._listStore.append([
-                pix,
+                pixs.get(state, Icons.void.get_pixbuf()),
                 login,
                 Icons.epitech.get_pixbuf() if atSchool else Icons.void.get_pixbuf(),
                 "",
