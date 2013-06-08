@@ -25,7 +25,10 @@ def urlDecode(s):
         s = unicode(s, 'utf8')
     while s:
         if s[0] == '%':
-            r += unichr(int(s[1:3], 16))
+            try:
+                r += unichr(int(s[1:3], 16))
+            except ValueError:
+                r += '?'
             s = s[3:]
         else:
             r += s[0]
