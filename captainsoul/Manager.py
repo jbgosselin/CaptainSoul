@@ -18,6 +18,9 @@ from ChatWindow import ChatWindow
 
 
 class Manager(gobject.GObject, ClientFactory):
+    reconnectDelay = 2
+    netsoulHost = 'ns-server.epita.fr'
+    netsoulPort = 4242
     __gsignals__ = {
         'reconnecting': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
         'connecting': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, []),
@@ -107,7 +110,7 @@ class Manager(gobject.GObject, ClientFactory):
         if self._protocol is not None:
             self.doDisconnectSocket()
         self._tryReconnecting = True
-        reactor.connectTCP("ns-server.epita.fr", 4242, self, timeout=10)
+        reactor.connectTCP(self.netsoulHost, self.netsoulPort, self, timeout=10)
 
     def doDisconnectSocket(self):
         if self._protocol is not None:
@@ -246,15 +249,15 @@ class Manager(gobject.GObject, ClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         self._protocol = None
-        logging.warning('Manager : Connection failed reconnecting in 3 seconds')
-        reactor.callLater(3, connector.connect)
+        logging.warning('Manager : Connection failed reconnecting in %d seconds' % self.reconnectDelay)
+        reactor.callLater(self.reconnectDelay, connector.connect)
         self.emit('reconnecting')
 
     def clientConnectionLost(self, connector, reason):
         self._protocol = None
         if self._tryReconnecting:
-            logging.warning('Manager : Connection lost reconnecting in 3 seconds')
-            reactor.callLater(3, connector.connect)
+            logging.warning('Manager : Connection lost reconnecting in %d seconds' % self.reconnectDelay)
+            reactor.callLater(self.reconnectDelay, connector.connect)
             self.emit('reconnecting')
         else:
             logging.info('Manager : Connection closed')
