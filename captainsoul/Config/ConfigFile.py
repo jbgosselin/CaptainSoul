@@ -31,6 +31,8 @@ class ConfigFile(object):
             ('autoConnect', boolJSON, False),
             ('mainHeight', intJSON, 200),
             ('mainWidth', intJSON, 200),
+            ('chatHeight', intJSON, 200),
+            ('chatWidth', intJSON, 200),
             ('watchlist', nonEmptyStrSetJSON, set())]
         try:
             data = load(file(self._path, 'r'))
@@ -42,7 +44,7 @@ class ConfigFile(object):
         reactor.addSystemEventTrigger('before', 'shutdown', self._atexit)
 
     def _atexit(self):
-        dump({key: value._toJSON() for key, value in self._data.iteritems()}, file(self._path, 'w'))
+        dump({key: value._toJSON() for key, value in self._data.iteritems()}, file(self._path, 'w'), indent=4, separators=(',', ': '))
 
     def __getitem__(self, key):
         if key in self._data:

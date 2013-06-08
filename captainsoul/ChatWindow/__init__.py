@@ -2,6 +2,7 @@
 
 import gtk
 
+from ..Config import Config
 from .. import Icons
 from ChatView import ChatView
 from ChatStatus import ChatStatus
@@ -14,8 +15,9 @@ class ChatWindow(gtk.Window):
         self.set_properties(title="CaptainSoul - %s" % login, icon=Icons.shield.get_pixbuf())
         self._typing = False
         self._createUi(manager, login)
+        self.resize(Config['chatWidth'], Config['chatHeight'])
         self.connect("delete-event", manager.closeChatWindowEvent, login)
-        self.resize(200, 200)
+        self.connect("configure-event", self.resizeEvent)
         if iconify:
             self.iconify()
         self.show_all()
@@ -31,3 +33,6 @@ class ChatWindow(gtk.Window):
         entry = ChatEntry(manager, login)
         self.connect('delete-event', entry.deleteEvent, manager, login)
         box.pack_start(entry, False, False, 0)
+
+    def resizeEvent(self, *args, **kwargs):
+        Config['chatWidth'], Config['chatHeight'] = self.get_size()
