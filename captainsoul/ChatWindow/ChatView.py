@@ -4,7 +4,7 @@ import gtk
 
 
 class ChatView(gtk.ScrolledWindow):
-    def __init__(self, manager, login):
+    def __init__(self, manager, login, msg=None):
         super(ChatView, self).__init__()
         self.set_properties(border_width=0, shadow_type=gtk.SHADOW_ETCHED_IN)
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -12,7 +12,8 @@ class ChatView(gtk.ScrolledWindow):
         manager.connect('msg', self.msgEvent, login)
         manager.connect('send-msg', self.sendMsgEvent, login)
         self._buffer.connect('changed', self.bufferChangedEvent)
-        self.show_all()
+        if msg is not None:
+            self.printMsg(login, msg)
 
     def _createUi(self):
         textview = gtk.TextView()
@@ -20,13 +21,16 @@ class ChatView(gtk.ScrolledWindow):
         self._buffer = textview.get_buffer()
         self.add(textview)
 
+    def printMsg(self, login, msg):
+        self._buffer.insert(self._buffer.get_end_iter(), "[%s] : %s\n" % (login, msg))
+
     def msgEvent(self, widget, info, msg, dests, login):
         if login == info.login:
-            self._buffer.insert(self._buffer.get_end_iter(), "[%s] : %s\n" % (login, msg))
+            self.printMsg(login, msg)
 
     def sendMsgEvent(self, widget, msg, dests, login):
         if login in dests:
-            self._buffer.insert(self._buffer.get_end_iter(), "[Me] : %s\n" % msg)
+            self.printMsg('Me', msg)
 
     def bufferChangedEvent(self, widget):
         adj = self.get_vadjustment()
