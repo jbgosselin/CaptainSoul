@@ -34,6 +34,7 @@ class Manager(gobject.GObject, ClientFactory):
         'cancel-typing': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT]),
         'contact-added': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
         'contact-deleted': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
+        'send-msg': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING, gobject.TYPE_PYOBJECT])
     }
 
     def __init__(self):
@@ -67,6 +68,7 @@ class Manager(gobject.GObject, ClientFactory):
     def sendMsg(self, msg, dests):
         if self._protocol is not None:
             logging.info(u'Manager : Send msg "%s" to %s' % (msg, dests))
+            self.emit('send-msg', msg, dests)
             self._protocol.sendMsg(msg, dests)
         else:
             logging.warning(u'Manager : Try send msg "%s" to %s' % (msg, dests))
