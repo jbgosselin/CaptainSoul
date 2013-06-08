@@ -1,26 +1,33 @@
 # -*- coding: utf-8 -*-
 
 import gtk
-import pango
 
 
 class ChatView(gtk.ScrolledWindow):
-    def __init__(self):
+    def __init__(self, manager, login):
         super(ChatView, self).__init__()
-        self.set_border_width(0)
-        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self._box = gtk.VBox(False, 0)
-        self.add_with_viewport(self._box)
+        self.set_properties(border_width=0, shadow_type=gtk.SHADOW_ETCHED_IN)
+        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self._createUi()
+        manager.connect('msg', self.msgEvent, login)
+        manager.connect('send-msg', self.sendMsgEvent, login)
+        self._buffer.connect('changed', self.bufferChangedEvent)
         self.show_all()
 
-    def addMsg(self, msg, xalign):
-        label = gtk.Label(msg)
-        label.set_properties(wrap=True, wrap_mode=pango.WRAP_WORD_CHAR, selectable=True, justify=gtk.JUSTIFY_LEFT, yalign=0, xalign=xalign)
-        self._box.pack_start(label, False, False, 0)
-        label.show()
+    def _createUi(self):
+        textview = gtk.TextView()
+        textview.set_properties(cursor_visible=False, editable=False, wrap_mode=gtk.WRAP_WORD_CHAR)
+        self._buffer = textview.get_buffer()
+        self.add(textview)
 
-    def addOtherMsg(self, msg, login):
-        self.addMsg(msg, 0)
+    def msgEvent(self, widget, info, msg, dests, login):
+        if login == info.login:
+            self._buffer.insert(self._buffer.get_end_iter(), "[%s] : %s\n" % (login, msg))
 
-    def addMyMsg(self, msg):
-        self.addMsg(msg, 1)
+    def sendMsgEvent(self, widget, msg, dests, login):
+        if login in dests:
+            self._buffer.insert(self._buffer.get_end_iter(), "[Me] : %s\n" % msg)
+
+    def bufferChangedEvent(self, widget):
+        adj = self.get_vadjustment()
+        adj.set_value(adj.get_upper())
