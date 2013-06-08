@@ -11,9 +11,9 @@ import logging
 def configLogging():
     fmt = '%(levelname)s\t: %(message)s'
     level = logging.WARNING
-    if options.log_debug:
+    if options.verbose >= 2:
         level = logging.DEBUG
-    elif options.log_info:
+    elif options.verbose == 1:
         level = logging.INFO
     logging.basicConfig(level=level, format=fmt)
 configLogging()

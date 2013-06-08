@@ -9,8 +9,7 @@ def _void():
 
 def _get_args():
     parser = ArgumentParser(prog='cptsoul')
-    parser.add_argument('-dd', action='store_true', dest='log_debug', help='Set debug mode')
-    parser.add_argument('-d', action='store_true', dest='log_info', help='Set info mode')
+    parser.add_argument('-v', '--verbose', action='count', dest='verbose', help='Set verbose mode', default=0)
     parser.add_argument('-t', action='store_true', dest='tray', help='Start in tray')
     return parser.parse_args()
 
