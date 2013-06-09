@@ -171,6 +171,7 @@ class Manager(gobject.GObject, ClientFactory):
         if win.run() == gtk.RESPONSE_APPLY:
             for key, value in win.getAllParams().iteritems():
                 Config[key] = value
+            Config.write()
         win.destroy()
 
     # GSignals methods
