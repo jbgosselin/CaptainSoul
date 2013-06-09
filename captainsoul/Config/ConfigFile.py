@@ -2,6 +2,7 @@
 
 import os
 import platform
+import logging
 from json import load, dump
 
 from twisted.internet import reactor
@@ -24,6 +25,10 @@ def getPath():
 class ConfigFile(object):
     def __init__(self):
         self._data, self._path = {}, getPath()
+        self.read()
+        reactor.addSystemEventTrigger('before', 'shutdown', self.write)
+
+    def read(self):
         keys = [
             ('login', nonEmptyStrJSON, "login"),
             ('password', nonEmptyStrJSON, "password"),
@@ -37,14 +42,25 @@ class ConfigFile(object):
         try:
             data = load(file(self._path, 'r'))
             if not isinstance(data, dict):
+                logging.warning("Config : File is not well formatted")
                 data = {}
-        except (IOError, ValueError):
+        except IOError:
+            logging.warning("Config : File don't exist")
             data = {}
+        except ValueError:
+            logging.warning("Config : File isn't JSON")
+            data = {}
+        else:
+            logging.info("Config : File ok")
         self._data = {key: klass(data.get(key, default)) for key, klass, default in keys}
-        reactor.addSystemEventTrigger('before', 'shutdown', self._atexit)
 
-    def _atexit(self):
-        dump({key: value._toJSON() for key, value in self._data.iteritems()}, file(self._path, 'w'), indent=4, separators=(',', ': '))
+    def write(self):
+        try:
+            dump({key: value._toJSON() for key, value in self._data.iteritems()}, file(self._path, 'w'), indent=4, separators=(',', ': '))
+        except:
+            logging.warning("Config : Can't write file")
+        else:
+            logging.info("Config : File successfully written")
 
     def __getitem__(self, key):
         if key in self._data:
