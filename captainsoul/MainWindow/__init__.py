@@ -14,7 +14,10 @@ from MainStatus import MainStatus
 class MainWindow(gtk.Window):
     def __init__(self, manager):
         super(MainWindow, self).__init__()
-        self.set_properties(title="CaptainSoul", icon=Icons.shield.get_pixbuf())
+        self.set_properties(
+            title="CaptainSoul",
+            icon=Icons.shield.get_pixbuf()
+        )
         self._createAccels(manager)
         self._createUi(manager)
         self.resize(Config['mainWidth'], Config['mainHeight'])

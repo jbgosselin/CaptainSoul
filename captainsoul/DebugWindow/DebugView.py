@@ -6,8 +6,12 @@ import gtk
 class DebugView(gtk.ScrolledWindow):
     def __init__(self, manager):
         super(DebugView, self).__init__()
-        self.set_properties(border_width=0, shadow_type=gtk.SHADOW_ETCHED_IN)
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.set_properties(
+            border_width=0,
+            shadow_type=gtk.SHADOW_ETCHED_IN
+            hscrollbar_policy=gtk.POLICY_AUTOMATIC,
+            vscrollbar_policy=gtk.POLICY_AUTOMATIC
+        )
         self._createUi()
         manager.connect('send-raw', self.sendRawEvent)
         manager.connect('get-raw', self.getRawEvent)
@@ -15,7 +19,11 @@ class DebugView(gtk.ScrolledWindow):
 
     def _createUi(self):
         textview = gtk.TextView()
-        textview.set_properties(cursor_visible=False, editable=False, wrap_mode=gtk.WRAP_WORD_CHAR)
+        textview.set_properties(
+            cursor_visible=False,
+            editable=False,
+            wrap_mode=gtk.WRAP_WORD_CHAR
+        )
         self._buffer = textview.get_buffer()
         self.add(textview)
 

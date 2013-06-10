@@ -6,8 +6,12 @@ import gtk
 class ChatView(gtk.ScrolledWindow):
     def __init__(self, manager, login, msg=None):
         super(ChatView, self).__init__()
-        self.set_properties(border_width=0, shadow_type=gtk.SHADOW_ETCHED_IN)
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.set_properties(
+            border_width=0,
+            shadow_type=gtk.SHADOW_ETCHED_IN,
+            hscrollbar_policy=gtk.POLICY_AUTOMATIC,
+            vscrollbar_policy=gtk.POLICY_AUTOMATIC
+        )
         self._createUi()
         manager.connect('msg', self.msgEvent, login)
         manager.connect('send-msg', self.sendMsgEvent, login)
@@ -17,7 +21,11 @@ class ChatView(gtk.ScrolledWindow):
 
     def _createUi(self):
         textview = gtk.TextView()
-        textview.set_properties(cursor_visible=False, editable=False, wrap_mode=gtk.WRAP_WORD_CHAR)
+        textview.set_properties(
+            cursor_visible=False,
+            editable=False,
+            wrap_mode=gtk.WRAP_WORD_CHAR
+        )
         self._buffer = textview.get_buffer()
         self.add(textview)
 

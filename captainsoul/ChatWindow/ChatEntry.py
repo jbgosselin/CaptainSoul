@@ -6,9 +6,14 @@ import gtk
 class ChatEntry(gtk.TextView):
     def __init__(self, manager, login):
         super(ChatEntry, self).__init__()
-        self.set_properties(editable=True, cursor_visible=True, wrap_mode=gtk.WRAP_WORD_CHAR)
+        self.set_properties(
+            editable=True,
+            cursor_visible=True,
+            wrap_mode=gtk.WRAP_WORD_CHAR,
+            width_request=100,
+            height_request=40
+        )
         self._typing = False
-        self.set_size_request(100, 40)
         self.connect("key-press-event", self.keyPressEvent, manager, login)
         self.get_buffer().connect("changed", self.keyPressEventEnd, manager, login)
 
