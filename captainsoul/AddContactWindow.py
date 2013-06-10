@@ -8,7 +8,10 @@ import Icons
 class AddContactWindow(gtk.Dialog):
     def __init__(self):
         super(AddContactWindow, self).__init__(title="CaptainSoul - Add contact")
-        self.set_properties(icon=Icons.shield.get_pixbuf(), resizable=False)
+        self.set_properties(
+            icon=Icons.shield.get_pixbuf(),
+            resizable=False
+        )
         self._createUi()
         self.show_all()
 

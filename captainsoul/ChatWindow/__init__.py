@@ -12,9 +12,13 @@ from ChatEntry import ChatEntry
 class ChatWindow(gtk.Window):
     def __init__(self, manager, login, iconify, msg=None):
         super(ChatWindow, self).__init__()
-        self.set_properties(title="CaptainSoul - %s" % login, icon=Icons.shield.get_pixbuf())
+        self.set_properties(
+            title="CaptainSoul - %s" % login,
+            icon=Icons.shield.get_pixbuf(),
+            width=Config['chatWidth'],
+            height=Config['chatHeight']
+        )
         self._createUi(manager, login, msg)
-        self.resize(Config['chatWidth'], Config['chatHeight'])
         self.connect("delete-event", manager.closeChatWindowEvent, login)
         self.connect("configure-event", self.resizeEvent)
         if iconify:

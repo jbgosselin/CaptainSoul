@@ -10,7 +10,10 @@ from DebugEntry import DebugEntry
 class DebugWindow(gtk.Window):
     def __init__(self, manager):
         super(DebugWindow, self).__init__()
-        self.set_properties(title="CaptainSoul - Debug", icon=Icons.shield.get_pixbuf())
+        self.set_properties(
+            title="CaptainSoul - Debug",
+            icon=Icons.shield.get_pixbuf()
+        )
         self._createUi(manager)
         self.show_all()
 
