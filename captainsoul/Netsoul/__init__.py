@@ -39,6 +39,7 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def lineReceived(self, line):
         logging.debug('Netsoul : <<   : "%s"' % line)
+        self.factory.rawHook(line)
         if not self._realist.found_match(line):
             logging.warning('Netsoul : Unknown line : "%s"' % line)
 
@@ -51,6 +52,7 @@ class NsProtocol(LineOnlyReceiver, object):
     def sendLine(self, line):
         super(NsProtocol, self).sendLine(str(line))
         logging.debug('Netsoul :   >> : "%s"' % line)
+        self.factory.sendRawHook(line)
 
     # HOOKS
 

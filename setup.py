@@ -6,7 +6,7 @@ from distutils.core import setup
 
 def createPackages():
     pack = "captainsoul"
-    mods = ["ChatWindow", "Config", "Icons", "MainWindow", "Netsoul"]
+    mods = ["ChatWindow", "Config", "Icons", "MainWindow", "Netsoul", 'DebugWindow']
     return [pack] + ["%s.%s" % (pack, mod) for mod in mods]
 
 

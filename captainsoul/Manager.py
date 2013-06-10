@@ -11,10 +11,12 @@ from Config import Config
 from Netsoul import NsProtocol
 from MainWindow import MainWindow
 from Systray import Systray
+from CmdLine import options
 
 from SettingsWindow import SettingsWindow
 from AddContactWindow import AddContactWindow
 from ChatWindow import ChatWindow
+from DebugWindow import DebugWindow
 
 
 class Manager(gobject.GObject, ClientFactory):
@@ -37,7 +39,9 @@ class Manager(gobject.GObject, ClientFactory):
         'cancel-typing': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT]),
         'contact-added': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
         'contact-deleted': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
-        'send-msg': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING, gobject.TYPE_PYOBJECT])
+        'send-msg': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING, gobject.TYPE_PYOBJECT]),
+        'send-raw': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
+        'get-raw': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING])
     }
 
     def __init__(self):
@@ -46,6 +50,8 @@ class Manager(gobject.GObject, ClientFactory):
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         self._mainwindow = MainWindow(self)
         self._systray = Systray(self, self._mainwindow)
+        if options.debug:
+            DebugWindow(self)
         if Config['autoConnect']:
             self.doConnectSocket()
 
@@ -103,6 +109,13 @@ class Manager(gobject.GObject, ClientFactory):
             self._protocol.sendCancelTyping(dests)
         else:
             logging.warning('Manager : Try send cancel typing to %s' % dests)
+
+    def sendRaw(self, line):
+        if self._protocol is not None:
+            logging.info('Manager : Send raw "%s"' % line)
+            self._protocol.sendLine(line)
+        else:
+            logging.warning('Manager : Try send raw "%s"' % line)
 
     # Actions
 
@@ -237,6 +250,12 @@ class Manager(gobject.GObject, ClientFactory):
     def cmdCancelTypingHook(self, info):
         logging.info(u'Manager : Cmd %s cancel typing' % info)
         self.emit('cancel-typing', info)
+
+    def rawHook(self, line):
+        self.emit('get-raw', line)
+
+    def sendRawHook(self, line):
+        self.emit('send-raw', line)
 
     # ClientFactory
 
