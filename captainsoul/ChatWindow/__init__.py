@@ -13,7 +13,6 @@ class ChatWindow(gtk.Window):
     def __init__(self, manager, login, iconify, msg=None):
         super(ChatWindow, self).__init__()
         self.set_properties(title="CaptainSoul - %s" % login, icon=Icons.shield.get_pixbuf())
-        self._typing = False
         self._createUi(manager, login, msg)
         self.resize(Config['chatWidth'], Config['chatHeight'])
         self.connect("delete-event", manager.closeChatWindowEvent, login)
