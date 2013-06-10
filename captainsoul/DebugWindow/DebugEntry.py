@@ -9,6 +9,7 @@ class DebugEntry(gtk.Entry):
         self.connect('activate', self.activateEvent, manager)
 
     def activateEvent(self, widget, manager):
-        line = self.get_text()
-        self.set_text('')
-        manager.sendRaw(line)
+        line = widget.get_text()
+        if line:
+            widget.set_text('')
+            manager.sendRaw(line)
