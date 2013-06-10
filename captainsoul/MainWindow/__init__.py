@@ -18,9 +18,9 @@ class MainWindow(gtk.Window):
             title="CaptainSoul",
             icon=Icons.shield.get_pixbuf()
         )
+        self.resize(Config['mainWidth'], Config['mainHeight'])
         self._createAccels(manager)
         self._createUi(manager)
-        self.resize(Config['mainWidth'], Config['mainHeight'])
         self.connect("delete-event", self.hide_on_delete)
         self.connect("configure-event", self.resizeEvent)
         if not options.tray:
@@ -44,8 +44,10 @@ class MainWindow(gtk.Window):
         self.add(box)
         box.pack_start(ToolBar(manager), False, False, 0)
         scroll = gtk.ScrolledWindow()
-        scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        scroll.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        scroll.set_properties(
+            hscrollbar_policy=gtk.POLICY_NEVER,
+            vscrollbar_policy=gtk.POLICY_AUTOMATIC,
+            shadow_type=gtk.SHADOW_ETCHED_IN)
         scroll.add(WatchList(manager))
         box.pack_start(scroll, True, True, 0)
         box.pack_start(MainStatus(manager), False, False, 0)
