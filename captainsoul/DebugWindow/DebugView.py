@@ -8,7 +8,7 @@ class DebugView(gtk.ScrolledWindow):
         super(DebugView, self).__init__()
         self.set_properties(
             border_width=0,
-            shadow_type=gtk.SHADOW_ETCHED_IN
+            shadow_type=gtk.SHADOW_ETCHED_IN,
             hscrollbar_policy=gtk.POLICY_AUTOMATIC,
             vscrollbar_policy=gtk.POLICY_AUTOMATIC
         )

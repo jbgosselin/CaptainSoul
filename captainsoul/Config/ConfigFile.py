@@ -56,7 +56,12 @@ class ConfigFile(object):
 
     def write(self):
         try:
-            dump({key: value._toJSON() for key, value in self._data.iteritems()}, file(self._path, 'w'), indent=4, separators=(',', ': '))
+            dump(
+                {key: value._toJSON() for key, value in self._data.iteritems()},
+                file(self._path, 'w'),
+                indent=4,
+                separators=(',', ': ')
+            )
         except:
             logging.warning("Config : Can't write file")
         else:
