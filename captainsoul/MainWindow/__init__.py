@@ -15,12 +15,26 @@ class MainWindow(gtk.Window):
     def __init__(self, manager):
         super(MainWindow, self).__init__()
         self.set_properties(title="CaptainSoul", icon=Icons.shield.get_pixbuf())
+        self._createAccels(manager)
         self._createUi(manager)
         self.resize(Config['mainWidth'], Config['mainHeight'])
         self.connect("delete-event", self.deleteEvent)
         self.connect("configure-event", self.resizeEvent)
         if not options.tray:
             self.show_all()
+
+    def _createAccels(self, manager):
+        accels = [
+            ('<ctrl>p', manager.openSettingsWindowEvent),
+            ('<ctrl>o', manager.openAddContactWindowEvent),
+            ('<ctrl>q', manager.quitEvent),
+            ('Escape', self.deleteEvent)
+        ]
+        ag = gtk.AccelGroup()
+        self.add_accel_group(ag)
+        for accel, callback in accels:
+            key, mask = gtk.accelerator_parse(accel)
+            ag.connect_group(key, mask, gtk.ACCEL_VISIBLE, callback)
 
     def _createUi(self, manager):
         box = gtk.VBox(False, 0)
