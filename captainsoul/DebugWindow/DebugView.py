@@ -13,8 +13,11 @@ class DebugView(gtk.ScrolledWindow):
             vscrollbar_policy=gtk.POLICY_AUTOMATIC
         )
         self._createUi()
-        manager.connect('send-raw', self.sendRawEvent)
-        manager.connect('get-raw', self.getRawEvent)
+        self.connect('destroy', self.destroyEvent, manager)
+        self._connections = [
+            manager.connect('send-raw', self.sendRawEvent),
+            manager.connect('get-raw', self.getRawEvent)
+        ]
         self._buffer.connect('changed', self.bufferChangedEvent)
 
     def _createUi(self):
@@ -38,5 +41,8 @@ class DebugView(gtk.ScrolledWindow):
 
     def bufferChangedEvent(self, widget):
         adj = self.get_vadjustment()
-        if adj is not None:
-            adj.set_value(adj.get_upper())
+        adj.set_value(adj.get_upper())
+
+    def destroyEvent(self, widget, manager):
+        for co in self._connections:
+            manager.disconnect(co)

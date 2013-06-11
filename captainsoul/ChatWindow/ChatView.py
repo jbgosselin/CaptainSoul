@@ -13,8 +13,11 @@ class ChatView(gtk.ScrolledWindow):
             vscrollbar_policy=gtk.POLICY_AUTOMATIC
         )
         self._createUi()
-        manager.connect('msg', self.msgEvent, login)
-        manager.connect('send-msg', self.sendMsgEvent, login)
+        self.connect('destroy', self.destroyEvent, manager)
+        self._connections = [
+            manager.connect('msg', self.msgEvent, login),
+            manager.connect('send-msg', self.sendMsgEvent, login)
+        ]
         self._buffer.connect('changed', self.bufferChangedEvent)
         if msg is not None:
             self.printMsg(login, msg)
@@ -43,3 +46,7 @@ class ChatView(gtk.ScrolledWindow):
     def bufferChangedEvent(self, widget):
         adj = self.get_vadjustment()
         adj.set_value(adj.get_upper())
+
+    def destroyEvent(self, widget, manager):
+        for co in self._connections:
+            manager.disconnect(co)
