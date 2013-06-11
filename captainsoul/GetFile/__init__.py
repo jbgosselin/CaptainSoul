@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from os import unlink
 
 from twisted.internet import reactor
 
@@ -8,8 +9,8 @@ from Factory import GetFileFactory
 
 
 class FileGetter(object):
-    def __init__(self, manager, info, name, path, size, proCall, endCall):
-        self._path, self._file, self._endCall, self._proCall, self._done, self._sizeTotal = path, None, endCall, proCall, 0, size
+    def __init__(self, manager, info, name, path, size, proCall, endCall, errorCall):
+        self._ok, self._path, self._file, self._endCall, self._proCall, self._errorCall, self._done, self._sizeTotal = False, path, None, endCall, proCall, errorCall, 0, size
         factory = GetFileFactory(
             self.clientConnectionMade,
             self.clientProgress,
@@ -38,9 +39,13 @@ class FileGetter(object):
         self._done += len(data)
         self._proCall(self._done, self._sizeTotal)
         if self._done >= self._sizeTotal:
+            self._ok = True
             protocol.transport.loseConnection()
+            self._endCall()
 
     def clientConnectionEnd(self):
-        logging.info('GetFile : Transfer terminated')
-        self._file.close()
-        self._endCall()
+        if not self._ok:
+            logging.warning('GetFile : Tranfer aborted')
+            self._file.close()
+            unlink(self._path)
+            self._errorCall()
