@@ -12,11 +12,14 @@ from Netsoul import NsProtocol
 from MainWindow import MainWindow
 from Systray import Systray
 from CmdLine import options
+from GetFile import FileGetter
 
 from SettingsWindow import SettingsWindow
 from AddContactWindow import AddContactWindow
 from ChatWindow import ChatWindow
 from DebugWindow import DebugWindow
+from AskFileWindow import AskFileWindow
+from FileProgressWindow import FileProgressWindow
 
 
 class Manager(gobject.GObject, ClientFactory):
@@ -41,7 +44,9 @@ class Manager(gobject.GObject, ClientFactory):
         'contact-deleted': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
         'send-msg': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING, gobject.TYPE_PYOBJECT]),
         'send-raw': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
-        'get-raw': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING])
+        'get-raw': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_STRING]),
+        'file-ask': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT, gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_STRING]),
+        'file-start': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, [gobject.TYPE_PYOBJECT, gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_INT])
     }
 
     def __init__(self):
@@ -117,6 +122,20 @@ class Manager(gobject.GObject, ClientFactory):
         else:
             logging.warning('Manager : Try send raw "%s"' % line)
 
+    def sendFileStart(self, name, ip, port, dests):
+        if self._protocol is not None:
+            logging.info('Manager : Send file "%s" start %s:%d to %s' % (name, ip, port, dests))
+            self._protocol.sendFileStart(name, ip, port, dests)
+        else:
+            logging.warning('Manager : Try send file "%s" start %s:%d to %s' % (name, ip, port, dests))
+
+    def sendFileAsk(self, name, size, desc, dests):
+        if self._protocol is not None:
+            logging.info('Manager : Send file "%s" ask size %d bytes to %s' % (name, size, dests))
+            self._protocol.sendFileAsk(name, size, desc, dests)
+        else:
+            logging.warning('Manager : Try send file "%s" ask size %d bytes to %s' % (name, size, dests))
+
     # Actions
 
     def doConnectSocket(self):
@@ -152,6 +171,10 @@ class Manager(gobject.GObject, ClientFactory):
             self.emit('contact-added', login)
             return True
         return False
+
+    def doStartFileTransfer(self, info, name, size, path):
+        win = FileProgressWindow(info)
+        FileGetter(self, info, name, path, size, win.progressCallback, win.endCallback)
 
     # Events
 
@@ -206,6 +229,9 @@ class Manager(gobject.GObject, ClientFactory):
         if info.login not in self._chatWindows:
             self.doOpenChat(info.login, msg)
 
+    def do_file_ask(self, info, name, size, desc):
+        AskFileWindow(self, info, name, size, desc)
+
     # NsProtocol Hooks
 
     def setProtocol(self, protocol):
@@ -256,6 +282,14 @@ class Manager(gobject.GObject, ClientFactory):
 
     def sendRawHook(self, line):
         self.emit('send-raw', line)
+
+    def cmdFileAskHook(self, info, name, size, desc):
+        logging.info(u'Manager : Cmd %s file ask %s %dB' % (info, name, size))
+        self.emit('file-ask', info, name, size, desc)
+
+    def cmdFileStartHook(self, info, name, ip, port):
+        logging.info(u'Manager : Cmd %s file start %s %s:%d' % (info, name, ip, port))
+        self.emit('file-start', info, name, ip, port)
 
     # ClientFactory
 

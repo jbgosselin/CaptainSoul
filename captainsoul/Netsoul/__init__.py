@@ -35,7 +35,10 @@ class NsProtocol(LineOnlyReceiver, object):
             Rea(r'^login\s?$', self._cmdLoginHook),
             Rea(r'^logout\s?$', self._cmdLogoutHook),
             Rea(r'^dotnetSoul_UserTyping null dst=.*$', self._cmdIsTypingHook),
-            Rea(r'^dotnetSoul_UserCancelledTyping null dst=.*$', self._cmdCancelTypingHook))
+            Rea(r'^dotnetSoul_UserCancelledTyping null dst=.*$', self._cmdCancelTypingHook),
+            Rea(r'^file_ask (?P<data>.+) dst=.*$', self._cmdFileAskHook),
+            Rea(r'^file_start (?P<data>.+) dst=.*$', self._cmdFileStartHook)
+        )
 
     def lineReceived(self, line):
         logging.debug('Netsoul : <<   : "%s"' % line)
@@ -112,6 +115,14 @@ class NsProtocol(LineOnlyReceiver, object):
     def _cmdCancelTypingHook(self, info):
         self.factory.cmdCancelTypingHook(info)
 
+    def _cmdFileAskHook(self, info, data):
+        name, size, desc, pas = urlDecode(data).split(' ', 4)
+        self.factory.cmdFileAskHook(info, urlDecode(name), int(size), urlDecode(desc))
+
+    def _cmdFileStartHook(self, info, data):
+        name, ip, port = urlDecode(data).split(' ', 3)
+        self.factory.cmdFileStartHook(info, urlDecode(name), urlDecode(ip), int(port))
+
     # RESPONSE HOOKS
 
     def _responseSalutHook(self, no):
@@ -145,10 +156,6 @@ class NsProtocol(LineOnlyReceiver, object):
         if sendWho:
             self.sendWho(Config['watchlist'])
 
-    def sendMsg(self, msg, dests):
-        if msg and dests:
-            self.sendLine('user_cmd msg_user {%s} msg %s' % (','.join(dests), urlEncode(msg)))
-
     def sendWho(self, logins):
         if logins:
             self._whoQueue.append(NsWhoResult(logins))
@@ -157,8 +164,21 @@ class NsProtocol(LineOnlyReceiver, object):
     def sendExit(self):
         self.sendLine('exit')
 
+    def sendCmdUser(self, cmd, data, dests):
+        if cmd and data and dests:
+            self.sendLine('user_cmd msg_user {%s} %s %s' % (','.join(dests), cmd, urlEncode(data)))
+
+    def sendMsg(self, msg, dests):
+        self.sendCmdUser('msg', msg, dests)
+
     def sendStartTyping(self, dests):
-        self.sendLine('user_cmd msg_user {%s} dotnetSoul_UserTyping null' % ','.join(dests))
+        self.sendCmdUser('dotnetSoul_UserTyping', 'null', dests)
 
     def sendCancelTyping(self, dests):
-        self.sendLine('user_cmd msg_user {%s} dotnetSoul_UserCancelledTyping null' % ','.join(dests))
+        self.sendCmdUser('dotnetSoul_UserCancelledTyping', 'null', dests)
+
+    def sendFileAsk(self, name, size, desc, dests):
+        self.sendCmdUser('file_ask', '%s %d %s passive' % (urlEncode(name), size, urlEncode(desc)), dests)
+
+    def sendFileStart(self, name, ip, port, dests):
+        self.sendCmdUser('file_start', '%s %s %d' % (urlEncode(name), ip, port), dests)

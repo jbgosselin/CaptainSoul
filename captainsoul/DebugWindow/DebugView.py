@@ -38,4 +38,5 @@ class DebugView(gtk.ScrolledWindow):
 
     def bufferChangedEvent(self, widget):
         adj = self.get_vadjustment()
-        adj.set_value(adj.get_upper())
+        if adj is not None:
+            adj.set_value(adj.get_upper())
