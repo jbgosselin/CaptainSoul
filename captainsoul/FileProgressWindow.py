@@ -26,6 +26,9 @@ class FileProgressWindow(gtk.Window):
         self._progress.set_fraction(1)
         self._progress.set_text("Transfer terminated")
 
+    def errorCallback(self):
+        self._progress.set_text("Transfer aborted")
+
     def _createUi(self):
         self._progress = gtk.ProgressBar()
         self._progress.set_text("Waiting for data")

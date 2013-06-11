@@ -174,7 +174,7 @@ class Manager(gobject.GObject, ClientFactory):
 
     def doStartFileTransfer(self, info, name, size, path):
         win = FileProgressWindow(info)
-        FileGetter(self, info, name, path, size, win.progressCallback, win.endCallback)
+        FileGetter(self, info, name, path, size, win.progressCallback, win.endCallback, win.errorCallback)
 
     # Events
 
@@ -190,6 +190,7 @@ class Manager(gobject.GObject, ClientFactory):
     def closeChatWindowEvent(self, widget, event, login):
         widget.destroy()
         if login in self._chatWindows:
+            self._chatWindows[login].destroy()
             del self._chatWindows[login]
         return True
 
