@@ -3,6 +3,7 @@
 import gtk
 
 from .. import Icons
+from ..Config import Config
 from DownloadList import DownloadList
 
 
@@ -14,7 +15,7 @@ class DownloadManager(gtk.Window):
             icon=Icons.shield.get_pixbuf()
         )
         self.resize(Config['downWidth'], Config['downHeight'])
-        self._createUi(self, manager)
+        self._createUi(manager)
         self.connect("delete-event", self.hide_on_delete)
         self.connect("configure-event", self.resizeEvent)
 
@@ -23,10 +24,12 @@ class DownloadManager(gtk.Window):
         self.add(box)
         scroll = gtk.ScrolledWindow()
         scroll.set_properties(
-            hscrollbar_policy=gtk.POLICY_NEVER,
+            hscrollbar_policy=gtk.POLICY_AUTOMATIC,
             vscrollbar_policy=gtk.POLICY_AUTOMATIC,
             shadow_type=gtk.SHADOW_ETCHED_IN)
-        scroll.add(DownloadList(manager))
+        down = DownloadList(self, manager)
+        self.startFileDownload = down.startFileTransfer
+        scroll.add(down)
         box.pack_start(scroll, True, True, 0)
 
     def resizeEvent(self, *args, **kwargs):

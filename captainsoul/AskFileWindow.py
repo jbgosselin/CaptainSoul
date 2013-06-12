@@ -41,7 +41,7 @@ class AskFileWindow(gtk.Window):
         else:
             path = dialog.get_filename()
             dialog.destroy()
-            manager.doStartFileTransfer(info, name, size, path)
+            manager.startFileDownload(info, name, size, path)
             self.destroy()
 
     def refuseFileEvent(self, widget):
