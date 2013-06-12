@@ -16,10 +16,13 @@ pacman -Sy twisted pygtk python2-notify
 
 Features:
 
-[x] Always actif log
-[x] Contact list
-[x] Chat
-[x] Notification
-[x] File transfer
-[ ] Blacklist
-[ ] Tab/Window chat
+- Always actif log
+- Contact list
+- Chat
+- Notification
+- File transfer
+
+To do:
+
+- Blacklist
+- Tab/Window chat
