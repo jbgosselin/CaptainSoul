@@ -34,6 +34,7 @@ class AskFileWindow(gtk.Window):
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
             buttons=('Ok', gtk.RESPONSE_OK, 'Cancel', gtk.RESPONSE_CANCEL)
         )
+        dialog.set_current_name(name)
         if dialog.run() != gtk.RESPONSE_OK:
             dialog.destroy()
             self.destroy()
