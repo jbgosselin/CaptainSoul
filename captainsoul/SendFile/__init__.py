@@ -5,5 +5,5 @@ from twisted.internet import reactor
 from Factory import SendFactory
 
 
-def sendFile(path, ip, port):
-    reactor.connectTCP(ip, port, SendFactory(path))
+def sendFile(path, ip, port, progCallback, endCallback, errCallback):
+    reactor.connectTCP(ip, port, SendFactory(path, progCallback, endCallback, errCallback))
