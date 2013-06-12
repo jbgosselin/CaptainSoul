@@ -13,16 +13,15 @@ from SendFile import sendFile
 from Config import Config
 from Netsoul import NsProtocol
 from MainWindow import MainWindow
+from DownloadManager import DownloadManager
 from Systray import Systray
 from CmdLine import options
-from GetFile import FileGetter
 
 from SettingsWindow import SettingsWindow
 from AddContactWindow import AddContactWindow
 from ChatWindow import ChatWindow
 from DebugWindow import DebugWindow
 from AskFileWindow import AskFileWindow
-from FileProgressWindow import FileProgressWindow
 
 
 class Manager(gobject.GObject, ClientFactory):
@@ -57,6 +56,7 @@ class Manager(gobject.GObject, ClientFactory):
         self._protocol, self._tryReconnecting, self._chatWindows, self._fileToSend = None, False, {}, {}
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         self._mainwindow = MainWindow(self)
+        self._downloadManager = DownloadManager(self)
         self._systray = Systray(self, self._mainwindow)
         if options.debug:
             DebugWindow(self)
@@ -175,10 +175,6 @@ class Manager(gobject.GObject, ClientFactory):
             return True
         return False
 
-    def doStartFileTransfer(self, info, name, size, path):
-        win = FileProgressWindow(info)
-        FileGetter(self, info, name, path, size, win.progressCallback, win.endCallback, win.errorCallback)
-
     def doSendFile(self, login):
         dialog = gtk.FileChooserDialog(
             title='CatpainSoul - Choose destination',
@@ -249,7 +245,7 @@ class Manager(gobject.GObject, ClientFactory):
             self.doOpenChat(info.login, msg)
 
     def do_file_ask(self, info, name, size, desc):
-        AskFileWindow(self, info, name, size, desc)
+        AskFileWindow(self._downloadManager, info, name, size, desc)
 
     def do_file_start(self, info, name, ip, port):
         if (info.login, name) in self._fileToSend:
