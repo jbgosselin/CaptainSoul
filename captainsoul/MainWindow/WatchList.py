@@ -88,8 +88,7 @@ class WatchList(gtk.TreeView):
     _loginColumn = 1
 
     def __init__(self, manager):
-        self._listStore = gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str)
-        super(WatchList, self).__init__(model=self._listStore)
+        super(WatchList, self).__init__(model=gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str))
         self._list = LoginList()
         self.set_rules_hint(True)
         self._listStore.set_sort_column_id(self._loginColumn, gtk.SORT_ASCENDING)
@@ -110,6 +109,10 @@ class WatchList(gtk.TreeView):
         manager.connect('who', self.whoEvent)
         manager.connect('logout', self.logoutEvent)
         self.refreshStore()
+
+    @property
+    def _listStore(self):
+        return self.get_model()
 
     def refreshStore(self):
         self._listStore.clear()

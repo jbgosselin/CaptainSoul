@@ -38,6 +38,8 @@ class ConfigFile(object):
             ('mainWidth', intJSON, 200),
             ('chatHeight', intJSON, 200),
             ('chatWidth', intJSON, 200),
+            ('downHeight', intJSON, 200),
+            ('downWidth', intJSON, 200),
             ('watchlist', nonEmptyStrSetJSON, set())]
         try:
             data = load(file(self._path, 'r'))
