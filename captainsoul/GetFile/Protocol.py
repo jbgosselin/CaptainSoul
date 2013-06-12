@@ -5,7 +5,9 @@ from twisted.internet.protocol import Protocol
 
 class GetFileProtocol(Protocol):
     def __init__(self, coCall, proCall, endCall):
-        self._coCall, self._proCall, self._endCall = coCall, proCall, endCall
+        self._coCall = coCall
+        self._proCall = proCall
+        self._endCall = endCall
 
     def connectionMade(self):
         self._coCall()

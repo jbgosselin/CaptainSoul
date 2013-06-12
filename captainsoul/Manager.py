@@ -50,7 +50,9 @@ class Manager(gobject.GObject, ClientFactory):
 
     def __init__(self):
         gobject.GObject.__init__(self)
-        self._protocol, self._tryReconnecting, self._chatWindows = None, False, {}
+        self._protocol = None
+        self._tryReconnecting = False
+        self._chatWindows = {}
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         self._mainwindow = MainWindow(self)
         self._downloadManager = DownloadManager(self)

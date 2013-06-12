@@ -19,7 +19,9 @@ class NsProtocol(LineOnlyReceiver, object):
     def __init__(self, factory):
         self.factory = factory
         self.factory.setProtocol(self)
-        self._info, self._responseQueue, self._whoQueue = NsData(), deque(), deque()
+        self._info = NsData()
+        self._responseQueue = deque()
+        self._whoQueue = deque()
         self._realist = ReaList(
             Rea(r'^rep (?P<no>\d+) -- .*$', self._responseHook),
             Rea(r'^ping (?P<t>\d+)\s?$', self._pingHook),

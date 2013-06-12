@@ -38,7 +38,8 @@ def urlDecode(s):
 
 class Rea(object):
     def __init__(self, regex, f):
-        self._regex, self._f = re.compile(regex), f
+        self._regex = re.compile(regex)
+        self._f = f
 
     def try_call(self, entry):
         m = self._regex.match(entry)

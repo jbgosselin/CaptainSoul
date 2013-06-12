@@ -24,7 +24,8 @@ def getPath():
 
 class ConfigFile(object):
     def __init__(self):
-        self._data, self._path = {}, getPath()
+        self._data = {}
+        self._path = getPath()
         self.read()
         reactor.addSystemEventTrigger('before', 'shutdown', self.write)
 
@@ -40,7 +41,8 @@ class ConfigFile(object):
             ('chatWidth', intJSON, 200),
             ('downHeight', intJSON, 200),
             ('downWidth', intJSON, 200),
-            ('watchlist', nonEmptyStrSetJSON, set())]
+            ('watchlist', nonEmptyStrSetJSON, set())
+        ]
         try:
             data = load(file(self._path, 'r'))
             if not isinstance(data, dict):
