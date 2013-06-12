@@ -10,7 +10,15 @@ from Factory import GetFileFactory
 
 class FileGetter(object):
     def __init__(self, manager, info, name, path, size, proCall, endCall, errorCall):
-        self._ok, self._path, self._file, self._endCall, self._proCall, self._errorCall, self._done, self._sizeTotal, self._percent = False, path, None, endCall, proCall, errorCall, 0, size, 0
+        self._ok = False
+        self._path = path
+        self._file = None
+        self._endCall = endCall
+        self._proCall = proCall
+        self._errorCall = errorCall
+        self._done = 0
+        self._sizeTotal = size
+        self._percent = 0
         factory = GetFileFactory(
             self.clientConnectionMade,
             self.clientProgress,
@@ -37,9 +45,10 @@ class FileGetter(object):
     def clientProgress(self, data, protocol):
         self._file.write(data)
         self._done += len(data)
-        if 100 * self._done / self._sizeTotal > self._percent:
+        tmp = 100 * self._done / self._sizeTotal
+        if tmp > self._percent:
             self._proCall(self._done, self._sizeTotal)
-            self._percent = 100 * self._done / self._sizeTotal
+            self._percent = tmp
         if self._done >= self._sizeTotal:
             logging.info('GetFile : Transfer success')
             self._ok = True

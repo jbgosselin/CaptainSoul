@@ -14,7 +14,8 @@ class DownloadList(gtk.TreeView):
         super(DownloadList, self).__init__(model=gtk.ListStore(str, str, str, str, int))
         self.set_rules_hint(True)
         self._data = {}
-        self._manager, self._downmanager = manager, downmanager
+        self._manager = manager
+        self._downmanager = downmanager
         columns = [
             gtk.TreeViewColumn("Name", gtk.CellRendererText(), text=COLUMN_NAME),
             gtk.TreeViewColumn("Size", gtk.CellRendererText(), text=COLUMN_SIZE),

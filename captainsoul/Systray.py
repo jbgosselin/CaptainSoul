@@ -17,8 +17,10 @@ class Systray(gtk.StatusIcon):
         super(Systray, self).__init__()
         self._reconnecting = False
         self.set_from_pixbuf(Icons.shield.get_pixbuf())
-        self.set_tooltip_text("CaptainSoul")
-        self.set_visible(True)
+        self.set_properties(
+            tooltip_text="CaptainSoul",
+            visible=True
+        )
         self.connect("activate", mw.showHideEvent)
         manager.connect('msg', self.msgEvent)
         manager.connect('logged', self.loggedEvent)
