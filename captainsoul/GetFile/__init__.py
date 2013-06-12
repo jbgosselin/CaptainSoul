@@ -40,6 +40,7 @@ class FileGetter(object):
         self._proCall(self._done, self._sizeTotal)
         if self._done >= self._sizeTotal:
             self._ok = True
+            self._file.close()
             protocol.transport.loseConnection()
             self._endCall()
 
