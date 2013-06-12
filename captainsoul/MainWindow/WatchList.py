@@ -90,7 +90,7 @@ class WatchList(gtk.TreeView):
     def __init__(self, manager):
         self._listStore = gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str)
         super(WatchList, self).__init__(model=self._listStore)
-        self._manager, self._list = manager, LoginList()
+        self._list = LoginList()
         self.set_rules_hint(True)
         self._listStore.set_sort_column_id(self._loginColumn, gtk.SORT_ASCENDING)
         columns = [
@@ -101,8 +101,8 @@ class WatchList(gtk.TreeView):
         ]
         for column in columns:
             self.append_column(column)
-        self.connect("row-activated", self.rowActivated)
-        self.connect("button-press-event", self.buttonPressEvent)
+        self.connect("row-activated", self.rowActivated, manager)
+        self.connect("button-press-event", self.buttonPressEvent, manager)
         self.connect('show', self.showEvent)
         manager.connect('state', self.stateEvent)
         manager.connect('contact-added', self.contactAddedEvent)
@@ -138,29 +138,36 @@ class WatchList(gtk.TreeView):
         self._list.clean()
         self.refreshStore()
 
-    def rowActivated(self, tv, path, column):
-        self._manager.doOpenChat(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
+    def rowActivated(self, tv, path, column, manager):
+        manager.doOpenChat(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
 
-    def buttonPressEvent(self, wid, event):
+    def buttonPressEvent(self, wid, event, manager):
         # 3 is right click
         if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
             path = self.get_path_at_pos(int(event.x), int(event.y))
             if path is not None:
                 login = self._listStore.get_value(self._listStore.get_iter(path[0]), self._loginColumn)
-                self._menu = gtk.Menu()
-                item = gtk.ImageMenuItem()
-                item.set_label(gtk.STOCK_DELETE)
-                item.set_use_stock(True)
-                item.connect("activate", self.deleteContactEvent, login)
-                item.show()
-                self._menu.append(item)
-                self._menu.popup(None, None, None, event.button, event.time)
+                menu = gtk.Menu()
+                items = [
+                    (gtk.STOCK_DELETE, 'Delete', self.deleteContactEvent),
+                    (gtk.STOCK_FILE, 'Send file', self.sendFileEvent)
+                ]
+                for stock, label, call in items:
+                    item = gtk.ImageMenuItem(stock_id=stock)
+                    item.set_label(label)
+                    item.connect("activate", call, login, manager)
+                    item.show()
+                    menu.append(item)
+                menu.popup(None, None, None, event.button, event.time)
 
     def showEvent(self, widget):
         self.grab_focus()
 
-    def deleteContactEvent(self, widget, login):
-        self._manager.doDeleteContact(login)
+    def deleteContactEvent(self, widget, login, manager):
+        manager.doDeleteContact(login)
+
+    def sendFileEvent(self, widget, login, manager):
+        manager.doSendFile(login)
 
     def whoEvent(self, widget, results):
         self._list.processWho(results)

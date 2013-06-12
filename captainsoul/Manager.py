@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import os
 import logging
 
 import gtk
 import gobject
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
+
+from SendFile import sendFile
 
 from Config import Config
 from Netsoul import NsProtocol
@@ -51,7 +54,7 @@ class Manager(gobject.GObject, ClientFactory):
 
     def __init__(self):
         gobject.GObject.__init__(self)
-        self._protocol, self._tryReconnecting, self._chatWindows = None, False, {}
+        self._protocol, self._tryReconnecting, self._chatWindows, self._fileToSend = None, False, {}, {}
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         self._mainwindow = MainWindow(self)
         self._systray = Systray(self, self._mainwindow)
@@ -176,6 +179,21 @@ class Manager(gobject.GObject, ClientFactory):
         win = FileProgressWindow(info)
         FileGetter(self, info, name, path, size, win.progressCallback, win.endCallback, win.errorCallback)
 
+    def doSendFile(self, login):
+        dialog = gtk.FileChooserDialog(
+            title='CatpainSoul - Choose destination',
+            action=gtk.FILE_CHOOSER_ACTION_OPEN,
+            buttons=('Ok', gtk.RESPONSE_OK, 'Cancel', gtk.RESPONSE_CANCEL)
+        )
+        if dialog.run() != gtk.RESPONSE_OK:
+            dialog.destroy()
+        else:
+            path = dialog.get_filename()
+            dialog.destroy()
+            name = os.path.basename(path)
+            self._fileToSend[(login, name)] = path
+            self.sendFileAsk(name, os.stat(path).st_size, ' ', [login])
+
     # Events
 
     def connectEvent(self, *args, **kwargs):
@@ -232,6 +250,12 @@ class Manager(gobject.GObject, ClientFactory):
 
     def do_file_ask(self, info, name, size, desc):
         AskFileWindow(self, info, name, size, desc)
+
+    def do_file_start(self, info, name, ip, port):
+        if (info.login, name) in self._fileToSend:
+            path = self._fileToSend[(info.login, name)]
+            del self._fileToSend[(info.login, name)]
+            sendFile(path, ip, port)
 
     # NsProtocol Hooks
 
