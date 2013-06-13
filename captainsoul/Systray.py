@@ -10,6 +10,7 @@ except ImportError:
 from glib import GError
 
 import Icons
+from Config import Config
 
 
 class Systray(gtk.StatusIcon):
@@ -27,7 +28,7 @@ class Systray(gtk.StatusIcon):
         manager.connect('reconnecting', self.reconnectingEvent)
 
     def doNotify(self, head, body, img, timeout):
-        if pynotify is not None:
+        if pynotify is not None and Config["notification"]:
             notif = pynotify.Notification(head, body, img)
             notif.set_timeout(timeout)
             try:
