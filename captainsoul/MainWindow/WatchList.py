@@ -52,6 +52,7 @@ class LoginList(object):
         self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in Config['watchlist']}
 
     def processWho(self, results):
+        self._list = {no: b for no, b in self._list.iteritems() if b.login not in results.logins}
         for r in results:
             if r.login in Config['watchlist']:
                 self._list[r.no] = Buddy(r.no, r.login, r.state, r.ip, r.location)
