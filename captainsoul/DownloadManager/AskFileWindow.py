@@ -12,7 +12,8 @@ class AskFileWindow(gtk.Window):
         self.set_properties(
             title="CaptainSoul - File request",
             icon=Icons.shield.get_pixbuf(),
-            resizable=False
+            resizable=False,
+            border_width=5
         )
         self._createUi(manager, info, name, size)
         self.show_all()
@@ -24,6 +25,7 @@ class AskFileWindow(gtk.Window):
         box.pack_start(gtk.Label(name), False, False)
         box.pack_start(gtk.Label(sizeFormatter(size)), False, False)
         bbox = gtk.HButtonBox()
+        bbox.set_layout(gtk.BUTTONBOX_END)
         box.pack_start(bbox)
         baccept = gtk.Button(label='Accept', stock=gtk.STOCK_YES)
         bbox.add(baccept)
