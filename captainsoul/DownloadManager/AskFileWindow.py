@@ -2,7 +2,8 @@
 
 import gtk
 
-import Icons
+from .. import Icons
+from tools import sizeFormatter
 
 
 class AskFileWindow(gtk.Window):
@@ -10,7 +11,8 @@ class AskFileWindow(gtk.Window):
         super(AskFileWindow, self).__init__()
         self.set_properties(
             title="CaptainSoul - File request",
-            icon=Icons.shield.get_pixbuf()
+            icon=Icons.shield.get_pixbuf(),
+            resizable=False
         )
         self._createUi(manager, info, name, size)
         self.show_all()
@@ -18,7 +20,9 @@ class AskFileWindow(gtk.Window):
     def _createUi(self, manager, info, name, size):
         box = gtk.VBox(False, 0)
         self.add(box)
-        box.pack_start(gtk.Label('%s want to send you "%s" of %d bytes' % (info.login, name, size)), False, False)
+        box.pack_start(gtk.Label('%s want to send you a file' % info.login), False, False)
+        box.pack_start(gtk.Label(name), False, False)
+        box.pack_start(gtk.Label(sizeFormatter(size)), False, False)
         bbox = gtk.HButtonBox()
         box.pack_start(bbox)
         baccept = gtk.Button(label='Accept', stock=gtk.STOCK_YES)
