@@ -9,16 +9,16 @@ from twisted.internet.protocol import ClientFactory
 
 from Config import Config
 from Netsoul import NsProtocol
-from MainWindow import MainWindow
-from DownloadManager import DownloadManager
-from Systray import Systray
 from CmdLine import options
 
+from MainWindow import MainWindow
+from DownloadManager import DownloadManager
+from DownloadManager.AskFileWindow import AskFileWindow
+from Systray import Systray
 from SettingsWindow import SettingsWindow
 from AddContactWindow import AddContactWindow
 from ChatWindow import ChatWindow
 from DebugWindow import DebugWindow
-from AskFileWindow import AskFileWindow
 
 
 class Manager(gobject.GObject, ClientFactory):
