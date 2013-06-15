@@ -8,7 +8,7 @@ from collections import deque
 from twisted.protocols.basic import LineOnlyReceiver
 
 from ..Config import Config
-from NetsoulTools import Rea, ReaList, NsData, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
+from NetsoulTools import Rea, ReaList, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
 
 __all__ = ['NsProtocol']
 
@@ -19,7 +19,7 @@ class NsProtocol(LineOnlyReceiver, object):
     def __init__(self, factory):
         self.factory = factory
         self.factory.setProtocol(self)
-        self._info = NsData()
+        self._info = {}
         self._responseQueue = deque()
         self._whoQueue = deque()
         self._realist = ReaList(
@@ -79,9 +79,9 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _salutHook(self, num, md5_hash, ip, port, timestamp):
         logging.info('Netsoul : Got salut %s %s:%s' % (md5_hash, ip, port))
-        self._info.hash = md5_hash
-        self._info.host = ip
-        self._info.port = port
+        self._info['hash'] = md5_hash
+        self._info['host'] = ip
+        self._info['port'] = port
         self.sendLine('auth_ag ext_user none none')
         self._responseQueue.append(self._responseSalutHook)
 
@@ -129,7 +129,7 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _responseSalutHook(self, no):
         if no == 2:
-            md5_hash = md5('%s-%s/%s%s' % (self._info.hash, self._info.host, self._info.port, Config['password'])).hexdigest()
+            md5_hash = md5('%s-%s/%s%s' % (self._info['hash'], self._info['host'], self._info['port'], Config['password'])).hexdigest()
             self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, urlEncode(Config['location']), 'CaptainSoul'))
             self._responseQueue.append(self._responseLogHook)
         else:

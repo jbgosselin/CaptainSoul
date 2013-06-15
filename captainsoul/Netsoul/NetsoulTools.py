@@ -4,7 +4,7 @@ import re
 import string
 
 
-__all__ = ['Rea', 'ReaList', 'NsUserCmdInfo', 'NsData', 'NsWhoEntry', 'NsWhoResult', 'urlEncode', 'urlDecode']
+__all__ = ['Rea', 'ReaList', 'NsUserCmdInfo', 'NsWhoEntry', 'NsWhoResult', 'urlEncode', 'urlDecode']
 
 
 def urlEncode(s):
@@ -14,10 +14,7 @@ def urlEncode(s):
     for c in s:
         if c not in string.ascii_letters + string.digits:
             o = ord(c)
-            if o < 16:
-                r += u'%%0%s' % hex(o).upper()[2:]
-            else:
-                r += u'%%%s' % hex(o).upper()[2:]
+            r += (u'%%0%s' if o < 16 else u'%%%s') % hex(o).upper()[2:]
         else:
             r += c
     return r
@@ -99,35 +96,6 @@ class NsUserCmdInfo(object):
     @property
     def location(self):
         return self._location
-
-
-class NsData(object):
-    def __init__(self):
-        self._hash, self._host, self._port = '', '', 0
-
-    @property
-    def hash(self):
-        return self._hash
-
-    @hash.setter
-    def hash(self, v):
-        self._hash = v
-
-    @property
-    def host(self):
-        return self._host
-
-    @host.setter
-    def host(self, v):
-        self._host = v
-
-    @property
-    def port(self):
-        return self._port
-
-    @port.setter
-    def port(self, v):
-        self._port = v
 
 
 class NsWhoEntry(object):
