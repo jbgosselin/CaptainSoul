@@ -3,15 +3,13 @@
 import gtk
 
 from Config import Config
-import Icons
 
 
 class SettingsWindow(gtk.Dialog):
     def __init__(self):
         super(SettingsWindow, self).__init__(title="CaptainSoul - Settings")
         self.set_properties(
-            resizable=False,
-            icon=Icons.shield.get_pixbuf()
+            resizable=False
         )
         self._createUi()
         self.show_all()

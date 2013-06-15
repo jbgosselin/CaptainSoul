@@ -10,6 +10,7 @@ from twisted.internet.protocol import ClientFactory
 from Config import Config
 from Netsoul import NsProtocol
 from CmdLine import options
+import Icons
 
 from MainWindow import MainWindow
 from DownloadManager import DownloadManager
@@ -54,6 +55,7 @@ class Manager(gobject.GObject, ClientFactory):
         self._tryReconnecting = False
         self._chatWindows = {}
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
+        gtk.window_set_default_icon(Icons.shield.get_pixbuf())
         self._mainwindow = MainWindow(self)
         self._downloadManager = DownloadManager(self)
         self._systray = Systray(self, self._mainwindow)

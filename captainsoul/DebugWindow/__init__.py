@@ -2,7 +2,6 @@
 
 import gtk
 
-from .. import Icons
 from DebugView import DebugView
 from DebugEntry import DebugEntry
 
@@ -11,8 +10,7 @@ class DebugWindow(gtk.Window):
     def __init__(self, manager):
         super(DebugWindow, self).__init__()
         self.set_properties(
-            title="CaptainSoul - Debug",
-            icon=Icons.shield.get_pixbuf()
+            title="CaptainSoul - Debug"
         )
         self._createUi(manager)
         self.show_all()

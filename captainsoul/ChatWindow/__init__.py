@@ -3,7 +3,6 @@
 import gtk
 
 from ..Config import Config
-from .. import Icons
 from ChatView import ChatView
 from ChatStatus import ChatStatus
 from ChatEntry import ChatEntry
@@ -13,8 +12,7 @@ class ChatWindow(gtk.Window):
     def __init__(self, manager, login, iconify, msg=None):
         super(ChatWindow, self).__init__()
         self.set_properties(
-            title="CaptainSoul - %s" % login,
-            icon=Icons.shield.get_pixbuf()
+            title="CaptainSoul - %s" % login
         )
         self.resize(Config['chatWidth'], Config['chatHeight'])
         self._createUi(manager, login, msg)
