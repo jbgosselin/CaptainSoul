@@ -2,9 +2,11 @@
 
 import gtk
 
+from ..CptCommon import CptCommon
 
-class ToolBar(gtk.Toolbar):
-    def __init__(self, manager):
+
+class ToolBar(gtk.Toolbar, CptCommon):
+    def __init__(self):
         super(ToolBar, self).__init__()
         items = []
         # Connection/Deconnection Button
@@ -13,7 +15,7 @@ class ToolBar(gtk.Toolbar):
             tooltip_text="Connect",
             label="Connect"
         )
-        self._coButtonClicked = coButton.connect("clicked", manager.connectEvent)
+        self._coButtonClicked = coButton.connect("clicked", self.manager.connectEvent)
         items.append(coButton)
         # Settings Button
         button = gtk.ToolButton(gtk.STOCK_PREFERENCES)
@@ -21,7 +23,7 @@ class ToolBar(gtk.Toolbar):
             tooltip_text="Settings",
             label="Settings"
         )
-        button.connect("clicked", manager.openSettingsWindowEvent)
+        button.connect("clicked", self.manager.openSettingsWindowEvent)
         items.append(button)
         # Separator
         items.append(gtk.SeparatorToolItem())
@@ -31,7 +33,7 @@ class ToolBar(gtk.Toolbar):
             tooltip_text="Add contact",
             label="Add contact"
         )
-        button.connect("clicked", manager.openAddContactWindowEvent)
+        button.connect("clicked", self.manager.openAddContactWindowEvent)
         items.append(button)
         # Open download manager
         button = gtk.ToolButton(gtk.STOCK_SAVE)
@@ -39,7 +41,7 @@ class ToolBar(gtk.Toolbar):
             tooltip_text="Downloads",
             label="Downloads"
         )
-        button.connect("clicked", self.openDownloadEvent, manager)
+        button.connect("clicked", self.openDownloadEvent)
         items.append(button)
         # Separator
         items.append(gtk.SeparatorToolItem())
@@ -49,34 +51,34 @@ class ToolBar(gtk.Toolbar):
             tooltip_text="Quit",
             label="Quit"
         )
-        button.connect("clicked", manager.quitEvent)
+        button.connect("clicked", self.manager.quitEvent)
         items.append(button)
         # Insert all in the ToolBar
-        manager.connect('connecting', self.connectedEvent, coButton, manager)
-        manager.connect('reconnecting', self.connectedEvent, coButton, manager)
-        manager.connect('connected', self.connectedEvent, coButton, manager)
-        manager.connect('disconnected', self.disconnectedEvent, coButton, manager)
+        self.manager.connect('connecting', self.connectedEvent, coButton)
+        self.manager.connect('reconnecting', self.connectedEvent, coButton)
+        self.manager.connect('connected', self.connectedEvent, coButton)
+        self.manager.connect('disconnected', self.disconnectedEvent, coButton)
         for n, item in enumerate(items):
             self.insert(item, n)
 
-    def connectedEvent(self, widget, button, manager):
+    def connectedEvent(self, widget, button):
         button.set_stock_id(gtk.STOCK_DISCONNECT)
         button.set_properties(
             tooltip_text="Disconnect",
             label="Disconnect"
         )
         button.disconnect(self._coButtonClicked)
-        self._coButtonClicked = button.connect("clicked", manager.disconnectEvent)
+        self._coButtonClicked = button.connect("clicked", self.manager.disconnectEvent)
 
-    def disconnectedEvent(self, widget, button, manager):
+    def disconnectedEvent(self, widget, button):
         button.set_stock_id(gtk.STOCK_CONNECT)
         button.set_properties(
             tooltip_text="Connect",
             label="Connect"
         )
         button.disconnect(self._coButtonClicked)
-        self._coButtonClicked = button.connect("clicked", manager.connectEvent)
+        self._coButtonClicked = button.connect("clicked", self.manager.connectEvent)
 
-    def openDownloadEvent(self, widget, manager):
-        manager._downloadManager.show_all()
-        manager._downloadManager.present()
+    def openDownloadEvent(self, widget):
+        self.manager._downloadManager.show_all()
+        self.manager._downloadManager.present()
