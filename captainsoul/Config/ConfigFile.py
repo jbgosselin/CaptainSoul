@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
-import platform
 import logging
 from json import load, dump
 
@@ -12,20 +10,10 @@ from ConfigTypes import nonEmptyStrJSON, boolJSON, intJSON, nonEmptyStrSetJSON
 __all__ = ['ConfigFile']
 
 
-def getPath():
-    if platform.system() == 'Linux':
-        directory = os.path.expanduser('~/.config')
-    else:
-        directory = './'
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    return os.path.join(directory, 'cptsoul.json')
-
-
 class ConfigFile(object):
-    def __init__(self):
+    def __init__(self, path):
+        self._path = path
         self._data = {}
-        self._path = getPath()
         self.read()
         reactor.addSystemEventTrigger('before', 'shutdown', self.write)
 
