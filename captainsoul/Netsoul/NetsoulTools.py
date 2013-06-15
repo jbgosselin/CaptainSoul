@@ -13,7 +13,11 @@ def urlEncode(s):
         s = unicode(s, 'utf8')
     for c in s:
         if c not in string.ascii_letters + string.digits:
-            r += u'%%%s' % hex(ord(c)).upper()[2:]
+            o = ord(c)
+            if o < 16:
+                r += u'%%0%s' % hex(o).upper()[2:]
+            else:
+                r += u'%%%s' % hex(o).upper()[2:]
         else:
             r += c
     return r
