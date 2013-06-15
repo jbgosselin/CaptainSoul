@@ -59,7 +59,7 @@ class Manager(gobject.GObject, ClientFactory):
         gtk.window_set_default_icon(Icons.shield.get_pixbuf())
         CptCommon.manager = self
         self._mainwindow = MainWindow(self)
-        self._downloadManager = DownloadManager(self)
+        self._downloadManager = DownloadManager()
         self._systray = Systray(self, self._mainwindow)
         if options.debug:
             DebugWindow()
