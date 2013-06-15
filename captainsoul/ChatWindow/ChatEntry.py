@@ -2,9 +2,11 @@
 
 import gtk
 
+from ..CptCommon import CptCommon
 
-class ChatEntry(gtk.TextView):
-    def __init__(self, manager, login):
+
+class ChatEntry(gtk.TextView, CptCommon):
+    def __init__(self, login):
         super(ChatEntry, self).__init__()
         self.set_properties(
             editable=True,
@@ -14,29 +16,29 @@ class ChatEntry(gtk.TextView):
             height_request=40
         )
         self._typing = False
-        self.connect("key-press-event", self.keyPressEvent, manager, login)
-        self.get_buffer().connect("changed", self.keyPressEventEnd, manager, login)
+        self.connect("key-press-event", self.keyPressEvent, login)
+        self.get_buffer().connect("changed", self.keyPressEventEnd, login)
 
-    def deleteEvent(self, widget, reason, manager, login):
+    def deleteEvent(self, widget, reason, login):
         if self._typing:
             self._typing = False
-            manager.sendCancelTyping([login])
+            self.manager.sendCancelTyping([login])
 
-    def keyPressEvent(self, widget, event, manager, login):
+    def keyPressEvent(self, widget, event, login):
         if gtk.gdk.keyval_name(event.keyval) in ('Return', 'KP_Enter'):
             buff = self.get_buffer()
             text = buff.get_text(buff.get_start_iter(), buff.get_end_iter(), True)
             if len(text):
                 buff.delete(buff.get_start_iter(), buff.get_end_iter())
-                manager.sendMsg(text, [login])
+                self.manager.sendMsg(text, [login])
             return True
 
-    def keyPressEventEnd(self, widget, manager, login):
+    def keyPressEventEnd(self, widget, login):
         buff = self.get_buffer()
         l = len(buff.get_text(buff.get_start_iter(), buff.get_end_iter(), True))
         if not self._typing and l >= 5:
-            manager.sendStartTyping([login])
+            self.manager.sendStartTyping([login])
             self._typing = True
         elif self._typing and l < 5:
-            manager.sendCancelTyping([login])
+            self.manager.sendCancelTyping([login])
             self._typing = False
