@@ -4,7 +4,6 @@ import gtk
 
 from ..CmdLine import options
 from ..Config import Config
-from .. import Icons
 
 from WatchList import WatchList
 from ToolBar import ToolBar
@@ -15,8 +14,7 @@ class MainWindow(gtk.Window):
     def __init__(self, manager):
         super(MainWindow, self).__init__()
         self.set_properties(
-            title="CaptainSoul",
-            icon=Icons.shield.get_pixbuf()
+            title="CaptainSoul"
         )
         self.resize(Config['mainWidth'], Config['mainHeight'])
         self._createAccels(manager)

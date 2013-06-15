@@ -2,7 +2,6 @@
 
 import gtk
 
-from .. import Icons
 from ..Config import Config
 from DownloadList import DownloadList
 from UploadList import UploadList
@@ -12,8 +11,7 @@ class DownloadManager(gtk.Window):
     def __init__(self, manager):
         super(DownloadManager, self).__init__()
         self.set_properties(
-            title="CaptainSoul - Download Manager",
-            icon=Icons.shield.get_pixbuf()
+            title="CaptainSoul - Download Manager"
         )
         self.resize(Config['downWidth'], Config['downHeight'])
         self._createUi(manager)

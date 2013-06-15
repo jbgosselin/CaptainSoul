@@ -2,7 +2,6 @@
 
 import gtk
 
-from .. import Icons
 from tools import sizeFormatter
 
 
@@ -11,7 +10,6 @@ class AskFileWindow(gtk.Window):
         super(AskFileWindow, self).__init__()
         self.set_properties(
             title="CaptainSoul - File request",
-            icon=Icons.shield.get_pixbuf(),
             resizable=False,
             border_width=5
         )
