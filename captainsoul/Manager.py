@@ -23,7 +23,7 @@ from ChatWindow import ChatWindow
 from DebugWindow import DebugWindow
 
 
-class Manager(gobject.GObject, ClientFactory):
+class Manager(gobject.GObject, ClientFactory, CptCommon):
     reconnectDelay = 2
     netsoulHost = 'ns-server.epita.fr'
     netsoulPort = 4242
@@ -58,9 +58,9 @@ class Manager(gobject.GObject, ClientFactory):
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         gtk.window_set_default_icon(Icons.shield.get_pixbuf())
         CptCommon.manager = self
-        self._mainwindow = MainWindow()
-        self._downloadManager = DownloadManager()
-        self._systray = Systray(self._mainwindow)
+        CptCommon.mainWindow = MainWindow()
+        CptCommon.downloadManager = DownloadManager()
+        self._systray = Systray()
         if options.debug:
             DebugWindow()
         if Config['autoConnect']:
@@ -233,7 +233,7 @@ class Manager(gobject.GObject, ClientFactory):
             self.doOpenChat(info.login, msg)
 
     def do_file_ask(self, info, name, size, desc):
-        AskFileWindow(self._downloadManager, info, name, size, desc)
+        AskFileWindow(info, name, size, desc)
 
     # NsProtocol Hooks
 

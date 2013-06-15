@@ -172,7 +172,7 @@ class WatchList(gtk.TreeView, CptCommon):
         self.manager.doDeleteContact(login)
 
     def sendFileEvent(self, widget, login):
-        self.manager._downloadManager.startFileUpload(login)
+        self.downloadManager.startFileUpload(login)
 
     def whoEvent(self, widget, results):
         self._list.processWho(results)

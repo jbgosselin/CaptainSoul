@@ -3,3 +3,5 @@
 
 class CptCommon(object):
     manager = None
+    downloadManager = None
+    mainWindow = None

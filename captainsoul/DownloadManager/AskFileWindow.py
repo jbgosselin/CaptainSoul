@@ -3,20 +3,21 @@
 import gtk
 
 from tools import sizeFormatter
+from ..CptCommon import CptCommon
 
 
-class AskFileWindow(gtk.Window):
-    def __init__(self, manager, info, name, size, desc):
+class AskFileWindow(gtk.Window, CptCommon):
+    def __init__(self, info, name, size, desc):
         super(AskFileWindow, self).__init__()
         self.set_properties(
             title="CaptainSoul - File request",
             resizable=False,
             border_width=5
         )
-        self._createUi(manager, info, name, size)
+        self._createUi(info, name, size)
         self.show_all()
 
-    def _createUi(self, manager, info, name, size):
+    def _createUi(self, info, name, size):
         box = gtk.VBox(False, 0)
         self.add(box)
         box.pack_start(gtk.Label('%s want to send you a file' % info.login), False, False)
@@ -27,12 +28,12 @@ class AskFileWindow(gtk.Window):
         box.pack_start(bbox)
         baccept = gtk.Button(label='Accept', stock=gtk.STOCK_YES)
         bbox.add(baccept)
-        baccept.connect('clicked', self.acceptFileEvent, manager, info, name, size)
+        baccept.connect('clicked', self.acceptFileEvent, info, name, size)
         brefuse = gtk.Button(label='Refuse', stock=gtk.STOCK_NO)
         bbox.add(brefuse)
         brefuse.connect('clicked', self.refuseFileEvent)
 
-    def acceptFileEvent(self, widget, manager, info, name, size):
+    def acceptFileEvent(self, widget, info, name, size):
         dialog = gtk.FileChooserDialog(
             title='CatpainSoul - Choose destination',
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
@@ -45,7 +46,7 @@ class AskFileWindow(gtk.Window):
         else:
             path = dialog.get_filename()
             dialog.destroy()
-            manager.startFileDownload(info, name, size, path)
+            self.downloadManager.startFileDownload(info, name, size, path)
             self.destroy()
 
     def refuseFileEvent(self, widget):
