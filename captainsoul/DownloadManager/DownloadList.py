@@ -4,17 +4,17 @@ import gtk
 
 from ..GetFile import FileGetter
 from ..PreparedCaller import PreparedCaller
+from ..CptCommon import CptCommon
 from tools import sizeFormatter, strRandom
 
 COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)
 
 
-class DownloadList(gtk.TreeView):
-    def __init__(self, downmanager, manager):
+class DownloadList(gtk.TreeView, CptCommon):
+    def __init__(self, downmanager):
         super(DownloadList, self).__init__(model=gtk.ListStore(str, str, str, str, int))
         self.set_rules_hint(True)
         self._data = {}
-        self._manager = manager
         self._downmanager = downmanager
         columns = [
             gtk.TreeViewColumn("Name", gtk.CellRendererText(), text=COLUMN_NAME),
@@ -35,7 +35,7 @@ class DownloadList(gtk.TreeView):
             key = strRandom()
         self._data[key] = self._listStore.append([name, sizeFormatter(size), info.login, 'Waiting', 0])
         FileGetter(
-            self._manager, info, name, path, size,
+            self.manager, info, name, path, size,
             PreparedCaller(self.progressCallback, key=key),
             PreparedCaller(self.endCallback, key=key),
             PreparedCaller(self.errorCallback, key=key)

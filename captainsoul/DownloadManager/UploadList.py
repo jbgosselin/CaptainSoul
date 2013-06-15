@@ -6,18 +6,18 @@ import gtk
 
 from ..SendFile import sendFile
 from ..PreparedCaller import PreparedCaller
+from ..CptCommon import CptCommon
 from tools import sizeFormatter, strRandom
 
 COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)
 
 
-class UploadList(gtk.TreeView):
-    def __init__(self, downmanager, manager):
+class UploadList(gtk.TreeView, CptCommon):
+    def __init__(self, downmanager):
         super(UploadList, self).__init__(model=gtk.ListStore(str, str, str, str, int))
         self.set_rules_hint(True)
         self._data = {}
         self._fileToSend = {}
-        self._manager = manager
         self._downmanager = downmanager
         columns = [
             gtk.TreeViewColumn("Name", gtk.CellRendererText(), text=COLUMN_NAME),
@@ -27,7 +27,7 @@ class UploadList(gtk.TreeView):
         ]
         for column in columns:
             self.append_column(column)
-        manager.connect('file-start', self.fileStartEvent)
+        self.manager.connect('file-start', self.fileStartEvent)
 
     @property
     def _listStore(self):
@@ -62,7 +62,7 @@ class UploadList(gtk.TreeView):
                 key = strRandom()
             self._fileToSend[(login, name)] = (path, key)
             self._data[key] = self._listStore.append([name, sizeFormatter(size), login, 'Waiting', 0])
-            self._manager.sendFileAsk(name, size, ' ', [login])
+            self.manager.sendFileAsk(name, size, ' ', [login])
             self._downmanager.show_all()
 
     def progressCallback(self, done, total, key):
