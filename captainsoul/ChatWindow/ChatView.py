@@ -6,11 +6,13 @@ import webbrowser
 import gtk
 import pango
 
+from ..CptCommon import CptCommon
 
-class ChatView(gtk.ScrolledWindow):
+
+class ChatView(gtk.ScrolledWindow, CptCommon):
     http_regex = re.compile(r"https?://[\w\-\.~\:/\?#\[\]@!$&'\(\)\*\+,;=%]+")
 
-    def __init__(self, manager, login, msg=None):
+    def __init__(self, login, msg=None):
         super(ChatView, self).__init__()
         self.set_properties(
             border_width=0,
@@ -19,10 +21,10 @@ class ChatView(gtk.ScrolledWindow):
             vscrollbar_policy=gtk.POLICY_AUTOMATIC
         )
         self._createUi()
-        self.connect('destroy', self.destroyEvent, manager)
+        self.connect('destroy', self.destroyEvent)
         self._connections = [
-            manager.connect('msg', self.msgEvent, login),
-            manager.connect('send-msg', self.sendMsgEvent, login)
+            self.manager.connect('msg', self.msgEvent, login),
+            self.manager.connect('send-msg', self.sendMsgEvent, login)
         ]
         self._buffer.connect('changed', self.bufferChangedEvent)
         if msg is not None:
@@ -91,6 +93,6 @@ class ChatView(gtk.ScrolledWindow):
         adj = self.get_vadjustment()
         adj.set_value(adj.get_upper())
 
-    def destroyEvent(self, widget, manager):
+    def destroyEvent(self, widget):
         for co in self._connections:
-            manager.disconnect(co)
+            self.manager.disconnect(co)

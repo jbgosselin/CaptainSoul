@@ -7,6 +7,7 @@ import gobject
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 
+from CptCommon import CptCommon
 from Config import Config
 from Netsoul import NsProtocol
 from CmdLine import options
@@ -56,6 +57,7 @@ class Manager(gobject.GObject, ClientFactory):
         self._chatWindows = {}
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         gtk.window_set_default_icon(Icons.shield.get_pixbuf())
+        CptCommon.manager = self
         self._mainwindow = MainWindow(self)
         self._downloadManager = DownloadManager(self)
         self._systray = Systray(self, self._mainwindow)
@@ -157,7 +159,7 @@ class Manager(gobject.GObject, ClientFactory):
 
     def doOpenChat(self, login, msg=None):
         if login not in self._chatWindows:
-            self._chatWindows[login] = ChatWindow(self, login, False, msg)
+            self._chatWindows[login] = ChatWindow(login, False, msg)
         return self._chatWindows[login]
 
     def doDeleteContact(self, login):
