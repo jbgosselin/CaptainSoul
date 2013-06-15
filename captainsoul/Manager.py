@@ -62,7 +62,7 @@ class Manager(gobject.GObject, ClientFactory):
         self._downloadManager = DownloadManager(self)
         self._systray = Systray(self, self._mainwindow)
         if options.debug:
-            DebugWindow(self)
+            DebugWindow()
         if Config['autoConnect']:
             self.doConnectSocket()
 

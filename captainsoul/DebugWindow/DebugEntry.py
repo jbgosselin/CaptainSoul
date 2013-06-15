@@ -2,14 +2,16 @@
 
 import gtk
 
+from ..CptCommon import CptCommon
 
-class DebugEntry(gtk.Entry):
-    def __init__(self, manager):
+
+class DebugEntry(gtk.Entry, CptCommon):
+    def __init__(self):
         super(DebugEntry, self).__init__()
-        self.connect('activate', self.activateEvent, manager)
+        self.connect('activate', self.activateEvent)
 
-    def activateEvent(self, widget, manager):
+    def activateEvent(self, widget):
         line = widget.get_text()
         if line:
             widget.set_text('')
-            manager.sendRaw(line)
+            self.manager.sendRaw(line)

@@ -2,9 +2,11 @@
 
 import gtk
 
+from ..CptCommon import CptCommon
 
-class DebugView(gtk.ScrolledWindow):
-    def __init__(self, manager):
+
+class DebugView(gtk.ScrolledWindow, CptCommon):
+    def __init__(self):
         super(DebugView, self).__init__()
         self.set_properties(
             border_width=0,
@@ -13,10 +15,10 @@ class DebugView(gtk.ScrolledWindow):
             vscrollbar_policy=gtk.POLICY_AUTOMATIC
         )
         self._createUi()
-        self.connect('destroy', self.destroyEvent, manager)
+        self.connect('destroy', self.destroyEvent)
         self._connections = [
-            manager.connect('send-raw', self.sendRawEvent),
-            manager.connect('get-raw', self.getRawEvent)
+            self.manager.connect('send-raw', self.sendRawEvent),
+            self.manager.connect('get-raw', self.getRawEvent)
         ]
         self._buffer.connect('changed', self.bufferChangedEvent)
 
@@ -43,6 +45,6 @@ class DebugView(gtk.ScrolledWindow):
         adj = self.get_vadjustment()
         adj.set_value(adj.get_upper())
 
-    def destroyEvent(self, widget, manager):
+    def destroyEvent(self, widget):
         for co in self._connections:
-            manager.disconnect(co)
+            self.manager.disconnect(co)
