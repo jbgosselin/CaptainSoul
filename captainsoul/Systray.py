@@ -11,10 +11,11 @@ from glib import GError
 
 import Icons
 from Config import Config
+from CptCommon import CptCommon
 
 
-class Systray(gtk.StatusIcon):
-    def __init__(self, manager, mw):
+class Systray(gtk.StatusIcon, CptCommon):
+    def __init__(self, mw):
         super(Systray, self).__init__()
         self._reconnecting = False
         self.set_from_pixbuf(Icons.shield.get_pixbuf())
@@ -23,9 +24,9 @@ class Systray(gtk.StatusIcon):
             visible=True
         )
         self.connect("activate", mw.showHideEvent)
-        manager.connect('msg', self.msgEvent)
-        manager.connect('logged', self.loggedEvent)
-        manager.connect('reconnecting', self.reconnectingEvent)
+        self.manager.connect('msg', self.msgEvent)
+        self.manager.connect('logged', self.loggedEvent)
+        self.manager.connect('reconnecting', self.reconnectingEvent)
 
     def doNotify(self, head, body, img, timeout):
         if pynotify is not None and Config["notification"]:

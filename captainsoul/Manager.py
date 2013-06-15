@@ -60,7 +60,7 @@ class Manager(gobject.GObject, ClientFactory):
         CptCommon.manager = self
         self._mainwindow = MainWindow()
         self._downloadManager = DownloadManager()
-        self._systray = Systray(self, self._mainwindow)
+        self._systray = Systray(self._mainwindow)
         if options.debug:
             DebugWindow()
         if Config['autoConnect']:
