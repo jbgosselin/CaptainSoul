@@ -15,7 +15,7 @@ from CptCommon import CptCommon
 
 
 class Systray(gtk.StatusIcon, CptCommon):
-    def __init__(self, mw):
+    def __init__(self):
         super(Systray, self).__init__()
         self._reconnecting = False
         self.set_from_pixbuf(Icons.shield.get_pixbuf())
@@ -23,7 +23,7 @@ class Systray(gtk.StatusIcon, CptCommon):
             tooltip_text="CaptainSoul",
             visible=True
         )
-        self.connect("activate", mw.showHideEvent)
+        self.connect("activate", self.mainWindow.showHideEvent)
         self.manager.connect('msg', self.msgEvent)
         self.manager.connect('logged', self.loggedEvent)
         self.manager.connect('reconnecting', self.reconnectingEvent)
