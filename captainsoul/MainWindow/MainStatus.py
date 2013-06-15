@@ -2,15 +2,17 @@
 
 import gtk
 
+from ..CptCommon import CptCommon
 
-class MainStatus(gtk.Statusbar):
-    def __init__(self, manager):
+
+class MainStatus(gtk.Statusbar, CptCommon):
+    def __init__(self):
         super(MainStatus, self).__init__()
         self.push(0, 'Welcome')
-        manager.connect('logged', self.loggedEvent)
-        manager.connect('reconnecting', self.reconnectingEvent)
-        manager.connect('disconnected', self.disconnectedEvent)
-        manager.connect('connecting', self.connectingEvent)
+        self.manager.connect('logged', self.loggedEvent)
+        self.manager.connect('reconnecting', self.reconnectingEvent)
+        self.manager.connect('disconnected', self.disconnectedEvent)
+        self.manager.connect('connecting', self.connectingEvent)
 
     def connectingEvent(self, widget):
         self.push(0, "Connecting...")

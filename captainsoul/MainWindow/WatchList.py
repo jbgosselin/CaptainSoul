@@ -2,6 +2,7 @@
 
 import gtk
 
+from ..CptCommon import CptCommon
 from ..Config import Config
 from .. import Icons
 
@@ -85,10 +86,10 @@ class LoginList(object):
             del self._list[info.no]
 
 
-class WatchList(gtk.TreeView):
+class WatchList(gtk.TreeView, CptCommon):
     _loginColumn = 1
 
-    def __init__(self, manager):
+    def __init__(self):
         super(WatchList, self).__init__(model=gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str))
         self._list = LoginList()
         self.set_rules_hint(True)
@@ -101,14 +102,14 @@ class WatchList(gtk.TreeView):
         ]
         for column in columns:
             self.append_column(column)
-        self.connect("row-activated", self.rowActivated, manager)
-        self.connect("button-press-event", self.buttonPressEvent, manager)
+        self.connect("row-activated", self.rowActivated)
+        self.connect("button-press-event", self.buttonPressEvent)
         self.connect('show', self.showEvent)
-        manager.connect('state', self.stateEvent)
-        manager.connect('contact-added', self.contactAddedEvent)
-        manager.connect('contact-deleted', self.contactDeletedEvent)
-        manager.connect('who', self.whoEvent)
-        manager.connect('logout', self.logoutEvent)
+        self.manager.connect('state', self.stateEvent)
+        self.manager.connect('contact-added', self.contactAddedEvent)
+        self.manager.connect('contact-deleted', self.contactDeletedEvent)
+        self.manager.connect('who', self.whoEvent)
+        self.manager.connect('logout', self.logoutEvent)
         self.refreshStore()
 
     @property
@@ -142,10 +143,10 @@ class WatchList(gtk.TreeView):
         self._list.clean()
         self.refreshStore()
 
-    def rowActivated(self, tv, path, column, manager):
-        manager.doOpenChat(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
+    def rowActivated(self, tv, path, column):
+        self.manager.doOpenChat(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
 
-    def buttonPressEvent(self, wid, event, manager):
+    def buttonPressEvent(self, wid, event):
         # 3 is right click
         if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
             path = self.get_path_at_pos(int(event.x), int(event.y))
@@ -159,7 +160,7 @@ class WatchList(gtk.TreeView):
                 for stock, label, call in items:
                     item = gtk.ImageMenuItem(stock_id=stock)
                     item.set_label(label)
-                    item.connect("activate", call, login, manager)
+                    item.connect("activate", call, login)
                     item.show()
                     menu.append(item)
                 menu.popup(None, None, None, event.button, event.time)
@@ -167,11 +168,11 @@ class WatchList(gtk.TreeView):
     def showEvent(self, widget):
         self.grab_focus()
 
-    def deleteContactEvent(self, widget, login, manager):
-        manager.doDeleteContact(login)
+    def deleteContactEvent(self, widget, login):
+        self.manager.doDeleteContact(login)
 
-    def sendFileEvent(self, widget, login, manager):
-        manager._downloadManager.startFileUpload(login)
+    def sendFileEvent(self, widget, login):
+        self.manager._downloadManager.startFileUpload(login)
 
     def whoEvent(self, widget, results):
         self._list.processWho(results)
