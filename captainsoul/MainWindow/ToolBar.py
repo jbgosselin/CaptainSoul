@@ -80,5 +80,5 @@ class ToolBar(gtk.Toolbar, CptCommon):
         self._coButtonClicked = button.connect("clicked", self.manager.connectEvent)
 
     def openDownloadEvent(self, widget):
-        self.manager._downloadManager.show_all()
-        self.manager._downloadManager.present()
+        self.downloadManager.show_all()
+        self.downloadManager.present()

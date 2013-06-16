@@ -9,9 +9,9 @@ except ImportError:
     pynotify = None
 from glib import GError
 
-import Icons
-from Config import Config
-from CptCommon import CptCommon
+from captainsoul import Icons
+from captainsoul.Config import Config
+from captainsoul.CptCommon import CptCommon
 
 
 class Systray(gtk.StatusIcon, CptCommon):

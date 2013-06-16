@@ -4,7 +4,7 @@ from twisted.internet import gtk2reactor
 gtk2reactor.install()
 from twisted.internet import reactor
 
-from CmdLine import options
+from captainsoul.CmdLine import options
 import logging
 
 
@@ -24,7 +24,7 @@ try:
 except ImportError:
     logging.warning('Init : pynotify is not installed')
 
-from Manager import Manager
+from captainsoul.Manager import Manager
 
 
 def main():
