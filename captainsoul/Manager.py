@@ -7,20 +7,20 @@ import gobject
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 
-from CptCommon import CptCommon
-from Config import Config
-from Netsoul import NsProtocol
-from CmdLine import options
-import Icons
+from captainsoul.CptCommon import CptCommon
+from captainsoul.Config import Config
+from captainsoul.Netsoul import NsProtocol
+from captainsoul.CmdLine import options
+from captainsoul import Icons
 
-from MainWindow import MainWindow
-from DownloadManager import DownloadManager
-from DownloadManager.AskFileWindow import AskFileWindow
-from Systray import Systray
-from SettingsWindow import SettingsWindow
-from AddContactWindow import AddContactWindow
-from ChatWindow import ChatWindow
-from DebugWindow import DebugWindow
+from captainsoul.MainWindow import MainWindow
+from captainsoul.DownloadManager import DownloadManager
+from captainsoul.DownloadManager.AskFileWindow import AskFileWindow
+from captainsoul.Systray import Systray
+from captainsoul.SettingsWindow import SettingsWindow
+from captainsoul.AddContactWindow import AddContactWindow
+from captainsoul.ChatWindow import ChatWindow
+from captainsoul.DebugWindow import DebugWindow
 
 
 class Manager(gobject.GObject, ClientFactory, CptCommon):

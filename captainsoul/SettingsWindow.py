@@ -2,7 +2,7 @@
 
 import gtk
 
-from Config import Config
+from captainsoul.Config import Config
 
 
 class SettingsWindow(gtk.Dialog):
