@@ -2,7 +2,7 @@
 
 import gtk
 
-from ..CptCommon import CptCommon
+from captainsoul.CptCommon import CptCommon
 
 
 class ChatStatus(gtk.Statusbar, CptCommon):
