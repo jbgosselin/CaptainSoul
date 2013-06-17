@@ -4,7 +4,7 @@ import os
 import platform
 import user
 
-from ConfigFile import ConfigFile
+from captainsoul.Config.ConfigFile import ConfigFile
 
 __all__ = ['Config']
 
