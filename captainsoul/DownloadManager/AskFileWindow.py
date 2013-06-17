@@ -2,7 +2,7 @@
 
 import gtk
 
-from captainsoul.CptCommon import CptCommon
+from captainsoul.common import CptCommon
 from captainsoul.DownloadManager.tools import sizeFormatter
 
 

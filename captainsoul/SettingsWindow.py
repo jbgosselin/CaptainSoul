@@ -2,10 +2,10 @@
 
 import gtk
 
-from captainsoul.Config import Config
+from captainsoul.common import CptCommon
 
 
-class SettingsWindow(gtk.Dialog):
+class SettingsWindow(gtk.Dialog, CptCommon):
     def __init__(self):
         super(SettingsWindow, self).__init__(title="CaptainSoul - Settings")
         self.set_properties(
@@ -27,7 +27,7 @@ class SettingsWindow(gtk.Dialog):
         # create entries
         self._entries = {key: gtk.Entry() for key in ['login', 'password', 'location']}
         for key, entry in self._entries.iteritems():
-            entry.set_text(Config[key])
+            entry.set_text(self.config[key])
         self._entries['password'].set_visibility(False)
         # create table and populate it
         table = gtk.Table(5, 3, True)
@@ -43,12 +43,12 @@ class SettingsWindow(gtk.Dialog):
         # autoConnect
         table.attach(gtk.Label("Auto-connect:"), 0, 2, 3, 4)
         self._autoButton = gtk.CheckButton()
-        self._autoButton.set_active(Config['autoConnect'])
+        self._autoButton.set_active(self.config['autoConnect'])
         table.attach(self._autoButton, 2, 3, 3, 4)
         # notification
         table.attach(gtk.Label("Notification:"), 0, 2, 4, 5)
         self._notiButton = gtk.CheckButton()
-        self._notiButton.set_active(Config['notification'])
+        self._notiButton.set_active(self.config['notification'])
         table.attach(self._notiButton, 2, 3, 4, 5)
         # add to window
         self.vbox.pack_start(table, True, True, 0)

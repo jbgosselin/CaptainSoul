@@ -4,16 +4,17 @@ from twisted.internet import gtk2reactor
 gtk2reactor.install()
 from twisted.internet import reactor
 
-from captainsoul.CmdLine import options
 import logging
+
+from captainsoul.common import CptCommon
 
 
 def configLogging():
     fmt = '%(levelname)s\t: %(message)s'
     level = logging.WARNING
-    if options.verbose >= 2:
+    if CptCommon.cmdline.verbose >= 2:
         level = logging.DEBUG
-    elif options.verbose == 1:
+    elif CptCommon.cmdline.verbose == 1:
         level = logging.INFO
     logging.basicConfig(level=level, format=fmt)
 configLogging()

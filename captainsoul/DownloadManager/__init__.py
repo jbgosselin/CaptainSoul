@@ -2,18 +2,18 @@
 
 import gtk
 
-from captainsoul.Config import Config
+from captainsoul.common import CptCommon
 from captainsoul.DownloadManager.DownloadList import DownloadList
 from captainsoul.DownloadManager.UploadList import UploadList
 
 
-class DownloadManager(gtk.Window):
+class DownloadManager(gtk.Window, CptCommon):
     def __init__(self):
         super(DownloadManager, self).__init__()
         self.set_properties(
             title="CaptainSoul - Download Manager"
         )
-        self.resize(Config['downWidth'], Config['downHeight'])
+        self.resize(self.config['downWidth'], self.config['downHeight'])
         self._createUi()
         self.connect("delete-event", self.hide_on_delete)
         self.connect("configure-event", self.resizeEvent)
@@ -41,4 +41,4 @@ class DownloadManager(gtk.Window):
         box.pack_start(scroll, True, True, 0)
 
     def resizeEvent(self, *args, **kwargs):
-        Config['downWidth'], Config['downHeight'] = self.get_size()
+        self.config['downWidth'], self.config['downHeight'] = self.get_size()
