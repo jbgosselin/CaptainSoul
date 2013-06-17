@@ -2,8 +2,8 @@
 
 import gtk
 
-from DebugView import DebugView
-from DebugEntry import DebugEntry
+from captainsoul.DebugWindow.DebugView import DebugView
+from captainsoul.DebugWindow.DebugEntry import DebugEntry
 
 
 class DebugWindow(gtk.Window):
@@ -12,6 +12,7 @@ class DebugWindow(gtk.Window):
         self.set_properties(
             title="CaptainSoul - Debug"
         )
+        self.resize(600, 400)
         self._createUi()
         self.show_all()
 

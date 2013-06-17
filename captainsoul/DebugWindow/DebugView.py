@@ -2,7 +2,7 @@
 
 import gtk
 
-from ..CptCommon import CptCommon
+from captainsoul.CptCommon import CptCommon
 
 
 class DebugView(gtk.ScrolledWindow, CptCommon):
@@ -27,7 +27,7 @@ class DebugView(gtk.ScrolledWindow, CptCommon):
         textview.set_properties(
             cursor_visible=False,
             editable=False,
-            wrap_mode=gtk.WRAP_WORD_CHAR
+            wrap_mode=gtk.WRAP_NONE
         )
         self._buffer = textview.get_buffer()
         self.add(textview)
