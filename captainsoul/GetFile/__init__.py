@@ -5,7 +5,7 @@ from os import unlink
 
 from twisted.internet import reactor
 
-from Factory import GetFileFactory
+from captainsoul.GetFile.Factory import GetFileFactory
 
 
 class FileGetter(object):
