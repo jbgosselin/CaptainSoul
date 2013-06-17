@@ -2,10 +2,10 @@
 
 import gtk
 
-from ..GetFile import FileGetter
-from ..PreparedCaller import PreparedCaller
-from ..CptCommon import CptCommon
-from tools import sizeFormatter, strRandom
+from captainsoul.GetFile import FileGetter
+from captainsoul.PreparedCaller import PreparedCaller
+from captainsoul.CptCommon import CptCommon
+from captainsoul.DownloadManager.tools import sizeFormatter, strRandom
 
 COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)
 

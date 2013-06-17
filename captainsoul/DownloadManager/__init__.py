@@ -2,9 +2,9 @@
 
 import gtk
 
-from ..Config import Config
-from DownloadList import DownloadList
-from UploadList import UploadList
+from captainsoul.Config import Config
+from captainsoul.DownloadManager.DownloadList import DownloadList
+from captainsoul.DownloadManager.UploadList import UploadList
 
 
 class DownloadManager(gtk.Window):

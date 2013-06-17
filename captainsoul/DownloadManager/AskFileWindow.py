@@ -2,8 +2,8 @@
 
 import gtk
 
-from tools import sizeFormatter
-from ..CptCommon import CptCommon
+from captainsoul.CptCommon import CptCommon
+from captainsoul.DownloadManager.tools import sizeFormatter
 
 
 class AskFileWindow(gtk.Window, CptCommon):
