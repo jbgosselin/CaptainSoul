@@ -7,10 +7,8 @@ import gobject
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 
-from captainsoul.CptCommon import CptCommon
-from captainsoul.Config import Config
+from captainsoul.common import CptCommon
 from captainsoul.Netsoul import NsProtocol
-from captainsoul.CmdLine import options
 from captainsoul import Icons
 
 from captainsoul.MainWindow import MainWindow
@@ -61,9 +59,9 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
         CptCommon.mainWindow = MainWindow()
         CptCommon.downloadManager = DownloadManager()
         self._systray = Systray()
-        if options.debug:
+        if CptCommon.cmdline.debug:
             DebugWindow()
-        if Config['autoConnect']:
+        if self.config['autoConnect']:
             self.doConnectSocket()
 
     def _beforeShutdown(self):
@@ -164,7 +162,7 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
 
     def doDeleteContact(self, login):
         try:
-            Config['watchlist'].remove(login)
+            self.config['watchlist'].remove(login)
         except ValueError:
             return False
         else:
@@ -172,8 +170,8 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
             return True
 
     def doAddContact(self, login):
-        if login and login not in Config['watchlist']:
-            Config['watchlist'].add(login)
+        if login and login not in self.config['watchlist']:
+            self.config['watchlist'].add(login)
             self.emit('contact-added', login)
             return True
         return False
@@ -209,8 +207,8 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
         win = SettingsWindow()
         if win.run() == gtk.RESPONSE_APPLY:
             for key, value in win.getAllParams().iteritems():
-                Config[key] = value
-            Config.write()
+                self.config[key] = value
+            self.config.write()
         win.destroy()
 
     # GSignals methods

@@ -2,8 +2,7 @@
 
 import gtk
 
-from captainsoul.Config import Config
-from captainsoul.CptCommon import CptCommon
+from captainsoul.common import CptCommon
 from captainsoul.ChatWindow.ChatView import ChatView
 from captainsoul.ChatWindow.ChatStatus import ChatStatus
 from captainsoul.ChatWindow.ChatEntry import ChatEntry
@@ -15,7 +14,7 @@ class ChatWindow(gtk.Window, CptCommon):
         self.set_properties(
             title="CaptainSoul - %s" % login
         )
-        self.resize(Config['chatWidth'], Config['chatHeight'])
+        self.resize(self.config['chatWidth'], self.config['chatHeight'])
         self._createUi(login, msg)
         self.connect("delete-event", self.manager.closeChatWindowEvent, login)
         self.connect("configure-event", self.resizeEvent)
@@ -36,4 +35,4 @@ class ChatWindow(gtk.Window, CptCommon):
         box.pack_start(entry, False, False, 0)
 
     def resizeEvent(self, *args, **kwargs):
-        Config['chatWidth'], Config['chatHeight'] = self.get_size()
+        self.config['chatWidth'], self.config['chatHeight'] = self.get_size()

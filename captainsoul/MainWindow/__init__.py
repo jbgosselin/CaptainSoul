@@ -2,13 +2,11 @@
 
 import gtk
 
-from ..CmdLine import options
-from ..Config import Config
-from ..CptCommon import CptCommon
+from captainsoul.common import CptCommon
 
-from WatchList import WatchList
-from ToolBar import ToolBar
-from MainStatus import MainStatus
+from captainsoul.MainWindow.WatchList import WatchList
+from captainsoul.MainWindow.ToolBar import ToolBar
+from captainsoul.MainWindow.MainStatus import MainStatus
 
 
 class MainWindow(gtk.Window, CptCommon):
@@ -17,12 +15,12 @@ class MainWindow(gtk.Window, CptCommon):
         self.set_properties(
             title="CaptainSoul"
         )
-        self.resize(Config['mainWidth'], Config['mainHeight'])
+        self.resize(self.config['mainWidth'], self.config['mainHeight'])
         self._createAccels()
         self._createUi()
         self.connect("delete-event", self.hide_on_delete)
         self.connect("configure-event", self.resizeEvent)
-        if not options.tray:
+        if not self.cmdline.tray:
             self.show_all()
 
     def _createAccels(self):
@@ -54,7 +52,7 @@ class MainWindow(gtk.Window, CptCommon):
     # Events
 
     def resizeEvent(self, *args, **kwargs):
-        Config['mainWidth'], Config['mainHeight'] = self.get_size()
+        self.config['mainWidth'], self.config['mainHeight'] = self.get_size()
 
     def showHideEvent(self, *args, **kwargs):
         if self.get_visible():

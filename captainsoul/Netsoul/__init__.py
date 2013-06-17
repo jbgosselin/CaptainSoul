@@ -7,13 +7,13 @@ from collections import deque
 
 from twisted.protocols.basic import LineOnlyReceiver
 
-from captainsoul.Config import Config
+from captainsoul.common import CptCommon
 from captainsoul.Netsoul.tools import Rea, ReaList, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
 
 __all__ = ['NsProtocol']
 
 
-class NsProtocol(LineOnlyReceiver, object):
+class NsProtocol(LineOnlyReceiver, CptCommon):
     delimiter = '\n'
 
     def __init__(self, factory):
@@ -129,8 +129,8 @@ class NsProtocol(LineOnlyReceiver, object):
 
     def _responseSalutHook(self, no):
         if no == 2:
-            md5_hash = md5('%s-%s/%s%s' % (self._info['hash'], self._info['host'], self._info['port'], Config['password'])).hexdigest()
-            self.sendLine('ext_user_log %s %s %s %s' % (Config['login'], md5_hash, urlEncode(Config['location']), 'CaptainSoul'))
+            md5_hash = md5('%s-%s/%s%s' % (self._info['hash'], self._info['host'], self._info['port'], self.config['password'])).hexdigest()
+            self.sendLine('ext_user_log %s %s %s %s' % (self.config['login'], md5_hash, urlEncode(self.config['location']), 'CaptainSoul'))
             self._responseQueue.append(self._responseLogHook)
         else:
             logging.warning('Netsoul : Salut response unknown %d' % no)
@@ -154,9 +154,9 @@ class NsProtocol(LineOnlyReceiver, object):
             self.sendLine('state %s:%d' % (state, time()))
 
     def sendWatch(self, sendWho=True):
-        self.sendLine('user_cmd watch_log_user {%s}' % ','.join(Config['watchlist']))
+        self.sendLine('user_cmd watch_log_user {%s}' % ','.join(self.config['watchlist']))
         if sendWho:
-            self.sendWho(Config['watchlist'])
+            self.sendWho(self.config['watchlist'])
 
     def sendWho(self, logins):
         if logins:

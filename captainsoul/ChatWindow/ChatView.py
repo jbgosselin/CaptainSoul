@@ -7,7 +7,7 @@ from time import localtime, strftime
 import gtk
 import webkit
 
-from captainsoul.CptCommon import CptCommon
+from captainsoul.common import CptCommon
 
 
 class ChatView(gtk.ScrolledWindow, CptCommon):

@@ -2,9 +2,8 @@
 
 import gtk
 
-from ..CptCommon import CptCommon
-from ..Config import Config
-from .. import Icons
+from captainsoul.common import CptCommon
+from captainsoul import Icons
 
 
 class Buddy(object):
@@ -45,21 +44,21 @@ class Buddy(object):
         return '<Buddy %d %s %s %s "%s">' % (self.no, self.login, self.state, self.ip, self.location)
 
 
-class LoginList(object):
+class LoginList(CptCommon):
     def __init__(self):
         self._list = {}
 
     def clean(self):
-        self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in Config['watchlist']}
+        self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in self.config['watchlist']}
 
     def processWho(self, results):
         self._list = {no: b for no, b in self._list.iteritems() if b.login not in results.logins}
         for r in results:
-            if r.login in Config['watchlist']:
+            if r.login in self.config['watchlist']:
                 self._list[r.no] = Buddy(r.no, r.login, r.state, r.ip, r.location)
 
     def formatWatchList(self):
-        return [(self.getState(login), login, self.atSchool(login)) for login in Config['watchlist']]
+        return [(self.getState(login), login, self.atSchool(login)) for login in self.config['watchlist']]
 
     def getFromLogin(self, login):
         return [buddy for buddy in self._list.itervalues() if buddy.login == login]
@@ -75,7 +74,7 @@ class LoginList(object):
         return any([buddy.atSchool() for buddy in self.getFromLogin(login)])
 
     def changeState(self, info, state):
-        if info.login in Config['watchlist']:
+        if info.login in self.config['watchlist']:
             if info.no in self._list:
                 self._list[info.no].state = state
             else:
