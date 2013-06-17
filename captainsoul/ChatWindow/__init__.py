@@ -2,11 +2,11 @@
 
 import gtk
 
-from ..Config import Config
-from ChatView import ChatView
-from ChatStatus import ChatStatus
-from ChatEntry import ChatEntry
-from ..CptCommon import CptCommon
+from captainsoul.Config import Config
+from captainsoul.CptCommon import CptCommon
+from captainsoul.ChatWindow.ChatView import ChatView
+from captainsoul.ChatWindow.ChatStatus import ChatStatus
+from captainsoul.ChatWindow.ChatEntry import ChatEntry
 
 
 class ChatWindow(gtk.Window, CptCommon):
