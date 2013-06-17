@@ -2,6 +2,7 @@
 
 import re
 import webbrowser
+from time import localtime, strftime
 
 import gtk
 import webkit
@@ -41,7 +42,7 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
         adj.set_value(adj.get_upper() - adj.get_page_size())
 
     def printMsg(self, login, msg):
-        self._buffer += "<b>[%s] : </b>" % login
+        self._buffer += "(%s) <b>[%s] : </b>" % (strftime("%H:%M:%S", localtime()), login)
         changes = [
             ("\n", "<br>"),
             (" ", "&nbsp;"),
