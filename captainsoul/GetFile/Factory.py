@@ -2,7 +2,7 @@
 
 from twisted.internet.protocol import ServerFactory
 
-from Protocol import GetFileProtocol
+from captainsoul.GetFile.Protocol import GetFileProtocol
 
 
 class GetFileFactory(ServerFactory):
