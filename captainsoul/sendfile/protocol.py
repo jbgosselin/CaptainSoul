@@ -4,7 +4,7 @@ import logging
 
 from twisted.internet.protocol import Protocol
 
-from captainsoul.SendFile.Producer import Producer
+from captainsoul.sendfile.producer import Producer
 
 
 class SendProtocol(Protocol):

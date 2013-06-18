@@ -3,7 +3,7 @@
 import gtk
 
 from captainsoul.common import CptCommon, PreparedCaller
-from captainsoul.GetFile import FileGetter
+from captainsoul.getfile import FileGetter
 from captainsoul.DownloadManager.tools import sizeFormatter, strRandom
 
 COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)

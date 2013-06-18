@@ -2,7 +2,7 @@
 
 from twisted.internet.protocol import ClientFactory
 
-from captainsoul.SendFile.Protocol import SendProtocol
+from captainsoul.sendfile.protocol import SendProtocol
 
 
 class SendFactory(ClientFactory):

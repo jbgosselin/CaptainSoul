@@ -2,7 +2,7 @@
 
 from twisted.internet import reactor
 
-from captainsoul.SendFile.Factory import SendFactory
+from captainsoul.sendfile.factory import SendFactory
 
 
 def sendFile(path, ip, port, progCallback, endCallback, errCallback):

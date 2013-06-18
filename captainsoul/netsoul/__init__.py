@@ -8,7 +8,7 @@ from collections import deque
 from twisted.protocols.basic import LineOnlyReceiver
 
 from captainsoul.common import CptCommon
-from captainsoul.Netsoul.tools import Rea, ReaList, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
+from captainsoul.netsoul.tools import Rea, ReaList, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
 
 __all__ = ['NsProtocol']
 
