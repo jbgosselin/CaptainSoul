@@ -4,7 +4,7 @@ import os
 import platform
 import user
 
-from captainsoul.Config.ConfigFile import ConfigFile
+from captainsoul.config.configfile import ConfigFile
 
 
 def createConfigFile():

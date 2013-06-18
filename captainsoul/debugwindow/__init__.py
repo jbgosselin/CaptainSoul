@@ -2,8 +2,8 @@
 
 import gtk
 
-from captainsoul.DebugWindow.DebugView import DebugView
-from captainsoul.DebugWindow.DebugEntry import DebugEntry
+from captainsoul.debugwindow.debugview import DebugView
+from captainsoul.debugwindow.debugentry import DebugEntry
 
 
 class DebugWindow(gtk.Window):
