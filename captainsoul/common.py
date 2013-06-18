@@ -1,24 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from argparse import ArgumentParser
-
-from captainsoul.config import createConfigFile
-
-
-def _get_args():
-    parser = ArgumentParser(prog='cptsoul')
-    parser.add_argument('-v', '--verbose', action='count', dest='verbose', help='Set verbose mode', default=0)
-    parser.add_argument('-t', action='store_true', dest='tray', help='Start in tray')
-    parser.add_argument('-d', action='store_true', dest='debug', help='Start with debug window')
-    return parser.parse_args()
-
 
 class CptCommon(object):
     manager = None
     downloadManager = None
     mainWindow = None
-    cmdline = _get_args()
-    config = createConfigFile()
+    cmdline = None
+    config = None
 
 
 class PreparedCaller(object):

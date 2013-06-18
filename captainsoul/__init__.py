@@ -5,8 +5,17 @@ gtk2reactor.install()
 from twisted.internet import reactor
 
 import logging
-
+from argparse import ArgumentParser
 from captainsoul.common import CptCommon
+
+
+def get_args():
+    parser = ArgumentParser(prog='cptsoul')
+    parser.add_argument('-v', '--verbose', action='count', dest='verbose', help='Set verbose mode', default=0)
+    parser.add_argument('-t', action='store_true', dest='tray', help='Start in tray')
+    parser.add_argument('-d', action='store_true', dest='debug', help='Start with debug window')
+    return parser.parse_args()
+CptCommon.cmdline = get_args()
 
 
 def configLogging():
@@ -18,6 +27,9 @@ def configLogging():
         level = logging.INFO
     logging.basicConfig(level=level, format=fmt)
 configLogging()
+
+from captainsoul.config import createConfigFile
+CptCommon.config = createConfigFile()
 
 try:
     import pynotify
