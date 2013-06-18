@@ -7,8 +7,6 @@ from twisted.internet import reactor
 
 from captainsoul.Config.ConfigTypes import nonEmptyStrJSON, boolJSON, intJSON, nonEmptyStrSetJSON
 
-__all__ = ['ConfigFile']
-
 
 class ConfigFile(object):
     def __init__(self, path):
