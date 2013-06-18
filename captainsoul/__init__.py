@@ -25,7 +25,7 @@ try:
 except ImportError:
     logging.warning('Init : pynotify is not installed')
 
-from captainsoul.Manager import Manager
+from captainsoul.manager import Manager
 
 
 def main():

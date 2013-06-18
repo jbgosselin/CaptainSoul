@@ -8,15 +8,15 @@ from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 
 from captainsoul.common import CptCommon
-from captainsoul.Netsoul import NsProtocol
+from captainsoul.netsoul import NsProtocol
 from captainsoul import Icons
 
 from captainsoul.MainWindow import MainWindow
 from captainsoul.DownloadManager import DownloadManager
 from captainsoul.DownloadManager.AskFileWindow import AskFileWindow
-from captainsoul.Systray import Systray
-from captainsoul.SettingsWindow import SettingsWindow
-from captainsoul.AddContactWindow import AddContactWindow
+from captainsoul.systray import Systray
+from captainsoul.settingswindow import SettingsWindow
+from captainsoul.addcontactwindow import AddContactWindow
 from captainsoul.ChatWindow import ChatWindow
 from captainsoul.DebugWindow import DebugWindow
 

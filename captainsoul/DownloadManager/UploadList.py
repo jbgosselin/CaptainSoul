@@ -5,7 +5,7 @@ import os
 import gtk
 
 from captainsoul.common import CptCommon, PreparedCaller
-from captainsoul.SendFile import sendFile
+from captainsoul.sendfile import sendFile
 from captainsoul.DownloadManager.tools import sizeFormatter, strRandom
 
 COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)

@@ -18,7 +18,7 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
         self.set_properties(
             border_width=0,
             shadow_type=gtk.SHADOW_ETCHED_IN,
-            hscrollbar_policy=gtk.POLICY_AUTOMATIC,
+            hscrollbar_policy=gtk.POLICY_NEVER,
             vscrollbar_policy=gtk.POLICY_AUTOMATIC
         )
         self._buffer = ""
@@ -44,15 +44,16 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
     def printMsg(self, login, msg):
         self._buffer += "(%s) <b>[%s] : </b>" % (strftime("%H:%M:%S", localtime()), login)
         changes = [
+            ("<", "&lt;"),
+            (">", "&gt;"),
+            ("\t", "&emsp;"),
             ("\n", "<br>"),
-            (" ", "&nbsp;"),
-            ("\t", "&emsp;")
         ]
         for orig, new in changes:
             msg = re.sub(orig, new, msg)
         self._buffer += self.http_regex.sub('<a href="\g<link>">\g<link></a>', msg)
         self._buffer += "<br>"
-        self._web.load_html_string(self._buffer, "")
+        self._web.load_html_string(u'<html><body style="max-width:100%%;">%s</body></html>' % self._buffer , "")
 
     def msgEvent(self, widget, info, msg, dests, login):
         if login == info.login:
