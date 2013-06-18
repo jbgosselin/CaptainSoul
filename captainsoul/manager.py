@@ -18,7 +18,7 @@ from captainsoul.systray import Systray
 from captainsoul.settingswindow import SettingsWindow
 from captainsoul.addcontactwindow import AddContactWindow
 from captainsoul.ChatWindow import ChatWindow
-from captainsoul.DebugWindow import DebugWindow
+from captainsoul.debugwindow import DebugWindow
 
 
 class Manager(gobject.GObject, ClientFactory, CptCommon):

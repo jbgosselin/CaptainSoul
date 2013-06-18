@@ -5,7 +5,7 @@ from json import load, dump
 
 from twisted.internet import reactor
 
-from captainsoul.Config.ConfigTypes import nonEmptyStrJSON, boolJSON, intJSON, nonEmptyStrSetJSON
+from captainsoul.config.configtypes import nonEmptyStrJSON, boolJSON, intJSON, nonEmptyStrSetJSON
 
 
 class ConfigFile(object):

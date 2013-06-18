@@ -2,7 +2,7 @@
 
 from argparse import ArgumentParser
 
-from captainsoul.Config import createConfigFile
+from captainsoul.config import createConfigFile
 
 
 def _get_args():
