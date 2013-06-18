@@ -10,8 +10,6 @@ from twisted.protocols.basic import LineOnlyReceiver
 from captainsoul.common import CptCommon
 from captainsoul.netsoul.tools import Rea, ReaList, NsUserCmdInfo, NsWhoResult, NsWhoEntry, urlEncode, urlDecode
 
-__all__ = ['NsProtocol']
-
 
 class NsProtocol(LineOnlyReceiver, CptCommon):
     delimiter = '\n'
