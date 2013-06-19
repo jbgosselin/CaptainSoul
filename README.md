@@ -1,7 +1,7 @@
 CaptainSoul
 =====
 
-Netsoul client with python2.7, twisted, pygtk and pynotify
+Netsoul client with python2.7, twisted, pygtk, pynotify and pywebkitgtk
 
 for (re)installing use dump_script.sh
 
@@ -11,7 +11,7 @@ works directly on the dump
 
 for archlinux do:
 ```sh
-pacman -Sy twisted pygtk python2-notify
+pacman -Sy twisted pygtk python2-notify pywebkitgtk
 ```
 
 Features:
