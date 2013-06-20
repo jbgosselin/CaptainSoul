@@ -12,8 +12,8 @@ from captainsoul.netsoul import NsProtocol
 from captainsoul import Icons
 
 from captainsoul.mainwindow import MainWindow
-from captainsoul.DownloadManager import DownloadManager
-from captainsoul.DownloadManager.AskFileWindow import AskFileWindow
+from captainsoul.downloadmanager import DownloadManager
+from captainsoul.downloadmanager.askfilewindow import AskFileWindow
 from captainsoul.systray import Systray
 from captainsoul.settingswindow import SettingsWindow
 from captainsoul.addcontactwindow import AddContactWindow

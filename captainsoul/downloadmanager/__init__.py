@@ -3,8 +3,8 @@
 import gtk
 
 from captainsoul.common import CptCommon, ignoreParams
-from captainsoul.DownloadManager.DownloadList import DownloadList
-from captainsoul.DownloadManager.UploadList import UploadList
+from captainsoul.downloadmanager.downloadlist import DownloadList
+from captainsoul.downloadmanager.uploadlist import UploadList
 
 
 class DownloadManager(gtk.Window, CptCommon):

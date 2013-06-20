@@ -3,7 +3,7 @@
 import gtk
 
 from captainsoul.common import CptCommon
-from captainsoul.DownloadManager.tools import sizeFormatter
+from captainsoul.downloadmanager.tools import sizeFormatter
 
 
 class AskFileWindow(gtk.Window, CptCommon):
