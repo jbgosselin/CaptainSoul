@@ -2,7 +2,7 @@
 
 import gtk
 
-from captainsoul.common import CptCommon
+from captainsoul.common import CptCommon, ignoreParams
 from captainsoul.DownloadManager.DownloadList import DownloadList
 from captainsoul.DownloadManager.UploadList import UploadList
 
@@ -40,5 +40,6 @@ class DownloadManager(gtk.Window, CptCommon):
         scroll.add(up)
         box.pack_start(scroll, True, True, 0)
 
-    def resizeEvent(self, *args, **kwargs):
+    @ignoreParams
+    def resizeEvent(self):
         self.config['downWidth'], self.config['downHeight'] = self.get_size()
