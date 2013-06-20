@@ -3,9 +3,9 @@
 import gtk
 
 from captainsoul.common import CptCommon, ignoreParams
-from captainsoul.ChatWindow.ChatView import ChatView
-from captainsoul.ChatWindow.ChatStatus import ChatStatus
-from captainsoul.ChatWindow.ChatEntry import ChatEntry
+from captainsoul.chatwindow.chatview import ChatView
+from captainsoul.chatwindow.chatstatus import ChatStatus
+from captainsoul.chatwindow.chatentry import ChatEntry
 
 
 class ChatWindow(gtk.Window, CptCommon):
