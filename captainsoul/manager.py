@@ -17,7 +17,7 @@ from captainsoul.DownloadManager.AskFileWindow import AskFileWindow
 from captainsoul.systray import Systray
 from captainsoul.settingswindow import SettingsWindow
 from captainsoul.addcontactwindow import AddContactWindow
-from captainsoul.ChatWindow import ChatWindow
+from captainsoul.chatwindow import ChatWindow
 from captainsoul.debugwindow import DebugWindow
 
 
