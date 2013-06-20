@@ -7,7 +7,7 @@ import gobject
 from twisted.internet import reactor
 from twisted.internet.protocol import ClientFactory
 
-from captainsoul.common import CptCommon
+from captainsoul.common import CptCommon, ignoreParams
 from captainsoul.netsoul import NsProtocol
 from captainsoul import Icons
 
@@ -178,13 +178,16 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
 
     # Events
 
-    def connectEvent(self, *args, **kwargs):
+    @ignoreParams
+    def connectEvent(self):
         self.doConnectSocket()
 
-    def disconnectEvent(self, *args, **kwargs):
+    @ignoreParams
+    def disconnectEvent(self):
         self.doDisconnectSocket()
 
-    def quitEvent(self, *args, **kwargs):
+    @ignoreParams
+    def quitEvent(self):
         reactor.stop()
 
     def closeChatWindowEvent(self, widget, event, login):
@@ -194,7 +197,8 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
             del self._chatWindows[login]
         return True
 
-    def openAddContactWindowEvent(self, *args, **kwargs):
+    @ignoreParams
+    def openAddContactWindowEvent(self):
         win = AddContactWindow()
         if win.run() == gtk.RESPONSE_OK:
             login = win.getLogin()
@@ -203,7 +207,8 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
         else:
             win.destroy()
 
-    def openSettingsWindowEvent(self, *args, **kwargs):
+    @ignoreParams
+    def openSettingsWindowEvent(self):
         win = SettingsWindow()
         if win.run() == gtk.RESPONSE_APPLY:
             for key, value in win.getAllParams().iteritems():

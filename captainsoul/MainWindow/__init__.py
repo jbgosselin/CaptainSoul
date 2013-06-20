@@ -2,7 +2,7 @@
 
 import gtk
 
-from captainsoul.common import CptCommon
+from captainsoul.common import CptCommon, ignoreParams
 
 from captainsoul.MainWindow.WatchList import WatchList
 from captainsoul.MainWindow.ToolBar import ToolBar
@@ -51,10 +51,12 @@ class MainWindow(gtk.Window, CptCommon):
 
     # Events
 
-    def resizeEvent(self, *args, **kwargs):
+    @ignoreParams
+    def resizeEvent(self):
         self.config['mainWidth'], self.config['mainHeight'] = self.get_size()
 
-    def showHideEvent(self, *args, **kwargs):
+    @ignoreParams
+    def showHideEvent(self):
         if self.get_visible():
             self.hide()
         else:

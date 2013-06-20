@@ -2,7 +2,7 @@
 
 import gtk
 
-from captainsoul.common import CptCommon
+from captainsoul.common import CptCommon, ignoreParams
 from captainsoul.ChatWindow.ChatView import ChatView
 from captainsoul.ChatWindow.ChatStatus import ChatStatus
 from captainsoul.ChatWindow.ChatEntry import ChatEntry
@@ -34,5 +34,6 @@ class ChatWindow(gtk.Window, CptCommon):
         self.connect('delete-event', entry.deleteEvent, login)
         box.pack_start(entry, False, False, 0)
 
-    def resizeEvent(self, *args, **kwargs):
+    @ignoreParams
+    def resizeEvent(self):
         self.config['chatWidth'], self.config['chatHeight'] = self.get_size()

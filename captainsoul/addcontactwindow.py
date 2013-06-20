@@ -2,6 +2,8 @@
 
 import gtk
 
+from captainsoul.common import ignoreParams
+
 
 class AddContactWindow(gtk.Dialog):
     def __init__(self):
@@ -12,7 +14,8 @@ class AddContactWindow(gtk.Dialog):
         self._createUi()
         self.show_all()
 
-    def activateEvent(self, *args, **kwargs):
+    @ignoreParams
+    def activateEvent(self):
         self.response(gtk.RESPONSE_OK)
 
     def getLogin(self):
