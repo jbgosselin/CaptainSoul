@@ -11,7 +11,7 @@ from captainsoul.common import CptCommon, ignoreParams
 from captainsoul.netsoul import NsProtocol
 from captainsoul import Icons
 
-from captainsoul.MainWindow import MainWindow
+from captainsoul.mainwindow import MainWindow
 from captainsoul.DownloadManager import DownloadManager
 from captainsoul.DownloadManager.AskFileWindow import AskFileWindow
 from captainsoul.systray import Systray

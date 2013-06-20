@@ -4,9 +4,9 @@ import gtk
 
 from captainsoul.common import CptCommon, ignoreParams
 
-from captainsoul.MainWindow.WatchList import WatchList
-from captainsoul.MainWindow.ToolBar import ToolBar
-from captainsoul.MainWindow.MainStatus import MainStatus
+from captainsoul.mainwindow.watchlist import WatchList
+from captainsoul.mainwindow.toolbar import ToolBar
+from captainsoul.mainwindow.mainstatus import MainStatus
 
 
 class MainWindow(gtk.Window, CptCommon):
