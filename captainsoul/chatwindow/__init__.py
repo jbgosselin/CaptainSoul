@@ -25,14 +25,15 @@ class ChatWindow(gtk.Window, CptCommon):
     def _createUi(self, login, msg):
         box = gtk.VBox(False, 0)
         self.add(box)
-        # chatview
-        box.add(ChatView(login, msg))
-        # is typing bar
-        box.pack_start(ChatStatus(login), False, False, 0)
         # user entry
         entry = ChatEntry(login)
+        # chatview
+        box.add(ChatView(entry, login, msg))
+        # is typing bar
+        box.pack_start(ChatStatus(login), False, False, 0)
         self.connect('delete-event', entry.deleteEvent, login)
         box.pack_start(entry, False, False, 0)
+        box.set_focus_chain([entry])
 
     @ignoreParams
     def resizeEvent(self):
