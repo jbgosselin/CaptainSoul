@@ -4,93 +4,21 @@ import gtk
 
 from captainsoul.common import CptCommon
 from captainsoul import Icons
-
-
-class Buddy(object):
-    def __init__(self, no, login, state, ip, location):
-        self._no, self._login, self._state, self._ip, self._location = int(no), login, state, ip, location
-
-    @property
-    def no(self):
-        return self._no
-
-    @property
-    def login(self):
-        return self._login
-
-    @property
-    def state(self):
-        return self._state
-
-    @state.setter
-    def state(self, value):
-        self._state = value
-
-    @property
-    def ip(self):
-        return self._ip
-
-    @property
-    def location(self):
-        return self._location
-
-    def atSchool(self):
-        return self._ip.startswith('10.')
-
-    def __repr__(self):
-        return str(self)
-
-    def __str__(self):
-        return '<Buddy %d %s %s %s "%s">' % (self.no, self.login, self.state, self.ip, self.location)
-
-
-class LoginList(CptCommon):
-    def __init__(self):
-        self._list = {}
-
-    def clean(self):
-        self._list = {no: buddy for no, buddy in self._list.iteritems() if buddy.login in self.config['watchlist']}
-
-    def processWho(self, results):
-        self._list = {no: b for no, b in self._list.iteritems() if b.login not in results.logins}
-        for r in results:
-            if r.login in self.config['watchlist']:
-                self._list[r.no] = Buddy(r.no, r.login, r.state, r.ip, r.location)
-
-    def formatWatchList(self):
-        return [(self.getState(login), login, self.atSchool(login)) for login in self.config['watchlist']]
-
-    def getFromLogin(self, login):
-        return [buddy for buddy in self._list.itervalues() if buddy.login == login]
-
-    def getState(self, login):
-        state = 'logout'
-        for buddy in self.getFromLogin(login):
-            if state == 'logout' and buddy.state in ('away', 'lock', 'actif') or state in ('away', 'lock') and buddy.state == 'actif':
-                state = buddy.state
-        return state
-
-    def atSchool(self, login):
-        return any([buddy.atSchool() for buddy in self.getFromLogin(login)])
-
-    def changeState(self, info, state):
-        if info.login in self.config['watchlist']:
-            if info.no in self._list:
-                self._list[info.no].state = state
-            else:
-                self._list[info.no] = Buddy(info.no, info.login, state, info.ip, info.location)
-
-    def logout(self, info):
-        if info.no in self._list:
-            del self._list[info.no]
+from captainsoul.mainwindow.loginlist import LoginList
 
 
 class WatchList(gtk.TreeView, CptCommon):
     _loginColumn = 1
+    pixs = {
+        'actif': Icons.green.get_pixbuf(),
+        'away': Icons.orange.get_pixbuf(),
+        'lock': Icons.red.get_pixbuf()
+    }
 
     def __init__(self):
         super(WatchList, self).__init__(model=gtk.ListStore(gtk.gdk.Pixbuf, str, gtk.gdk.Pixbuf, str))
         self._list = LoginList()
+        self._loginIter = {}
         self.set_rules_hint(True)
         self._listStore.set_sort_column_id(self._loginColumn, gtk.SORT_ASCENDING)
         columns = [
@@ -109,38 +37,53 @@ class WatchList(gtk.TreeView, CptCommon):
         self.manager.connect('contact-deleted', self.contactDeletedEvent)
         self.manager.connect('who', self.whoEvent)
         self.manager.connect('logout', self.logoutEvent)
-        self.refreshStore()
+        self.resetStore()
 
     @property
     def _listStore(self):
         return self.get_model()
 
-    def refreshStore(self):
+    def resetStore(self):
         self._listStore.clear()
-        pixs = {
-            'actif': Icons.green.get_pixbuf(),
-            'away': Icons.orange.get_pixbuf(),
-            'lock': Icons.red.get_pixbuf()
-        }
-        for state, login, atSchool in self._list.formatWatchList():
-            self._listStore.append([
-                pixs.get(state, Icons.void.get_pixbuf()),
+        self._loginIter = {}
+        for login, state, atSchool in self._list.formatWatchList():
+            self._loginIter[login] = self._listStore.append([
+                self.pixs.get(state, Icons.void.get_pixbuf()),
                 login,
                 Icons.epitech.get_pixbuf() if atSchool else Icons.void.get_pixbuf(),
                 "",
             ])
 
+    def updateLogin(self, login_name):
+        login, state, atSchool = self._list.loginWatchlist(login_name)
+        it = self._loginIter.get(login)
+        if it is not None:
+            self._listStore.set(
+                it,
+                0, self.pixs.get(state, Icons.void.get_pixbuf()),
+                2, Icons.epitech.get_pixbuf() if atSchool else Icons.void.get_pixbuf()
+            )
+
     def stateEvent(self, widget, info, state):
         self._list.changeState(info, state)
-        self.refreshStore()
+        self.updateLogin(info.login)
 
     def contactAddedEvent(self, widget, login):
         self._list.clean()
-        self.refreshStore()
+        self.resetStore()
 
     def contactDeletedEvent(self, widget, login):
         self._list.clean()
-        self.refreshStore()
+        self.resetStore()
+
+    def whoEvent(self, widget, results):
+        self._list.processWho(results)
+        for login in results.logins:
+            self.updateLogin(login)
+
+    def logoutEvent(self, widget, info):
+        self._list.logout(info)
+        self.updateLogin(info.login)
 
     def rowActivated(self, tv, path, column):
         self.manager.doOpenChat(self._listStore.get_value(self._listStore.get_iter(path), self._loginColumn))
@@ -172,11 +115,3 @@ class WatchList(gtk.TreeView, CptCommon):
 
     def sendFileEvent(self, widget, login):
         self.downloadManager.startFileUpload(login)
-
-    def whoEvent(self, widget, results):
-        self._list.processWho(results)
-        self.refreshStore()
-
-    def logoutEvent(self, widget, info):
-        self._list.logout(info)
-        self.refreshStore()
