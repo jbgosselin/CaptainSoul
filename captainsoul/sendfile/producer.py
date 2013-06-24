@@ -17,6 +17,7 @@ class Producer(object):
         self._percent = 0
         self._progressCallback = progressCallback
         self._file = file(path, 'r')
+        progressCallback(0, self._goal)
 
     def pauseProducing(self):
         self._paused = True
