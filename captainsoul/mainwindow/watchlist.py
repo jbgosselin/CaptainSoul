@@ -43,14 +43,20 @@ class WatchList(gtk.TreeView, CptCommon):
     def _listStore(self):
         return self.get_model()
 
+    def getAtSchoolPix(self, atSchool):
+        return Icons.epitech.get_pixbuf() if atSchool else Icons.void.get_pixbuf()
+
+    def getStatePix(self, state):
+        return self.pixs.get(state, Icons.void.get_pixbuf())
+
     def resetStore(self):
         self._listStore.clear()
         self._loginIter = {}
         for login, state, atSchool in self._list.formatWatchList():
             self._loginIter[login] = self._listStore.append([
-                self.pixs.get(state, Icons.void.get_pixbuf()),
+                self.getStatePix(state),
                 login,
-                Icons.epitech.get_pixbuf() if atSchool else Icons.void.get_pixbuf(),
+                self.getAtSchoolPix(atSchool),
                 "",
             ])
 
@@ -60,8 +66,8 @@ class WatchList(gtk.TreeView, CptCommon):
         if it is not None:
             self._listStore.set(
                 it,
-                0, self.pixs.get(state, Icons.void.get_pixbuf()),
-                2, Icons.epitech.get_pixbuf() if atSchool else Icons.void.get_pixbuf()
+                0, self.getStatePix(state),
+                2, self.getAtSchoolPix(atSchool)
             )
 
     def stateEvent(self, widget, info, state):
