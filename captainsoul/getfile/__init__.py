@@ -41,6 +41,7 @@ class FileGetter(object):
         logging.info('GetFile : Client connected')
         self._file = open(self._path, 'w')
         self._port.stopListening()
+        self._proCall(0, self._sizeTotal)
 
     def clientProgress(self, data, protocol):
         self._file.write(data)
