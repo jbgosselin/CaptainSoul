@@ -6,20 +6,20 @@ from captainsoul.common import CptCommon, PreparedCaller
 from captainsoul.getfile import FileGetter
 from captainsoul.downloadmanager.tools import sizeFormatter, strRandom
 
-COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)
-
 
 class DownloadList(gtk.TreeView, CptCommon):
+    COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)
+
     def __init__(self, downmanager):
         super(DownloadList, self).__init__(model=gtk.ListStore(str, str, str, str, int))
         self.set_rules_hint(True)
         self._data = {}
         self._downmanager = downmanager
         columns = [
-            gtk.TreeViewColumn("Name", gtk.CellRendererText(), text=COLUMN_NAME),
-            gtk.TreeViewColumn("Size", gtk.CellRendererText(), text=COLUMN_SIZE),
-            gtk.TreeViewColumn("Login", gtk.CellRendererText(), text=COLUMN_LOGIN),
-            gtk.TreeViewColumn("State", gtk.CellRendererProgress(), text=COLUMN_STATE, value=COLUMN_PROGRESS),
+            gtk.TreeViewColumn("Name", gtk.CellRendererText(), text=self.COLUMN_NAME),
+            gtk.TreeViewColumn("Size", gtk.CellRendererText(), text=self.COLUMN_SIZE),
+            gtk.TreeViewColumn("Login", gtk.CellRendererText(), text=self.COLUMN_LOGIN),
+            gtk.TreeViewColumn("State", gtk.CellRendererProgress(), text=self.COLUMN_STATE, value=self.COLUMN_PROGRESS),
         ]
         for column in columns:
             self.append_column(column)
@@ -43,14 +43,14 @@ class DownloadList(gtk.TreeView, CptCommon):
 
     def progressCallback(self, done, total, key):
         if key in self._data:
-            self._listStore[self._data[key]][COLUMN_STATE] = 'Downloading'
-            self._listStore[self._data[key]][COLUMN_PROGRESS] = (100 * done) / total
+            self._listStore[self._data[key]][self.COLUMN_STATE] = 'Downloading'
+            self._listStore[self._data[key]][self.COLUMN_PROGRESS] = (100 * done) / total
 
     def endCallback(self, key):
         if key in self._data:
-            self._listStore[self._data[key]][COLUMN_STATE] = 'Finished'
-            self._listStore[self._data[key]][COLUMN_PROGRESS] = 100
+            self._listStore[self._data[key]][self.COLUMN_STATE] = 'Finished'
+            self._listStore[self._data[key]][self.COLUMN_PROGRESS] = 100
 
     def errorCallback(self, key):
         if key in self._data:
-            self._listStore[self._data[key]][COLUMN_STATE] = 'Error'
+            self._listStore[self._data[key]][self.COLUMN_STATE] = 'Error'
