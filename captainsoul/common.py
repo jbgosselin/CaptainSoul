@@ -7,6 +7,7 @@ class CptCommon(object):
     mainWindow = None
     cmdline = None
     config = None
+    info = {}
 
 
 class PreparedCaller(object):

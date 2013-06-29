@@ -6,10 +6,11 @@ from os import unlink
 from twisted.internet import reactor
 
 from captainsoul.getfile.factory import GetFileFactory
+from captainsoul.common import CptCommon
 
 
-class FileGetter(object):
-    def __init__(self, manager, info, name, path, size, proCall, endCall, errorCall):
+class FileGetter(CptCommon):
+    def __init__(self, info, name, path, size, proCall, endCall, errorCall):
         self._ok = False
         self._path = path
         self._file = None
@@ -26,16 +27,7 @@ class FileGetter(object):
         )
         self._port = reactor.listenTCP(0, factory)
         logging.info('GetFile : Listen on port %d' % self._port.getHost().port)
-        manager.sendFileStart(name, self.get_ip_address()[0], self._port.getHost().port, [info.login])
-
-    def get_ip_address(self):
-        import subprocess
-        p = subprocess.Popen('ip route list', shell=True, stdout=subprocess.PIPE)
-        data = p.communicate()
-        sdata = data[0].split()
-        ipaddr = sdata[sdata.index('src') + 1]
-        netdev = sdata[sdata.index('dev') + 1]
-        return ipaddr, netdev
+        self.manager.sendFileStart(name, self.info['host'], self._port.getHost().port, [info.login])
 
     def clientConnectionMade(self):
         logging.info('GetFile : Client connected')
