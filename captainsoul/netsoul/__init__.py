@@ -17,7 +17,6 @@ class NsProtocol(LineOnlyReceiver, CptCommon):
     def __init__(self, factory):
         self.factory = factory
         self.factory.setProtocol(self)
-        self._info = {}
         self._responseQueue = deque()
         self._whoQueue = deque()
         self._realist = ReaList(
@@ -77,9 +76,9 @@ class NsProtocol(LineOnlyReceiver, CptCommon):
 
     def _salutHook(self, num, md5_hash, ip, port, timestamp):
         logging.info('Netsoul : Got salut %s %s:%s' % (md5_hash, ip, port))
-        self._info['hash'] = md5_hash
-        self._info['host'] = ip
-        self._info['port'] = port
+        self.info['hash'] = md5_hash
+        self.info['host'] = ip
+        self.info['port'] = port
         self.sendLine('auth_ag ext_user none none')
         self._responseQueue.append(self._responseSalutHook)
 
@@ -127,7 +126,7 @@ class NsProtocol(LineOnlyReceiver, CptCommon):
 
     def _responseSalutHook(self, no):
         if no == 2:
-            md5_hash = md5('%s-%s/%s%s' % (self._info['hash'], self._info['host'], self._info['port'], self.config['password'])).hexdigest()
+            md5_hash = md5('%s-%s/%s%s' % (self.info['hash'], self.info['host'], self.info['port'], self.config['password'])).hexdigest()
             self.sendLine('ext_user_log %s %s %s %s' % (self.config['login'], md5_hash, urlEncode(self.config['location']), 'CaptainSoul'))
             self._responseQueue.append(self._responseLogHook)
         else:

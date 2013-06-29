@@ -34,7 +34,7 @@ class DownloadList(gtk.TreeView, CptCommon):
             key = strRandom()
         self._data[key] = self._listStore.append([name, sizeFormatter(size), info.login, 'Waiting', 0])
         FileGetter(
-            self.manager, info, name, path, size,
+            info, name, path, size,
             PreparedCaller(self.progressCallback, key=key),
             PreparedCaller(self.endCallback, key=key),
             PreparedCaller(self.errorCallback, key=key)
