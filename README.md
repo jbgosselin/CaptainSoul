@@ -7,6 +7,8 @@ for (re)installing use dump_script.sh
 
 if you don't have notification install pynotify
 
+and install a notification daemon like xfce4-notifyd
+
 works directly on the dump
 
 for archlinux do:
