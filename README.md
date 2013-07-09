@@ -16,6 +16,13 @@ for archlinux do:
 pacman -Sy twisted pygtk python2-notify pywebkitgtk
 ```
 
+for the dump you can launch boot.sh in the xinitrc like that
+```sh
+xterm -e ./boot.sh
+```
+
+it will ask you for your sudo password in order to kill dump's netsoul and start cptsoul
+
 Features:
 
 - Always actif log
