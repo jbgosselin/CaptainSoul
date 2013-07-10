@@ -172,6 +172,7 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
     def doAddContact(self, login):
         if login and login not in self.config['watchlist']:
             self.config['watchlist'].add(login)
+            self.config.write()
             self.emit('contact-added', login)
             return True
         return False
