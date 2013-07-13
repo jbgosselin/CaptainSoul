@@ -1,3 +1,2 @@
 #!/bin/sh
-
-./setup.py build && sudo ./remove.py && sudo ./setup.py install --optimize=2
+sudo cp cptsoul /usr/bin/cptsoul
