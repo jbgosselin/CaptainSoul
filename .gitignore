@@ -1,4 +1,5 @@
 *.pyc
+*.pyo
 *~
 icons/*.raw
 myflake.sh

@@ -1,8 +1,17 @@
 #!/bin/sh
 
+NAME="cptsoul"
+
 cd src
-zip -r ../cptsoul.zip *.py chatwindow/*.py config/*.py debugwindow/*.py downloadmanager/*.py getfile/*.py Icons/*.py mainwindow/*.py netsoul/*.py sendfile/*.py
+echo "Building pyo"
+for f in `find . -name '*.py'`
+do
+    python2.7 -OO -m py_compile $f
+done
+echo "Building executable"
+zip -q -9 -r "../$NAME.zip" `find . -name '*.pyo'`
 cd ..
-echo '#!/usr/bin/env python2.7' | cat - cptsoul.zip > cptsoul
-chmod +x cptsoul
-rm cptsoul.zip
+echo '#!/usr/bin/env python2.7' | cat - "$NAME.zip" > "$NAME"
+chmod +x "$NAME"
+rm "$NAME".zip
+echo "Building done"
