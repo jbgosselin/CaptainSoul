@@ -3,9 +3,12 @@
 import re
 import webbrowser
 from time import localtime, strftime
+from platform import system
+system = system()
 
 import gtk
-import webkit
+if system == 'Linux':
+    import webkit
 
 from common import CptCommon
 
@@ -32,11 +35,19 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
             self.printMsg(login, msg)
 
     def _createUi(self, entry):
-        self._web = webkit.WebView()
-        self._web.connect('navigation-policy-decision-requested', self.openLink)
-        self._web.connect('size-allocate', self.scrollView)
-        self._web.connect('focus-in-event', self.focusInEvent, entry)
-        self.add(self._web)
+        if system == 'Linux':
+            self._view = webkit.WebView()
+            self._view.connect('navigation-policy-decision-requested', self.openLink)
+            self._view.connect('focus-in-event', self.focusInEvent, entry)
+        else:
+            self._view = gtk.TextView()
+            self._view.set_properties(
+                cursor_visible=False,
+                editable=False,
+                wrap_mode=gtk.WRAP_WORD
+            )
+        self._view.connect('size-allocate', self.scrollView)
+        self.add(self._view)
 
     def focusInEvent(self, widget, event, entry):
         entry.grab_focus()
@@ -46,18 +57,25 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
         adj.set_value(adj.get_upper() - adj.get_page_size())
 
     def printMsg(self, login, msg):
-        self._buffer += "(%s) <b>[%s] : </b>" % (strftime("%H:%M:%S", localtime()), login)
-        changes = [
-            ("<", "&lt;"),
-            (">", "&gt;"),
-            ("\t", "&emsp;"),
-            ("\n", "<br>"),
-        ]
-        for orig, new in changes:
-            msg = re.sub(orig, new, msg)
-        self._buffer += self.http_regex.sub('<a href="\g<link>">\g<link></a>', msg)
-        self._buffer += "<br>"
-        self._web.load_html_string(u'<html><body style="max-width:100%%;">%s</body></html>' % self._buffer, "")
+        t = strftime("%H:%M:%S", localtime())
+        if system == 'Linux':
+            self._buffer += "(%s) <b>[%s] : </b>" % (t, login)
+            changes = [
+                ("<", "&lt;"),
+                (">", "&gt;"),
+                ("\t", "&emsp;"),
+                ("\n", "<br>"),
+            ]
+            for orig, new in changes:
+                msg = re.sub(orig, new, msg)
+            self._buffer += self.http_regex.sub('<a href="\g<link>">\g<link></a>', msg)
+            self._buffer += "<br>"
+            self._view.load_html_string(u'<html><body style="max-width:100%%;">%s</body></html>' % self._buffer, "")
+        else:
+            if self._buffer:
+                self._buffer += '\n'
+            self._buffer += "(%s) [%s] : %s" % (t, login, msg)
+            self._view.get_buffer().set_text(self._buffer)
 
     def msgEvent(self, widget, info, msg, dests, login):
         if login == info.login:

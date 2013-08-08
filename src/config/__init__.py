@@ -10,6 +10,8 @@ from configfile import ConfigFile
 def createConfigFile():
     if platform.system() == 'Linux':
         directory = os.path.join(user.home, '.config')
+    elif platform.system() == 'Windows':
+        directory = os.path.join(os.getenv('APPDATA'), 'Roaming')
     else:
         directory = './'
     if not os.path.exists(directory):
