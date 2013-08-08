@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import platform
 
 import gtk
-try:
-    import pynotify
-except ImportError:
+if platform.system() == 'Linux':
+    try:
+        import pynotify
+    except ImportError:
+        pynotify = None
+else:
     pynotify = None
 from glib import GError
 
