@@ -23,6 +23,14 @@ xterm -e ./boot.sh
 
 it will ask you for your sudo password in order to kill dump's netsoul and start cptsoul
 
+For Windows:
+
+- Install Python 2.7 (http://www.python.org/download/releases/2.7/)
+- Install twisted (http://twistedmatrix.com/trac/wiki/Downloads) with zope.interface (https://pypi.python.org/pypi/zope.interface#download)
+- Install pygtk all in one installer (http://www.pygtk.org/downloads.html)
+- Rename cptsoul to cptsoul.pyw
+- Run cptsoul.pyw
+
 Features:
 
 - Always actif log
