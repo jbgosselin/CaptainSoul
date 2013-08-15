@@ -61,11 +61,13 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
         self._systray = Systray()
         if CptCommon.cmdline.debug:
             DebugWindow()
-        if self.config['autoConnect']:
-            self.doConnectSocket()
 
     def _beforeShutdown(self):
         self._tryReconnecting = False
+
+    def __call__(self):
+        if self.config['autoConnect']:
+            self.doConnectSocket()
 
     # Senders
 

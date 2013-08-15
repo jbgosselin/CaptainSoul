@@ -3,6 +3,9 @@
 from twisted.internet import gtk2reactor
 gtk2reactor.install()
 from twisted.internet import reactor
+from twisted.python import log
+observer = log.PythonLoggingObserver()
+observer.start()
 
 import logging
 import platform
@@ -44,7 +47,7 @@ from manager import Manager
 
 def main():
     manager = Manager()
-    id(manager)
+    manager()
     reactor.run()
 
 if __name__ == '__main__':
