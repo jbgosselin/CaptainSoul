@@ -1,7 +1,7 @@
 CaptainSoul
 =====
 
-Netsoul client with python2.7, twisted, pygtk, pynotify and pywebkitgtk
+Netsoul client with python2.7, twisted, pygtk and pynotify
 
 for (re)installing use dump_script.sh
 
@@ -13,7 +13,7 @@ works directly on the dump
 
 for archlinux do:
 ```sh
-pacman -Sy twisted pygtk python2-notify pywebkitgtk
+pacman -Sy twisted pygtk python2-notify
 ```
 
 for the dump you can launch boot.sh in the xinitrc like that
