@@ -47,12 +47,13 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
 
     def printMsg(self, login, msg):
         t = strftime("%H:%M:%S", localtime())
-        self._buffer += "(%s) <span style='font-weight: bold'>[%s]</span> : " % (t, login)
+        self._buffer += '(%s) <span style="font-weight: bold">[%s]</span> : ' % (t, login)
         changes = [
+            ("&", "&amp;"),
             ("<", "&lt;"),
             (">", "&gt;"),
             ("\t", "&emsp;"),
-            ("\n", "<br>"),
+            ("\n", "<br>")
         ]
         for orig, new in changes:
             msg = re.sub(orig, new, msg)

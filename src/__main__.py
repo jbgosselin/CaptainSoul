@@ -8,7 +8,6 @@ observer = log.PythonLoggingObserver()
 observer.start()
 
 import logging
-import platform
 from argparse import ArgumentParser
 from common import CptCommon
 
@@ -34,13 +33,6 @@ configLogging()
 
 from config import createConfigFile
 CptCommon.config = createConfigFile()
-
-if platform.system() == 'Linux':
-    try:
-        import pynotify
-        pynotify.init("CaptainSoul")
-    except ImportError:
-        logging.warning('Init : pynotify is not installed')
 
 from manager import Manager
 
