@@ -4,10 +4,7 @@ NAME="cptsoul"
 
 cd src
 echo "Building pyo"
-for f in `find . -name '*.py'`
-do
-    python2.7 -OO -m py_compile $f
-done
+python2.7 -OO -m compileall .
 echo "Building executable"
 zip -q -9 -r "../$NAME.zip" `find . -name '*.pyo'`
 cd ..
