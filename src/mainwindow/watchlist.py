@@ -2,7 +2,7 @@
 
 import gtk
 
-import Icons
+import icons
 from common import CptCommon
 from loginlist import LoginList
 
@@ -10,9 +10,9 @@ from loginlist import LoginList
 class WatchList(gtk.TreeView, CptCommon):
     _loginColumn = 1
     pixs = {
-        'actif': Icons.green,
-        'away': Icons.orange,
-        'lock': Icons.red
+        'actif': icons.green,
+        'away': icons.orange,
+        'lock': icons.red
     }
 
     def __init__(self):
@@ -44,10 +44,10 @@ class WatchList(gtk.TreeView, CptCommon):
         return self.get_model()
 
     def getAtSchoolPix(self, atSchool):
-        return Icons.epitech if atSchool else Icons.void
+        return icons.epitech if atSchool else icons.void
 
     def getStatePix(self, state):
-        return self.pixs.get(state, Icons.void)
+        return self.pixs.get(state, icons.void)
 
     def resetStore(self):
         self._listStore.clear()

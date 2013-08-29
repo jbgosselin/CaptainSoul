@@ -6,7 +6,7 @@ from subprocess import check_call
 
 
 def main():
-    out = file('./src/Icons/data.py', 'w')
+    out = file('./src/icons/data.py', 'w')
     out.write('# -*- coding: utf-8 -*-\n\n\n')
     for f in os.listdir('./icons/'):
         if f.endswith('.png'):
