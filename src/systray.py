@@ -2,7 +2,7 @@
 
 import gtk
 
-import Icons
+import icons
 from common import CptCommon
 from notify import Notifier
 
@@ -12,7 +12,7 @@ class Systray(gtk.StatusIcon, CptCommon):
         super(Systray, self).__init__()
         self._reconnecting = False
         self._notifier = Notifier()
-        self.set_from_pixbuf(Icons.shield)
+        self.set_from_pixbuf(icons.shield)
         self.set_properties(
             tooltip_text="CaptainSoul",
             visible=True
