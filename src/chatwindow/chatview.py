@@ -53,7 +53,7 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
             ("<", "&lt;"),
             (">", "&gt;"),
             ("\t", "&emsp;"),
-            ("\n", "<br>")
+            ("\n", "<br/>")
         ]
         for orig, new in changes:
             msg = re.sub(orig, new, msg)
