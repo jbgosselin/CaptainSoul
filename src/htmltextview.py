@@ -489,7 +489,7 @@ class HtmlTextView(gtk.TextView):
         # parser.setFeature(xml.sax.handler.feature_validation, True)
         parser.setContentHandler(HtmlHandler(self, eob))
         #parser.setEntityResolver(HtmlEntityResolver())
-        parser.parse(StringIO(html))
+        parser.parse(StringIO(html.decode('utf-8', errors='ignore').encode('utf-8')))
 
         if not eob.starts_line():
             buff.insert(eob, "\n")
