@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import os
+import sys
+
 from twisted.internet import gtk2reactor
 gtk2reactor.install()
 from twisted.internet import reactor
@@ -39,6 +42,8 @@ def main():
     manager = Manager()
     manager()
     reactor.run()
+    if CptCommon.willReboot:
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
 if __name__ == '__main__':
     main()
