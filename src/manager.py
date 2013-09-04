@@ -52,6 +52,7 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
         gobject.GObject.__init__(self)
         self._protocol = None
         self._tryReconnecting = False
+        self._pingDefer = None
         self._chatWindows = {}
         reactor.addSystemEventTrigger('before', 'shutdown', self._beforeShutdown)
         gtk.window_set_default_icon(icons.shield)
@@ -157,6 +158,15 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
             self._protocol.transport.loseConnection()
             self._protocol = None
 
+    def doReconnectSocket(self):
+        if self._protocol is not None:
+            self._tryReconnecting = True
+            self.sendExit()
+            self._protocol.transport.loseConnection()
+            self._protocol = None
+        else:
+            self.doConnectSocket()
+
     def doOpenChat(self, login, msg=None):
         if login not in self._chatWindows:
             self._chatWindows[login] = ChatWindow(login, False, msg)
@@ -240,6 +250,33 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
 
     def do_file_ask(self, info, name, size, desc):
         AskFileWindow(info, name, size, desc)
+
+    def do_get_raw(self, line):
+        if self._pingDefer is not None:
+            self._pingDefer.cancel()
+        self._pingDefer = reactor.callLater(60, self._pingStepOne)
+
+    def do_reconnecting(self):
+        if self._pingDefer is not None:
+            self._pingDefer.cancel()
+        self._pingDefer = None
+
+    def do_disconnected(self):
+        if self._pingDefer is not None:
+            self._pingDefer.cancel()
+        self._pingDefer = None
+
+    # Ping callbacks
+
+    def _pingStepOne(self):
+        logging.info('Manager : PingStepOne')
+        self._pingDefer = reactor.callLater(10, self._pingStepTwo)
+        self.sendWho([self.config['login']])
+
+    def _pingStepTwo(self):
+        logging.info('Manager : PingStepTwo')
+        self._pingDefer = None
+        self.doReconnectSocket()
 
     # NsProtocol Hooks
 
