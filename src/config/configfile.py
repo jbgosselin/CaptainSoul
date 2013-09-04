@@ -22,6 +22,7 @@ class ConfigFile(object):
             ('location', nonEmptyStrJSON, "CaptainSoul"),
             ('autoConnect', boolJSON, False),
             ('notification', boolJSON, True),
+            ('lastUpdate', intJSON, 0),
             ('mainHeight', intJSON, 500),
             ('mainWidth', intJSON, 350),
             ('chatHeight', intJSON, 200),

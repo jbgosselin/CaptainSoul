@@ -16,7 +16,8 @@ def get_args():
     parser.add_argument('-t', action='store_true', dest='tray', help='Start in tray')
     parser.add_argument('-d', action='store_true', dest='debug', help='Start with debug window')
     parser.add_argument('--install', action='store_true', dest='install', help='Start in install mode')
-    parser.add_argument('--update', action='store_true', dest='update', help='Start in update mode')
+    parser.add_argument('--update_web', action='store_true', dest='update_web', help='Start in web update mode')
+    parser.add_argument('--update_file', action='store', dest='update_file', help='Start in file update mode', metavar='FILE', default='', type=str)
     return parser.parse_args()
 
 
@@ -72,7 +73,18 @@ def install_mode():
         exit(1)
 
 
-def update_mode():
+def update_file_mode(path):
+    if platform.system() != 'Linux':
+        exit(1)
+    if os.getuid() == 0:
+        shutil.copy(path, os.path.join('/usr/bin', 'cptsoul'))
+        print "Successfully installed"
+    else:
+        print "You must be root/sudo in order to install."
+        exit(3)
+
+
+def update_web_mode():
     if platform.system() != 'Linux':
         exit(1)
     from urllib2 import urlopen
@@ -94,8 +106,10 @@ def main():
     CptCommon.cmdline = get_args()
     if CptCommon.cmdline.install:
         install_mode()
-    elif CptCommon.cmdline.update:
-        update_mode()
+    elif CptCommon.cmdline.update_web:
+        update_web_mode()
+    elif CptCommon.cmdline.update_file:
+        update_file_mode(CptCommon.cmdline.update_file)
     else:
         normal_mode()
 
