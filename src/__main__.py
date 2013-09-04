@@ -77,7 +77,7 @@ def update_mode():
         exit(1)
     from urllib2 import urlopen
     if os.getuid() == 0:
-        url = urlopen('https://raw.github.com/gossel-j/CaptainSoul/master/cptsoul')
+        url = urlopen(CptCommon.updateUrl)
         if url.code != 200:
             print "Error while downloading"
             exit(2)
