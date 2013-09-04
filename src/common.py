@@ -2,6 +2,7 @@
 
 
 class CptCommon(object):
+    willReboot = False
     manager = None
     downloadManager = None
     mainWindow = None
