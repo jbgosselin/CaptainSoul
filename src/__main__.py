@@ -23,11 +23,9 @@ CptCommon.cmdline = get_args()
 
 def configLogging():
     fmt = '%(levelname)s\t: %(message)s'
-    level = logging.WARNING
-    if CptCommon.cmdline.verbose >= 2:
-        level = logging.DEBUG
-    elif CptCommon.cmdline.verbose == 1:
-        level = logging.INFO
+    level = logging.DEBUG
+    if CptCommon.cmdline.verbose <= 3:
+        level = [logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG][CptCommon.cmdline.verbose]
     logging.basicConfig(level=level, format=fmt)
 configLogging()
 
