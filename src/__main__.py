@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 import logging
+import platform
 from argparse import ArgumentParser
 
 from common import CptCommon
@@ -15,6 +16,7 @@ def get_args():
     parser.add_argument('-t', action='store_true', dest='tray', help='Start in tray')
     parser.add_argument('-d', action='store_true', dest='debug', help='Start with debug window')
     parser.add_argument('--install', action='store_true', dest='install', help='Start in install mode')
+    parser.add_argument('--update', action='store_true', dest='update', help='Start in update mode')
     return parser.parse_args()
 
 
@@ -47,6 +49,9 @@ def normal_mode():
 
 
 def install_mode():
+    if platform.system() != 'Linux':
+        exit(1)
+
     def try_to_import(module):
         try:
             __import__(module)
@@ -67,10 +72,30 @@ def install_mode():
         exit(1)
 
 
+def update_mode():
+    if platform.system() != 'Linux':
+        exit(1)
+    from urllib2 import urlopen
+    if os.getuid() == 0:
+        url = urlopen('https://raw.github.com/gossel-j/CaptainSoul/master/cptsoul')
+        if url.code != 200:
+            print "Error while downloading"
+            exit(2)
+        f = file(os.path.join('/usr/bin', 'cptsoul'), 'w')
+        f.write(url.read())
+        f.close()
+        print "Successfully installed"
+    else:
+        print "You must be root/sudo in order to install."
+        exit(3)
+
+
 def main():
     CptCommon.cmdline = get_args()
     if CptCommon.cmdline.install:
         install_mode()
+    elif CptCommon.cmdline.update:
+        update_mode()
     else:
         normal_mode()
 
