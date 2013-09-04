@@ -2,6 +2,7 @@
 
 
 class CptCommon(object):
+    updateUrl = 'https://raw.github.com/gossel-j/CaptainSoul/master/cptsoul'
     willReboot = False
     manager = None
     downloadManager = None
