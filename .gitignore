@@ -1,5 +1,7 @@
 *.pyc
 *.pyo
 *~
-icons/*.raw
-myflake.sh
+/myflake.sh
+/build/
+/cptsoul.egg-info/
+/dist/
