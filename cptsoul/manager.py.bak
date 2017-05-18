@@ -75,25 +75,25 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
 
     def sendState(self, state):
         if self._protocol is not None:
-            logging.info('Manager : Send state %s' % state)
+            logging.info(u'Manager : Send state %s' % state)
             self._protocol.sendState(state)
         else:
-            logging.warning('Manager : Try send state %s' % state)
+            logging.warning(u'Manager : Try send state %s' % state)
 
     def sendWatch(self, sendWho=True):
         if self._protocol is not None:
-            logging.info('Manager : Send watch (send who = %s)' % sendWho)
+            logging.info(u'Manager : Send watch (send who = %s)' % sendWho)
             self._protocol.sendWatch(sendWho)
         else:
-            logging.warning('Manager : Try send watch (send who = %s)' % sendWho)
+            logging.warning(u'Manager : Try send watch (send who = %s)' % sendWho)
 
     def sendMsg(self, msg, dests):
         if self._protocol is not None:
-            logging.info('Manager : Send msg "%s" to %s' % (msg, dests))
+            logging.info(u'Manager : Send msg "%s" to %s' % (msg, dests))
             self.emit('send-msg', msg, dests)
             self._protocol.sendMsg(msg, dests)
         else:
-            logging.warning('Manager : Try send msg "%s" to %s' % (msg, dests))
+            logging.warning(u'Manager : Try send msg "%s" to %s' % (msg, dests))
 
     def sendWho(self, logins):
         if self._protocol is not None:
@@ -225,7 +225,7 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
     def openSettingsWindowEvent(self):
         win = SettingsWindow()
         if win.run() == gtk.RESPONSE_APPLY:
-            for key, value in win.getAllParams().items():
+            for key, value in win.getAllParams().iteritems():
                 self.config[key] = value
             self.config.write()
         win.destroy()
@@ -297,31 +297,31 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
         self.emit('login-failed')
 
     def cmdLoginHook(self, info):
-        logging.info('Manager : Cmd %s login' % info)
+        logging.info(u'Manager : Cmd %s login' % info)
         self.emit('login', info)
 
     def cmdLogoutHook(self, info):
-        logging.info('Manager : Cmd %s logout' % info)
+        logging.info(u'Manager : Cmd %s logout' % info)
         self.emit('logout', info)
 
     def cmdMsgHook(self, info, msg, dests):
-        logging.info('Manager : Cmd %s msg "%s" %s' % (info, msg, dests))
+        logging.info(u'Manager : Cmd %s msg "%s" %s' % (info, msg, dests))
         self.emit('msg', info, msg, dests)
 
     def cmdWhoHook(self, result):
-        logging.info('Manager : Who %s' % result)
+        logging.info(u'Manager : Who %s' % result)
         self.emit('who', result)
 
     def cmdStateHook(self, info, state):
-        logging.info('Manager : Cmd %s state %s' % (info, state))
+        logging.info(u'Manager : Cmd %s state %s' % (info, state))
         self.emit('state', info, state)
 
     def cmdIsTypingHook(self, info):
-        logging.info('Manager : Cmd %s is typing' % info)
+        logging.info(u'Manager : Cmd %s is typing' % info)
         self.emit('is-typing', info)
 
     def cmdCancelTypingHook(self, info):
-        logging.info('Manager : Cmd %s cancel typing' % info)
+        logging.info(u'Manager : Cmd %s cancel typing' % info)
         self.emit('cancel-typing', info)
 
     def rawHook(self, line):
@@ -331,11 +331,11 @@ class Manager(gobject.GObject, ClientFactory, CptCommon):
         self.emit('send-raw', line)
 
     def cmdFileAskHook(self, info, name, size, desc):
-        logging.info('Manager : Cmd %s file ask %s %dB' % (info, name, size))
+        logging.info(u'Manager : Cmd %s file ask %s %dB' % (info, name, size))
         self.emit('file-ask', info, name, size, desc)
 
     def cmdFileStartHook(self, info, name, ip, port):
-        logging.info('Manager : Cmd %s file start %s %s:%d' % (info, name, ip, port))
+        logging.info(u'Manager : Cmd %s file start %s %s:%d' % (info, name, ip, port))
         self.emit('file-start', info, name, ip, port)
 
     # ClientFactory

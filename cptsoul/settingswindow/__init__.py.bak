@@ -29,7 +29,7 @@ class SettingsWindow(gtk.Dialog, CptCommon):
     def _createUi(self):
         # create entries
         self._entries = {key: gtk.Entry() for key in ['login', 'password', 'location']}
-        for key, entry in self._entries.items():
+        for key, entry in self._entries.iteritems():
             entry.set_text(self.config[key])
         self._entries['password'].set_visibility(False)
         # create table and populate it

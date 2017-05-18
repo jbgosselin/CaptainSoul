@@ -10,7 +10,7 @@ from cptsoul.downloadmanager.tools import sizeFormatter, strRandom
 
 
 class UploadList(gtk.TreeView, CptCommon):
-    COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = list(range(5))
+    COLUMN_NAME, COLUMN_SIZE, COLUMN_LOGIN, COLUMN_STATE, COLUMN_PROGRESS = range(5)
 
     def __init__(self, downmanager):
         super(UploadList, self).__init__(model=gtk.ListStore(str, str, str, str, int))

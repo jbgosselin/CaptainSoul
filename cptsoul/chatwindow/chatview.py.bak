@@ -60,7 +60,7 @@ class ChatView(gtk.ScrolledWindow, CptCommon):
             msg = re.sub(orig, new, msg)
         self._buffer += self.http_regex.sub(r'<a href="\1">\1</a>', msg)
         self._buffer += "<br/>"
-        self._view.set_html('<body>%s</body>' % self._buffer)
+        self._view.set_html(u'<body>%s</body>' % self._buffer)
 
     def msgEvent(self, widget, info, msg, dests, login):
         if login == info.login:

@@ -18,7 +18,7 @@ class defaultJSON(object):
 
 class nonEmptyStrSetJSON(defaultJSON):
     def setter(self, value):
-        self._value = set([v for v in value if isinstance(v, str) if v])
+        self._value = set([v for v in value if isinstance(v, basestring) if v])
 
     def toJSON(self):
         return list(self._value)
@@ -27,7 +27,7 @@ class nonEmptyStrSetJSON(defaultJSON):
         return self
 
     def add(self, v):
-        if isinstance(v, str) and v:
+        if isinstance(v, basestring) and v:
             self._value.add(v)
 
     def clear(self):
@@ -58,7 +58,7 @@ class boolJSON(defaultJSON):
 
 class nonEmptyStrJSON(defaultJSON):
     def setter(self, value):
-        if isinstance(value, str):
+        if isinstance(value, basestring):
             if len(value) > 0:
                 self._value = value
         else:
