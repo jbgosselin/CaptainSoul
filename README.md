@@ -14,11 +14,6 @@ and install a notification daemon like xfce4-notifyd
 
 works directly on the dump
 
-for archlinux do:
-```sh
-yaourt -S captainsoul
-```
-
 for the dump you can launch boot.sh in the xinitrc like that
 ```sh
 xterm -e ./boot.sh

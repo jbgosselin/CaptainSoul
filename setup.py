@@ -5,11 +5,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="CaptainSoul",
-    version="0.1.8",
-    author="gossel_j",
-    author_email="***REMOVED***",
+    version="0.1.9",
+    author="dennajort",
     description="Netsoul client with pygtk and twisted",
-    url="https://github.com/gossel-j/CaptainSoul",
+    url="https://github.com/dennajort/CaptainSoul",
     packages=find_packages(),
     zip_safe=True,
     entry_points={
